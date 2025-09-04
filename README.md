@@ -1,0 +1,1 @@
+ini adalah bagian dokumentasi untuk QA, yang akan mencatat progress, pekerjaan dan lain sebagainya.
