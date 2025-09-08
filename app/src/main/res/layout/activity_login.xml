@@ -15,13 +15,13 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="username"
+            android:text="Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/editTextUsername"
-            android:hint="Enter username"
+            android:id="@+id/editTextIdentifier"
+            android:hint="Enter Email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
