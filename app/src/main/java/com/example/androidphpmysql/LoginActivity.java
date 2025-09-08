@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText editTextUsername, editTextPassword;
+    private EditText editTextIdentifier, editTextPassword;
     private Button buttonLogin;
     private ProgressDialog progressDialog;
 
@@ -39,13 +39,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        if (SharedPrefManager.getInstance(this).isLoggedIn()){
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
             startActivity(new Intent(this, ProfileActivity.class));
             return;
         }
 
-        editTextUsername = (EditText) findViewById(R.id.editTextUsername);
+        editTextIdentifier = (EditText) findViewById(R.id.editTextIdentifier);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
 
@@ -59,14 +59,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
     }
 
     private void loginUser() {
-    final String username = editTextUsername.getText().toString().trim();
-    final String password = editTextPassword.getText().toString().trim();
+        final String email = editTextIdentifier.getText().toString().trim();
+        final String password = editTextPassword.getText().toString().trim();
 
-    progressDialog.show();
+        progressDialog.show();
 
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
@@ -77,61 +76,70 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         progressDialog.dismiss();
                         try {
                             JSONObject obj = new JSONObject(response);
-                            if(!obj.getBoolean("error")){
+
+                            if (!obj.getBoolean("error")) {
+                                JSONObject userJson = obj.getJSONObject("user");
+
                                 SharedPrefManager.getInstance(getApplicationContext())
                                         .userLogin(
-                                                obj.getInt("id"),
-                                                obj.getString("username"),
-                                                obj.getString("email")
-                                         );
+                                                userJson.getInt("id"),
+                                                userJson.getString("name"),
+                                                userJson.getString("email")
+                                        );
 
-                                    startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                                    finish();
-                            }else{
+                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                finish();
+                            } else {
                                 Toast.makeText(
                                         getApplicationContext(),
                                         obj.getString("message"),
                                         Toast.LENGTH_SHORT
                                 ).show();
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Parsing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
+
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
 
-                        Toast.makeText(
-                                getApplicationContext(),
-                                error.getMessage(),
-                                Toast.LENGTH_SHORT
-                        ).show();
+                        String message;
+                        if (error instanceof com.android.volley.TimeoutError) {
+                            message = "Connection timed out. Check server or internet.";
+                        } else if (error instanceof com.android.volley.NoConnectionError) {
+                            message = "No connection. Please check your internet.";
+                        } else if (error.getMessage() != null) {
+                            message = error.getMessage();
+                        } else {
+                            message = "Unknown error occurred.";
+                        }
+
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                     }
+
                 }
-        ){
+        ) {
             @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
+                params.put("identifier", editTextIdentifier.getText().toString().trim());
+                params.put("password", editTextPassword.getText().toString().trim());
                 return params;
-
             }
         };
 
-
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
-
     }
 
     @Override
     public void onClick(View view) {
-        if(view == buttonLogin){
+        if (view == buttonLogin) {
             loginUser();
         }
     }
