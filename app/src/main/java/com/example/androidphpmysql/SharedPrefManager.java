@@ -12,7 +12,7 @@ public class SharedPrefManager {
     private static SharedPrefManager instance;
     private static Context ctx;
     private static final String SHARED_PREF_NAME = "mysharedpref12";
-    private static final String KEY_USERNAME = "username";
+    private static final String KEY_NAME = "username";
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String KEY_USER_ID = "userid";
 
@@ -34,7 +34,8 @@ public class SharedPrefManager {
 
         editor.putInt(KEY_USER_ID, id);
         editor.putString(KEY_USER_EMAIL, email);
-        editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_NAME, username);
+        editor.putBoolean("loggedin", true);
 
         editor.apply();
 
@@ -44,10 +45,7 @@ public class SharedPrefManager {
     public boolean isLoggedIn() {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
                 Context.MODE_PRIVATE);
-        if (sharedPreferences.getString(KEY_USERNAME, null) != null) {
-            return true;
-        }
-        return false;
+        return sharedPreferences.getBoolean("loggedin", false);
     }
 
     public boolean logout(){
@@ -62,7 +60,7 @@ public class SharedPrefManager {
     public String getUsername(){
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
                 Context.MODE_PRIVATE);
-        return sharedPreferences.getString(KEY_USERNAME, null);
+        return sharedPreferences.getString(KEY_NAME, null);
     }
     public String getUserEmail(){
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
