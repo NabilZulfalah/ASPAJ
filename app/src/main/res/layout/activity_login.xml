@@ -7,43 +7,116 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <ImageView
+        android:id="@+id/headerWave"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/top_wave" />
+
+    <!-- Logo Sekolah -->
+    <ImageView
+        android:id="@+id/schoolLogo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/logo_smk4"
+        android:contentDescription="Logo Sekolah"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+
+    <!-- Footer (Bottom Wave) - DITEMPELKAN KE BAWAH -->
+    <ImageView
+        android:id="@+id/footerWave"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_wave" />
+
+    <!-- Judul -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selamat Datang"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#111111"
+        android:layout_marginTop="160dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Subjudul -->
+    <TextView
+        android:id="@+id/subtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Silakan login untuk melanjutkan"
+        android:textSize="14sp"
+        android:textColor="#777777"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/subtitleText"
+        android:layout_margin="24dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/form_background"
+        android:padding="24dp"
+        android:layout_alignParentBottom="@id/footerWave"
+        android:elevation="4dp">
 
-        <TextView
-            android:text="Email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/editTextIdentifier"
             android:hint="Enter Email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:background="@null"
+            android:paddingVertical="12dp"
+            android:textColorHint="#888888"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:text="password"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
 
         <EditText
             android:id="@+id/editTextPassword"
             android:hint="Enter password"
-            android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:background="@null"
+            android:paddingVertical="12dp"
+            android:textColorHint="#888888"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
 
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
 
         <Button
             android:text="Login"
-            android:id="@+id/buttonLogin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rounded_button"/>
     </LinearLayout>
 
 </RelativeLayout>
