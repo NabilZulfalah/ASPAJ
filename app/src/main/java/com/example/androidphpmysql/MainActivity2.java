@@ -137,6 +137,7 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
 
+
     @Override
     public void onClick(View view) {
         Log.d(TAG, "onClick: viewId=" + view.getId());
