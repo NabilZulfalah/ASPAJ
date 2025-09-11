@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,7 +30,8 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editTextIdentifier, editTextPassword;
-    private Button buttonLogin;
+    private Button btnLogin;
+    private TextView textViewRegister; // Tambahkan TextView untuk register
     private ProgressDialog progressDialog;
 
     @Override
@@ -45,14 +46,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        editTextIdentifier = (EditText) findViewById(R.id.editTextIdentifier);
-        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-        buttonLogin = (Button) findViewById(R.id.buttonLogin);
+        editTextIdentifier = findViewById(R.id.editTextIdentifier);
+        editTextPassword = findViewById(R.id.editTextPassword);
+        btnLogin = findViewById(R.id.buttonLogin);
+        textViewRegister = findViewById(R.id.textViewLogin);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
 
-        buttonLogin.setOnClickListener(this);
+        // Set click listeners
+        btnLogin.setOnClickListener(this);
+        textViewRegister.setOnClickListener(this);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -62,8 +66,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loginUser() {
-        final String email = editTextIdentifier.getText().toString().trim();
+        final String identifier = editTextIdentifier.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
+
+        // Validasi input
+        if (identifier.isEmpty()) {
+            editTextIdentifier.setError("Please enter email or username");
+            editTextIdentifier.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            editTextPassword.setError("Please enter password");
+            editTextPassword.requestFocus();
+            return;
+        }
 
         progressDialog.show();
 
@@ -101,7 +118,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "Parsing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
-
                 },
                 new Response.ErrorListener() {
                     @Override
@@ -121,10 +137,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                     }
-
                 }
         ) {
-            @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -139,8 +153,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        if (view == buttonLogin) {
+        int viewId = view.getId();
+
+        if (viewId == R.id.buttonLogin) {
             loginUser();
+        } else if (viewId == R.id.textViewLogin) {
+            // Pindah ke MainActivity2 (Register)
+            startActivity(new Intent(LoginActivity.this, MainActivity2.class));
+            finish();
         }
     }
 }

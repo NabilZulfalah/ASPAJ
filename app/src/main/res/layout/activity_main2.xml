@@ -3,72 +3,138 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
     tools:context=".MainActivity2">
+
+    <ImageView
+        android:id="@+id/headerWave"
+        android:layout_width="match_parent"
+        android:layout_height="123dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/top_wave" />
+
+
+    <!-- Logo Sekolah -->
+    <ImageView
+        android:id="@+id/schoolLogo"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/logo_smk4"
+        android:contentDescription="Logo Sekolah"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+
+    <!-- Footer (Bottom Wave) - DITEMPELKAN KE BAWAH -->
+
+    <!-- Judul -->
+
+    <ImageView
+        android:id="@+id/footerWave"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="-55dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_wave" />
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#111111"
+        android:layout_marginTop="160dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Subjudul -->
+    <TextView
+        android:id="@+id/subtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Silakan mendaftar untuk melanjutkan"
+        android:textSize="14sp"
+        android:textColor="#777777"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subtitleText"
+        android:layout_alignParentBottom="@id/footerWave"
+        android:layout_margin="15dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/form_background"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <TextView
-            android:text="username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="username" />
 
         <EditText
             android:id="@+id/editTextUsername"
-            android:hint="Enter username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Enter username" />
 
         <TextView
-            android:text="password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="password" />
 
         <EditText
             android:id="@+id/editTextUserPassword"
-            android:hint="Enter password"
-            android:inputType="textPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Enter password"
+            android:inputType="textPassword" />
 
         <TextView
-            android:text="email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="email" />
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:hint="Enter email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Enter email" />
 
         <Button
-            android:text="Register"
             android:id="@+id/buttonRegister"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rounded_button"
+            android:text="Register" />
+
+        <TextView
+            android:id="@+id/textViewLogin"
+            android:layout_width="126dp"
+            android:layout_height="43dp"
+            android:layout_below="@id/buttonRegister"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingTop="16dp"
+            android:text="Login Here"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="#2196F3"
+            android:textSize="15dp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="16dp"
-        android:text="Already registered?\nClick here to login"
-        android:textAlignment="center"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textColor="#2196F3"
-        android:clickable="true"
-        android:focusable="true" />
 
 </RelativeLayout>
