@@ -40,7 +40,7 @@
             android:layout_below="@id/headerWave"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-48dp"
-            android:text="Halo, selamat datang!"
+            android:text="Halo, selamat datang!!"
             android:textColor="#3E75FF"
             android:textSize="24sp"
             android:textStyle="bold" />
