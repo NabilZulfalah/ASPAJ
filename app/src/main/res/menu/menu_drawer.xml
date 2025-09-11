@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:title="Dashboard"
+        android:icon="@drawable/ic_menu" />
+    <item
+        android:id="@+id/nav_list_barang"
+        android:title="List Barang"
+        android:icon="@drawable/ic_laptop" />
+    <item
+        android:id="@+id/nav_peminjam"
+        android:title="Peminjam"
+        android:icon="@drawable/ic_user" />
+    <item
+        android:id="@+id/nav_riwayat"
+        android:title="Riwayat"
+        android:icon="@drawable/ic_clock" />
+    <item
+        android:id="@+id/nav_pengembalian"
+        android:title="Pengembalian"
+        android:icon="@drawable/ic_clock" />
+</menu>

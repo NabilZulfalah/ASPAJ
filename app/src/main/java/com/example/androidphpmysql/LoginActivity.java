@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_page);
 
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
