@@ -72,6 +72,9 @@ public class ProfileActivity extends AppCompatActivity {
         } else if (id == R.id.menuSettings) {
             Toast.makeText(this, "You clicked settings", Toast.LENGTH_LONG).show();
             return true;
+        } else if (id == R.id.menuKelolaAset) {
+            startActivity(new Intent(this, AssetManagementActivity.class));
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
