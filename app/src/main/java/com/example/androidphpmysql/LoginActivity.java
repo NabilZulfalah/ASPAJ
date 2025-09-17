@@ -3,6 +3,7 @@ package com.example.androidphpmysql;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +32,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private EditText editTextIdentifier, editTextPassword;
     private Button btnLogin;
-    private TextView textViewRegister; // Tambahkan TextView untuk register
+    private TextView textViewRegister;
     private ProgressDialog progressDialog;
 
     @Override
@@ -49,12 +50,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextIdentifier = findViewById(R.id.editTextIdentifier);
         editTextPassword = findViewById(R.id.editTextPassword);
         btnLogin = findViewById(R.id.buttonLogin);
-        textViewRegister = findViewById(R.id.textViewLogin);
+        textViewRegister = findViewById(R.id.txRegisterHere);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
+        progressDialog.setCancelable(false);
 
-        // Set click listeners
         btnLogin.setOnClickListener(this);
         textViewRegister.setOnClickListener(this);
 
@@ -69,9 +70,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         final String identifier = editTextIdentifier.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
 
-        // Validasi input
+        Log.d("LoginDebug", "Attempting login with - Identifier: " + identifier);
+
         if (identifier.isEmpty()) {
-            editTextIdentifier.setError("Please enter email or username");
+            editTextIdentifier.setError("Please enter username or email");
             editTextIdentifier.requestFocus();
             return;
         }
@@ -91,31 +93,49 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onResponse(String response) {
                         progressDialog.dismiss();
+                        Log.d("LoginDebug", "Server Response: " + response);
+
                         try {
                             JSONObject obj = new JSONObject(response);
+
+                            if (!obj.has("error")) {
+                                Toast.makeText(getApplicationContext(), "Invalid server response", Toast.LENGTH_LONG).show();
+                                return;
+                            }
 
                             if (!obj.getBoolean("error")) {
                                 JSONObject userJson = obj.getJSONObject("user");
 
+                                // Handle null values safely
+                                String profilePicture = userJson.isNull("profile_picture") || userJson.getString("profile_picture").isEmpty() ?
+                                        null : userJson.getString("profile_picture");
+                                String nls = userJson.isNull("nls") || userJson.getString("nls").isEmpty() ?
+                                        null : userJson.getString("nls");
+                                String role = userJson.isNull("role") ? "user" : userJson.getString("role");
+
+                                // Simpan data user ke SharedPreferences
                                 SharedPrefManager.getInstance(getApplicationContext())
                                         .userLogin(
                                                 userJson.getInt("id"),
                                                 userJson.getString("name"),
-                                                userJson.getString("email")
+                                                userJson.getString("email"),
+                                                profilePicture,
+                                                nls,
+                                                role
                                         );
 
+                                Toast.makeText(getApplicationContext(), "Login successful", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                                 finish();
                             } else {
-                                Toast.makeText(
-                                        getApplicationContext(),
-                                        obj.getString("message"),
-                                        Toast.LENGTH_SHORT
-                                ).show();
+                                String errorMessage = obj.getString("message");
+                                Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_LONG).show();
+                                Log.e("LoginError", "Server error: " + errorMessage);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Parsing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Login error: Invalid response format", Toast.LENGTH_SHORT).show();
+                            Log.e("LoginError", "JSON parsing error: " + e.getMessage());
                         }
                     }
                 },
@@ -123,30 +143,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
+                        Log.e("LoginError", "Volley error: " + error.toString());
 
-                        String message;
-                        if (error instanceof com.android.volley.TimeoutError) {
-                            message = "Connection timed out. Check server or internet.";
-                        } else if (error instanceof com.android.volley.NoConnectionError) {
-                            message = "No connection. Please check your internet.";
+                        String message = "Network error: ";
+                        if (error.networkResponse != null) {
+                            message += "Status " + error.networkResponse.statusCode;
+                            Log.e("LoginError", "Status code: " + error.networkResponse.statusCode);
                         } else if (error.getMessage() != null) {
-                            message = error.getMessage();
+                            message += error.getMessage();
                         } else {
-                            message = "Unknown error occurred.";
+                            message += "Unknown error occurred";
                         }
 
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                     }
                 }
         ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("identifier", editTextIdentifier.getText().toString().trim());
-                params.put("password", editTextPassword.getText().toString().trim());
+                params.put("identifier", identifier);
+                params.put("password", password);
+                Log.d("LoginDebug", "Sending params: " + params.toString());
                 return params;
             }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=utf-8";
+            }
         };
+
+        // Set retry policy
+        stringRequest.setRetryPolicy(new com.android.volley.DefaultRetryPolicy(
+                30000,
+                com.android.volley.DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
@@ -157,10 +189,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (viewId == R.id.buttonLogin) {
             loginUser();
-        } else if (viewId == R.id.textViewLogin) {
-            // Pindah ke MainActivity2 (Register)
+        } else if (viewId == R.id.txRegisterHere) {
             startActivity(new Intent(LoginActivity.this, MainActivity2.class));
-            finish();
         }
     }
 }
