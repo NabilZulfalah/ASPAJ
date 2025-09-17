@@ -40,7 +40,7 @@
             <ImageView
                 android:id="@+id/headerWave3"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/top_wave"
                 app:layout_constraintTop_toTopOf="parent"
@@ -168,11 +168,26 @@
                 </LinearLayout>
             </ScrollView>
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnTambah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="80dp"
+                android:contentDescription="Tambah"
+                android:src="@android:drawable/ic_input_add"
+                app:backgroundTint="#2196F3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tint="@android:color/white" />
+
+
+
             <!-- Wave Bawah -->
             <ImageView
                 android:id="@+id/waveBawah"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/bottom_wave"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -195,3 +210,5 @@
         app:headerLayout="@layout/nav_header" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
+
+
