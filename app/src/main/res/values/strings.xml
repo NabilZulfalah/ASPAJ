@@ -2,4 +2,16 @@
     <string name="app_name">4LLASSET</string>
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
+    <string name="header_wave">Header Wave</string>
+    <string name="pilih_kelas">Pilih Kelas</string>
+    <string name="ketik_nama_siswa">Ketik Nama Siswa</string>
+    <string name="nama_lengkap">Nama Lengkap</string>
+    <string name="tanggal_pinjam">Tanggal Pinjam</string>
+    <string name="tanggal_kembali">Tanggal Kembali</string>
+    <string name="tujuan">Tujuan Peminjaman</string>
+    <string name="barang">Barang</string>
+    <string name="jumlah">Jumlah</string>
+    <string name="buat_pengajuan">Buat Pengajuan</string>
+
+
 </resources>
