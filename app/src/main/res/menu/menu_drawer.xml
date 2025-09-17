@@ -20,4 +20,8 @@
         android:id="@+id/nav_pengembalian"
         android:title="Pengembalian"
         android:icon="@drawable/ic_clock" />
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Logout"
+        android:icon="@drawable/ic_logout"/>
 </menu>

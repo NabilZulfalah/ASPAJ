@@ -40,32 +40,21 @@ class activity_list_barang : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // --- Handle menu di Navigation Drawer ---
+        // --- Handle menu Navigation Drawer ---
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> {
-                    startActivity(Intent(this, activity_main_menu::class.java))
-                }
-                R.id.nav_list_barang -> {
-                    // Sudah di List Barang, tidak perlu pindah
-                }
-                R.id.nav_peminjam -> {
-                    startActivity(Intent(this, activity_data_peminjam::class.java))
-                }
-                R.id.nav_riwayat -> {
-                    startActivity(Intent(this, RiwayatActivity::class.java))
-                }
-                R.id.nav_pengembalian -> {
-                    startActivity(Intent(this, pengembalianActivity::class.java))
-                }
+                R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
+                R.id.nav_list_barang -> {} // sudah di sini
+                R.id.nav_peminjam -> startActivity(Intent(this, activity_data_peminjam::class.java))
+                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatActivity::class.java))
+                R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
             }
             drawerLayout.closeDrawers()
             true
         }
 
-        // --- Isi list barang (yang sudah ada) ---
+        // --- Isi daftar asset dinamis ---
         val container = findViewById<LinearLayout>(R.id.qqassetMenuContainer)
-
         val jurusan = listOf(
             "Asset RPL" to R.drawable.ic_laptop,
             "Asset DKV" to R.drawable.ic_paintbrush,
@@ -84,19 +73,14 @@ class activity_list_barang : AppCompatActivity() {
 
             view.setOnClickListener {
                 Toast.makeText(this, "Kamu memilih: $label", Toast.LENGTH_SHORT).show()
-                // Intent ke halaman detail bisa ditambahkan di sini
             }
 
             container.addView(view)
         }
     }
 
-
-    // Supaya icon menu (hamburger) bisa jalan
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+        return if (toggle.onOptionsItemSelected(item)) true
+        else super.onOptionsItemSelected(item)
     }
 }
