@@ -56,7 +56,7 @@ class RiwayatActivity : AppCompatActivity() {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activity_list_barang::class.java))
+                    startActivity(Intent(this, activityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
                     startActivity(Intent(this, activity_data_peminjam::class.java))

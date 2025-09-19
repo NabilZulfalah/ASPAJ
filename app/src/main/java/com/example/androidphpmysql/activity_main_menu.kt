@@ -89,7 +89,7 @@ class activity_main_menu : AppCompatActivity() {
 
         // --- Tombol LinearLayout (opsional) ---
         findViewById<MaterialCardView>(R.id.listbarangBtn).setOnClickListener {
-            startActivity(Intent(this, activity_list_barang::class.java))
+            startActivity(Intent(this, activityListBarang::class.java))
         }
         findViewById<MaterialCardView>(R.id.riwayatBtn).setOnClickListener {
             startActivity(Intent(this, RiwayatActivity::class.java))

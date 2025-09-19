@@ -40,7 +40,7 @@ class activity_data_peminjam : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activity_list_barang::class.java))
+                    startActivity(Intent(this, activityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
                     // sudah di halaman ini, bisa kasih toast kalau mau
