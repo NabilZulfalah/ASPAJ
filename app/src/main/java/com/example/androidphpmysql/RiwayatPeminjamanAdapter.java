@@ -55,7 +55,7 @@ public class RiwayatPeminjamanAdapter extends RecyclerView.Adapter<RiwayatPeminj
         }
 
         holder.btnAksi.setText(borrowing.aksi);
-        // You can add click listener for btnAksi if needed
+        // You can add click listener for btnAksi if needed (im here if there are any changes)
     }
 
     @Override
