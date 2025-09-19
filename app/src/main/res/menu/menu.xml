@@ -6,6 +6,10 @@
         android:title="Settings" />
 
     <item
+        android:id="@+id/menuKelolaAset"
+        android:title="Kelola Aset" />
+
+    <item
         android:id="@+id/menuLogout"
         android:title="Logout" />
 
