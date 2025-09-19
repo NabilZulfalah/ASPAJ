@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="4dp"> <!-- ✅ biar agak naik -->
+            android:paddingTop="4dp">
 
             <!-- Toolbar -->
             <com.google.android.material.appbar.MaterialToolbar
@@ -26,9 +26,9 @@
                 android:background="@color/blue_500"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:title="Form Peminjaman"
-                app:titleTextColor="@android:color/white"/>
+                app:titleTextColor="@android:color/white" />
 
-            <!-- Header Wave (tetap seperti awal) -->
+            <!-- Header Wave -->
             <ImageView
                 android:id="@+id/headerWave"
                 android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/top_wave" />
 
-            <!-- Judul dengan Gambar -->
+            <!-- Judul + Icon -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 🔹 Input Fields (margin dikurangi supaya rapat ke atas) -->
+            <!-- Pilih Kelas -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,6 +93,7 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_input" />
 
+            <!-- Pilih Siswa -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,7 +144,7 @@
                     android:padding="10dp" />
             </LinearLayout>
 
-            <!-- Tanggal Pinjam + Kembali -->
+            <!-- 🔹 Tanggal Pinjam + Kembali dengan Icon Kalender -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -160,7 +161,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_input"
                     android:hint="Tanggal Pinjam"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:drawablePadding="8dp"
                     android:padding="10dp" />
 
                 <EditText
@@ -170,6 +172,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_input"
                     android:hint="Tanggal Kembali"
+                    android:focusable="false"
+                    android:drawablePadding="8dp"
                     android:padding="10dp" />
             </LinearLayout>
 
@@ -248,7 +252,7 @@
                     app:cornerRadius="20dp" />
             </LinearLayout>
 
-            <!-- Footer Wave (tetap seperti awal) -->
+            <!-- Footer Wave -->
             <ImageView
                 android:id="@+id/footerWave"
                 android:layout_width="match_parent"
