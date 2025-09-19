@@ -336,7 +336,7 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                                 "approved", "Baik", "Guru G", "", "Lihat"));
                 allData.add(new Borrowing(12, "", "Nina Kartika", "XII TKJ 3", "2 Router", "Network Setup",
                                 "2025-09-07 11:15", "rejected", "", "", "", "Lihat"));
-                allData.add(new Borrowing(13, "", "Bambang Setiawan", "X RPL 1", "1 Laptop", "Web Dev",
+                allData.add(new Borrowing(13, "", "Bambang Subeno", "X RPL 1", "1 Laptop", "Web Dev",
                                 "2025-09-06 16:00", "pending", "", "", "", "Lihat"));
                 allData.add(new Borrowing(14, "", "Yuni Susanti", "XI TITL 1", "1 Proyektor", "Demo",
                                 "2025-09-05 10:45",
