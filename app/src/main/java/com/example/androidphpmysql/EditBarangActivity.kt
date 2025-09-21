@@ -13,7 +13,7 @@ import com.google.gson.Gson
 
 class EditBarangActivity : AppCompatActivity() {
 
-    private var barang: Barang? = null  // gunakan nullable
+    private var barang: Barang? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,14 +71,14 @@ class EditBarangActivity : AppCompatActivity() {
                 val updatedBarang = barang?.copy(
                     nama = editTextNamaBarang.text.toString(),
                     kode = editTextKodeBarang.text.toString(),
-                    stok = editTextStok.text.toString().toInt(),
+                    stok = editTextStok.text.toString().toIntOrNull() ?: 0,
                     jurusan = jurusanDropdown.text.toString(),
                     lokasi = lokasiDropdown.text.toString(),
                     merk = editTextMerk.text.toString(),
                     sumberDana = editTextSumberDana.text.toString(),
                     tahun = editTextTahun.text.toString(),
                     deskripsi = editTextDeskripsi.text.toString(),
-                    harga = editTextHarga.text.toString().toDouble()
+                    harga = editTextHarga.text.toString().toDoubleOrNull() ?: 0.0
                 )
 
                 updatedBarang?.let { ub ->

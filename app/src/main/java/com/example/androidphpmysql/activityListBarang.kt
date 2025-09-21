@@ -87,7 +87,8 @@ class activityListBarang : AppCompatActivity() {
         filterButton.setOnClickListener { showFilterDialog() }
 
         fabTambahBarang.setOnClickListener {
-            Toast.makeText(this, "Tambah barang belum diimplementasi", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, TambahAssetActivity::class.java)
+            startActivity(intent)
         }
 
         filteredList.addAll(barangList)
@@ -99,9 +100,9 @@ class activityListBarang : AppCompatActivity() {
         barangList.clear()
         barangList.addAll(
             listOf(
-                Barang("1","Laptop ASUS","C001",10,"Lab Komputer","RPL","ASUS","Dana BOS","2022","Laptop untuk pembelajaran siswa",8500000.0),
-                Barang("2","Proyektor Epson","C002",5,"Ruang Kelas 1","Multimedia","Epson","Hibah","2021","Proyektor ruang kelas",5000000.0),
-                Barang("3","Printer Canon","C003",3,"Guru","Umum","Canon","Dana BOS","2023","Printer untuk administrasi",2500000.0)
+                Barang("1".toInt(),"Laptop ASUS","C001",10,"Lab Komputer","RPL","ASUS","Dana BOS","2022","Laptop untuk pembelajaran siswa",8500000.0),
+                Barang("2".toInt(),"Proyektor Epson","C002",5,"Ruang Kelas 1","Multimedia","Epson","Hibah","2021","Proyektor ruang kelas",5000000.0),
+                Barang("3".toInt(),"Printer Canon","C003",3,"Guru","Umum","Canon","Dana BOS","2023","Printer untuk administrasi",2500000.0)
             )
         )
     }
