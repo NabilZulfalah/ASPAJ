@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 
-class pengembalianActivity : AppCompatActivity() {
+class RiwayatActivity : AppCompatActivity() {
 
     private lateinit var headerWave: ImageView
     private lateinit var footerWave: ImageView
@@ -20,7 +20,7 @@ class pengembalianActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.pengembalian)
+        setContentView(R.layout.riwayat)
 
         // --- Animasi Header & Footer ---
         headerWave = findViewById(R.id.headerWave)
@@ -55,18 +55,17 @@ class pengembalianActivity : AppCompatActivity() {
                 R.id.nav_home -> {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
-
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activityListBarang::class.java))
+                    startActivity(Intent(this, activity_list_barang::class.java))
                 }
                 R.id.nav_peminjam -> {
                     startActivity(Intent(this, activity_data_peminjam::class.java))
                 }
                 R.id.nav_riwayat -> {
-                    startActivity(Intent(this, RiwayatActivity::class.java))
+                    // Sudah di Riwayat, tidak perlu pindah
                 }
                 R.id.nav_pengembalian -> {
-
+                    startActivity(Intent(this, pengembalianActivity::class.java))
                 }
             }
             drawerLayout.closeDrawers()

@@ -64,8 +64,8 @@ class activity_main_menu : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
                 R.id.nav_list_barang -> {}
-                R.id.nav_peminjam -> startActivity(Intent(this, Peminjaman::class.java))
-                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
+                R.id.nav_peminjam -> startActivity(Intent(this, activity_data_peminjam::class.java))
+                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatActivity::class.java))
                 R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
 
                 // ✅ Tambahkan Logout
@@ -91,10 +91,10 @@ class activity_main_menu : AppCompatActivity() {
             startActivity(Intent(this, activity_list_barang::class.java))
         }
         findViewById<LinearLayout>(R.id.riwayatBtn).setOnClickListener {
-            startActivity(Intent(this, RiwayatPeminjaman::class.java))
+            startActivity(Intent(this, RiwayatActivity::class.java))
         }
         findViewById<LinearLayout>(R.id.peminjamBtn).setOnClickListener {
-            startActivity(Intent(this, Peminjaman::class.java))
+            startActivity(Intent(this, activity_data_peminjam::class.java))
         }
         findViewById<LinearLayout>(R.id.pengembalianBtn).setOnClickListener {
             startActivity(Intent(this, pengembalianActivity::class.java))

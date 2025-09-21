@@ -24,10 +24,7 @@
         <activity android:name=".activity_list_barang" android:exported="true" />
         <activity android:name=".activity_main_menu" android:exported="true"/>
         <activity android:name=".pengembalianActivity" android:exported="true" />
-        <activity android:name=".RiwayatPeminjaman" android:exported="true"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:screenOrientation="portrait"/>
-            <activity android:name=".Peminjaman" android:exported="true" >
+        <activity android:name=".Peminjaman" android:exported="true" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
