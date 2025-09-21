@@ -5,259 +5,265 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 🔹 Konten Utama dengan Scroll -->
-    <ScrollView
+    <!-- Gunakan FrameLayout supaya bisa stack konten + wave bawah -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#F4F6FA"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <!-- Konten scrollable -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:paddingBottom="100dp"
+            android:clipToPadding="false">
 
-            <!-- Toolbar -->
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/blue_500"
-                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-                app:title="Form Peminjaman"
-                app:titleTextColor="@android:color/white" />
-
-            <!-- Header Wave (lebih tipis supaya naik) -->
-            <ImageView
-                android:id="@+id/headerWave"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/top_wave" />
-
-            <!-- Judul dengan Gambar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="-10dp">
+                android:orientation="vertical">
 
+                <!-- Toolbar -->
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/blue_500"
+                    android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+                    app:title="Form Peminjaman"
+                    app:titleTextColor="@android:color/white" />
+
+                <!-- Wave Atas -->
                 <ImageView
-                    android:id="@+id/imgForm"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/img_4"
-                    android:layout_marginEnd="8dp" />
+                    android:id="@+id/headerWave"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/top_wave" />
 
+                <!-- Judul + icon -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="-10dp">
 
-                    <TextView
-                        android:id="@+id/tvFormTitle"
+                    <ImageView
+                        android:id="@+id/imgForm"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/img_4" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Form Pengajuan Aset"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvFormSubtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Isi data dengan lengkap untuk membuat pengajuan aset."
-                        android:textColor="#555"
-                        android:textSize="13sp" />
+                        <TextView
+                            android:id="@+id/tvFormTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Form Pengajuan Aset"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvFormSubtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Isi data dengan lengkap untuk membuat pengajuan aset."
+                            android:textColor="#555"
+                            android:textSize="13sp" />
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- 🔹 Input Fields (margin dikurangi jadi rapat) -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="2dp"
-                android:text="Pilih Kelas Siswa"
-                android:textColor="#333"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/spinnerKelas"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_input" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="2dp"
-                android:text="Pilih Siswa"
-                android:textColor="#333"
-                android:textStyle="bold" />
-
-            <AutoCompleteTextView
-                android:id="@+id/etNamaSiswa"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_input"
-                android:hint="Ketik nama siswa"
-                android:padding="10dp" />
-
-            <!-- Nama + Kelas -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <EditText
-                    android:id="@+id/etNama"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_input"
-                    android:hint="Nama Lengkap"
-                    android:enabled="false"
-                    android:padding="10dp" />
-
-                <EditText
-                    android:id="@+id/etKelas"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_input"
-                    android:hint="Kelas"
-                    android:enabled="false"
-                    android:padding="10dp" />
-            </LinearLayout>
-
-            <!-- Tanggal Pinjam + Kembali -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <EditText
-                    android:id="@+id/etTanggalPinjam"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_input"
-                    android:hint="Tanggal Pinjam"
-                    android:enabled="false"
-                    android:padding="10dp" />
-
-                <EditText
-                    android:id="@+id/etTanggalKembali"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_input"
-                    android:hint="Tanggal Kembali"
-                    android:padding="10dp" />
-            </LinearLayout>
-
-            <!-- Tujuan -->
-            <EditText
-                android:id="@+id/etTujuan"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_input"
-                android:gravity="top|start"
-                android:hint="Masukkan tujuan peminjaman"
-                android:padding="10dp" />
-
-            <!-- Barang + Jumlah -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                <!-- Pilih Kelas -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="Pilih Kelas Siswa"
+                    android:textColor="#333"
+                    android:textStyle="bold" />
 
                 <Spinner
-                    android:id="@+id/spinnerBarang"
-                    android:layout_width="0dp"
+                    android:id="@+id/spinnerKelas"
+                    android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_input" />
 
-                <EditText
-                    android:id="@+id/etJumlah"
-                    android:layout_width="0dp"
+                <!-- Pilih Siswa -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="Pilih Siswa"
+                    android:textColor="#333"
+                    android:textStyle="bold" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/etNamaSiswa"
+                    android:layout_width="match_parent"
                     android:layout_height="44dp"
-                    android:layout_weight="1"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_input"
-                    android:hint="Jumlah"
-                    android:inputType="number"
+                    android:hint="Ketik nama siswa"
                     android:padding="10dp" />
+
+                <!-- Nama + Kelas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <EditText
+                        android:id="@+id/etNama"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input"
+                        android:enabled="false"
+                        android:hint="Nama Lengkap"
+                        android:padding="10dp" />
+
+                    <EditText
+                        android:id="@+id/etKelas"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input"
+                        android:enabled="false"
+                        android:hint="Kelas"
+                        android:padding="10dp" />
+                </LinearLayout>
+
+                <!-- Tanggal Pinjam + Kembali -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <EditText
+                        android:id="@+id/etTanggalPinjam"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input"
+                        android:enabled="false"
+                        android:hint="Tanggal Pinjam"
+                        android:padding="10dp" />
+
+                    <EditText
+                        android:id="@+id/etTanggalKembali"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input"
+                        android:hint="Tanggal Kembali"
+                        android:padding="10dp" />
+                </LinearLayout>
+
+                <!-- Tujuan -->
+                <EditText
+                    android:id="@+id/etTujuan"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_input"
+                    android:gravity="top|start"
+                    android:hint="Masukkan tujuan peminjaman"
+                    android:padding="10dp" />
+
+                <!-- Barang + Jumlah -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Spinner
+                        android:id="@+id/spinnerBarang"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input" />
+
+                    <EditText
+                        android:id="@+id/etJumlah"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_input"
+                        android:hint="Jumlah"
+                        android:inputType="number"
+                        android:padding="10dp" />
+                </LinearLayout>
+
+                <!-- Tombol -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTambah"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginEnd="6dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#4CAF50"
+                        android:text="Tambah Barang"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        app:cornerRadius="20dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmit"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#2196F3"
+                        android:text="Buat Pengajuan"
+                        android:textAllCaps="false"
+                        android:textColor="@android:color/white"
+                        app:cornerRadius="20dp" />
+                </LinearLayout>
             </LinearLayout>
+        </ScrollView>
 
-            <!-- Tombol -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnTambah"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#4CAF50"
-                    android:text="Tambah Barang"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    app:cornerRadius="20dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSubmit"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#2196F3"
-                    android:text="Buat Pengajuan"
-                    android:textAllCaps="false"
-                    android:textColor="@android:color/white"
-                    app:cornerRadius="20dp" />
-            </LinearLayout>
-
-
-            <ImageView
-                android:id="@+id/footerWave"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
+        <!-- Wave bawah selalu fix -->
+        <ImageView
+            android:id="@+id/footerWave"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
             android:scaleType="fitXY"
-            android:src="@drawable/bottom_wave"
-                android:layout_marginTop="50dp"/>
-
-        </LinearLayout>
-    </ScrollView>
+            android:src="@drawable/bottom_wave" />
+    </FrameLayout>
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView

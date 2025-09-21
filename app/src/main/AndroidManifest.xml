@@ -31,11 +31,10 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".RiwayatActivity"
-            android:exported="true" />
-        <activity
-            android:name=".activity_data_peminjam"
-            android:exported="true" />
+            android:name=".RiwayatPeminjaman"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activityListBarang"
             android:exported="true" />
@@ -44,7 +43,12 @@
             android:exported="true" />
         <activity
             android:name=".activity_main_menu"
-            android:exported="true" >
+            android:exported="true" />
+        <activity
+            android:name=".Peminjaman"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

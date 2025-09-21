@@ -50,7 +50,7 @@ class activity_data_peminjam : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_list_barang -> startActivity(Intent(this, activityListBarang::class.java))
                 R.id.nav_peminjam -> { /* sudah di sini */ }
-                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatActivity::class.java))
+                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
             }
             drawerLayout.closeDrawers()

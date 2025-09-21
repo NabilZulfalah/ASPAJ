@@ -60,10 +60,10 @@ class pengembalianActivity : AppCompatActivity() {
                     startActivity(Intent(this, activityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
-                    startActivity(Intent(this, activity_data_peminjam::class.java))
+                    startActivity(Intent(this, Peminjaman::class.java))
                 }
                 R.id.nav_riwayat -> {
-                    startActivity(Intent(this, RiwayatActivity::class.java))
+                    startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 }
                 R.id.nav_pengembalian -> {
 
