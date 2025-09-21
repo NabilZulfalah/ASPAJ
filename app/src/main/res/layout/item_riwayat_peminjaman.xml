@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tvNo"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:gravity="center"
+        android:padding="4dp" />
+
+    <ImageView
+        android:id="@+id/ivFotoProfile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:scaleType="centerCrop"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <TextView
+        android:id="@+id/tvNamaMurid"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Nama Murid"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvKelas"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="Kelas"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvBarangJumlah"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:text="Barang &amp; Jumlah"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvTujuan"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Tujuan"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvTanggalJam"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:text="Tanggal / Jam"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvKondisiPengembalian"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Kondisi Pengembalian"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/tvDikembalikanOleh"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Dikembalikan Oleh"
+        android:padding="4dp" />
+
+    <ImageView
+        android:id="@+id/ivPhoto"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:scaleType="centerCrop"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/btnAksi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aksi"
+        android:padding="4dp"
+        android:layout_marginStart="8dp" />
+
+</LinearLayout>
