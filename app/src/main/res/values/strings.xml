@@ -12,6 +12,9 @@
     <string name="barang">Barang</string>
     <string name="jumlah">Jumlah</string>
     <string name="buat_pengajuan">Buat Pengajuan</string>
+    <string name="hint_nama">Nama Peminjam</string>
+    <string name="hint_kelas">Kelas</string>
+    <string name="btn_simpan">Simpan</string>
 
 
 </resources>

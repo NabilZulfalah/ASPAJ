@@ -16,6 +16,8 @@
         android:theme="@style/Theme.MyApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
+        <activity android:name=".TambahPeminjamActivity"
+            android:exported="true"/>
         <activity
             android:name=".EditBarangActivity"
             android:exported="false" />
