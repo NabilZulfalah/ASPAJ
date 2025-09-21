@@ -1,179 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ffffff">
+    android:layout_height="match_parent">
 
-    <!-- Wave Atas -->
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"> <!-- Tinggi dikurangi biar konten naik -->
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/top_wave"
-            android:scaleType="fitXY" />
-    </FrameLayout>
-
-    <!-- Kotak Biru Judul -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_header_box"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:layout_margin="12dp"
-        android:elevation="4dp">
-
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Riwayat Peminjaman"
-            android:textColor="#ffffff"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_gravity="center" />
-    </LinearLayout>
-
-    <!-- Filter Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:gravity="center_horizontal"
-        android:paddingHorizontal="12dp"
-        android:layout_marginTop="-4dp"> <!-- Naik sedikit -->
-
-        <Spinner
-            android:id="@+id/spinnerStatus"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:spinnerMode="dropdown" />
-
-        <Spinner
-            android:id="@+id/spinnerJurusan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:spinnerMode="dropdown" />
-
-        <Spinner
-            android:id="@+id/spinnerKelas"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:spinnerMode="dropdown" />
-    </LinearLayout>
-
-    <!-- Search -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:background="@drawable/search_box_bg"
-        android:layout_margin="12dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="6dp"
-            android:src="@android:drawable/ic_menu_search"
-            app:tint="#0d6efd" /> <!-- FIX tint -->
-
-        <EditText
-            android:id="@+id/editTextSearchName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ketik nama siswa..."
-            android:inputType="text"
-            android:background="@android:color/transparent"
-            android:padding="0dp" />
-    </LinearLayout>
-
-    <!-- Table Header -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:scrollbars="none"
-        android:background="#0d6efd">
-
+        <!-- Konten Utama -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="Nama"
-                android:textColor="#ffffff"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="8dp"
-                android:background="@drawable/table_divider_right" />
-
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:text="Kelas"
-                android:textColor="#ffffff"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="8dp"
-                android:background="@drawable/table_divider_right" />
-
-            <TextView
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="Barang"
-                android:textColor="#ffffff"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="8dp"
-                android:background="@drawable/table_divider_right" />
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="Status"
-                android:textColor="#ffffff"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:padding="8dp" />
-        </LinearLayout>
-    </HorizontalScrollView>
-
-    <!-- RecyclerView -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true"
-        android:scrollbars="none">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewRiwayat"
-            android:layout_width="wrap_content"
+            android:id="@+id/mainContent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
-    </HorizontalScrollView>
+            android:orientation="vertical"
+            android:background="#ffffff"
+            android:layout_above="@id/waveBottom">
 
-    <!-- Wave Bawah -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:src="@drawable/bottom_wave"
-        android:scaleType="fitXY" />
-</LinearLayout>
+            <!-- Toolbar -->
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#2196F3"
+                android:elevation="6dp"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+                app:title="Riwayat"
+                app:titleTextColor="@android:color/white" />
+
+            <!-- Wave Atas -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="51dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="57dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/top_wave" />
+            </FrameLayout>
+
+            <!-- Semua Konten -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- Kotak Biru Judul -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_header_box"
+                    android:orientation="vertical"
+                    android:padding="11dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="0dp"
+                    android:elevation="4dp">
+
+                    <TextView
+                        android:id="@+id/tvTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Riwayat Peminjaman"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+
+                <!-- Filter Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:layout_marginTop="8dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerStatus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:spinnerMode="dropdown" />
+
+                    <Spinner
+                        android:id="@+id/spinnerJurusan"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginHorizontal="8dp"
+                        android:spinnerMode="dropdown" />
+
+                    <Spinner
+                        android:id="@+id/spinnerKelas"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:spinnerMode="dropdown" />
+                </LinearLayout>
+
+                <!-- Search -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@drawable/search_box_bg"
+                    android:layout_margin="12dp"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="6dp"
+                        android:src="@android:drawable/ic_menu_search"
+                        app:tint="#0d6efd" />
+
+                    <EditText
+                        android:id="@+id/editTextSearchName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ketik nama siswa..."
+                        android:inputType="text"
+                        android:background="@android:color/transparent"
+                        android:padding="0dp" />
+                </LinearLayout>
+
+                <!-- Table Header -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true"
+                    android:scrollbars="none"
+                    android:background="#0d6efd">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:text="No"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:text="Foto Profile"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Nama Murid"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="Kelas"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="140dp"
+                            android:layout_height="wrap_content"
+                            android:text="Barang/Jumlah"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Tujuan"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="140dp"
+                            android:layout_height="wrap_content"
+                            android:text="Tanggal / Jam"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Status"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Kondisi Pengembalian"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:text="Dikembalikan Oleh"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:text="Photo"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+
+                        <TextView
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:text="Aksi"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <!-- RecyclerView -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fillViewport="true"
+                    android:scrollbars="none"
+                    android:background="@drawable/table_divider_right">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewRiwayat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/table_divider_right" />
+                </HorizontalScrollView>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Wave Bawah FIXED -->
+        <ImageView
+            android:id="@+id/waveBottom"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_wave" />
+
+    </RelativeLayout>
+
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        app:headerLayout="@layout/nav_header"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        app:menu="@menu/menu_drawer" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

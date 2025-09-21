@@ -15,8 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="4dp">
+            android:orientation="vertical">
 
             <!-- Toolbar -->
             <com.google.android.material.appbar.MaterialToolbar
@@ -28,21 +27,21 @@
                 app:title="Form Peminjaman"
                 app:titleTextColor="@android:color/white" />
 
-            <!-- Header Wave -->
+            <!-- Header Wave (lebih tipis supaya naik) -->
             <ImageView
                 android:id="@+id/headerWave"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/top_wave" />
+                android:layout_height="80dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/top_wave" />
 
-            <!-- Judul + Icon -->
+            <!-- Judul dengan Gambar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_margin="12dp">
+                android:layout_marginTop="-10dp">
 
                 <ImageView
                     android:id="@+id/imgForm"
@@ -60,7 +59,7 @@
                         android:id="@+id/tvFormTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Form Pengajuan Aset (Admin)"
+                        android:text="Form Pengajuan Aset"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -75,7 +74,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Pilih Kelas -->
+            <!-- 🔹 Input Fields (margin dikurangi jadi rapat) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,7 +92,6 @@
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_input" />
 
-            <!-- Pilih Siswa -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,7 +142,7 @@
                     android:padding="10dp" />
             </LinearLayout>
 
-            <!-- 🔹 Tanggal Pinjam + Kembali dengan Icon Kalender -->
+            <!-- Tanggal Pinjam + Kembali -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -161,8 +159,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_input"
                     android:hint="Tanggal Pinjam"
-                    android:focusable="false"
-                    android:drawablePadding="8dp"
+                    android:enabled="false"
                     android:padding="10dp" />
 
                 <EditText
@@ -172,8 +169,6 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_input"
                     android:hint="Tanggal Kembali"
-                    android:focusable="false"
-                    android:drawablePadding="8dp"
                     android:padding="10dp" />
             </LinearLayout>
 
@@ -252,13 +247,14 @@
                     app:cornerRadius="20dp" />
             </LinearLayout>
 
-            <!-- Footer Wave -->
+
             <ImageView
                 android:id="@+id/footerWave"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/bottom_wave" />
+                android:layout_height="80dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_wave"
+                android:layout_marginTop="50dp"/>
 
         </LinearLayout>
     </ScrollView>

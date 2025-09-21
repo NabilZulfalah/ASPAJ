@@ -34,7 +34,7 @@ public class RiwayatPeminjamanAdapter extends RecyclerView.Adapter<RiwayatPeminj
 
         holder.tvNo.setText(String.valueOf(borrowing.no));
         // Load profile photo with placeholder only
-        if (!borrowing.fotoProfile.isEmpty()) {
+        if (borrowing.fotoProfile != null && !borrowing.fotoProfile.isEmpty()) {
             // Image loading library not available, skip loading image from URL
             // You can implement image loading later or use a placeholder
             holder.ivFotoProfile.setImageResource(R.drawable.ic_launcher_foreground);
@@ -49,12 +49,12 @@ public class RiwayatPeminjamanAdapter extends RecyclerView.Adapter<RiwayatPeminj
         holder.tvDikembalikanOleh.setText(borrowing.dikembalikanOleh);
 
         // Load return photo or placeholder
-        if (!borrowing.photo.isEmpty()) {
+        if (borrowing.photo != null && !borrowing.photo.isEmpty()) {
             // Image loading library not available, skip loading image from URL
             holder.ivPhoto.setImageResource(R.drawable.ic_launcher_foreground);
         }
 
-        holder.btnAksi.setText(borrowing.aksi);
+        holder.btnAksi.setText(borrowing.aksi != null ? borrowing.aksi : "Lihat");
         // You can add click listener for btnAksi if needed (im here if there are any changes)
     }
 

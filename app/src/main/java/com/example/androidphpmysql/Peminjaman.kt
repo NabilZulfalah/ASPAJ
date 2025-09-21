@@ -86,8 +86,8 @@ class Peminjaman : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
                 R.id.nav_list_barang -> {}
-                R.id.nav_peminjam -> startActivity(Intent(this, activity_data_peminjam::class.java))
-                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatActivity::class.java))
+                R.id.nav_peminjam -> startActivity(Intent(this, Peminjaman::class.java))
+                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
                 R.id.nav_logout -> {
                     val prefs = getSharedPreferences("user_session", MODE_PRIVATE)
