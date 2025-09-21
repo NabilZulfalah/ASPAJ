@@ -1,6 +1,5 @@
 package com.example.androidphpmysql
 
-import com.google.android.material.card.MaterialCardView
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -88,16 +87,16 @@ class activity_main_menu : AppCompatActivity() {
 
 
         // --- Tombol LinearLayout (opsional) ---
-        findViewById<MaterialCardView>(R.id.listbarangBtn).setOnClickListener {
-            startActivity(Intent(this, activityListBarang::class.java))
+        findViewById<LinearLayout>(R.id.listbarangBtn).setOnClickListener {
+            startActivity(Intent(this, activity_list_barang::class.java))
         }
-        findViewById<MaterialCardView>(R.id.riwayatBtn).setOnClickListener {
+        findViewById<LinearLayout>(R.id.riwayatBtn).setOnClickListener {
             startActivity(Intent(this, RiwayatActivity::class.java))
         }
-        findViewById<MaterialCardView>(R.id.peminjamBtn).setOnClickListener {
+        findViewById<LinearLayout>(R.id.peminjamBtn).setOnClickListener {
             startActivity(Intent(this, activity_data_peminjam::class.java))
         }
-        findViewById<MaterialCardView>(R.id.pengembalianBtn).setOnClickListener {
+        findViewById<LinearLayout>(R.id.pengembalianBtn).setOnClickListener {
             startActivity(Intent(this, pengembalianActivity::class.java))
         }
 

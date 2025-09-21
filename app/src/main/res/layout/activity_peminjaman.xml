@@ -15,8 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="4dp"> <!-- ✅ biar agak naik -->
+            android:orientation="vertical">
 
             <!-- Toolbar -->
             <com.google.android.material.appbar.MaterialToolbar
@@ -26,15 +25,15 @@
                 android:background="@color/blue_500"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
                 app:title="Form Peminjaman"
-                app:titleTextColor="@android:color/white"/>
+                app:titleTextColor="@android:color/white" />
 
-            <!-- Header Wave (tetap seperti awal) -->
+            <!-- Header Wave (lebih tipis supaya naik) -->
             <ImageView
                 android:id="@+id/headerWave"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/top_wave" />
+                android:layout_height="80dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/top_wave" />
 
             <!-- Judul dengan Gambar -->
             <LinearLayout
@@ -42,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_margin="12dp">
+                android:layout_marginTop="-10dp">
 
                 <ImageView
                     android:id="@+id/imgForm"
@@ -60,7 +59,7 @@
                         android:id="@+id/tvFormTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Form Pengajuan Aset (Admin)"
+                        android:text="Form Pengajuan Aset"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -75,7 +74,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 🔹 Input Fields (margin dikurangi supaya rapat ke atas) -->
+            <!-- 🔹 Input Fields (margin dikurangi jadi rapat) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -248,13 +247,14 @@
                     app:cornerRadius="20dp" />
             </LinearLayout>
 
-            <!-- Footer Wave (tetap seperti awal) -->
+
             <ImageView
                 android:id="@+id/footerWave"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/bottom_wave" />
+                android:layout_height="80dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/bottom_wave"
+                android:layout_marginTop="50dp"/>
 
         </LinearLayout>
     </ScrollView>
