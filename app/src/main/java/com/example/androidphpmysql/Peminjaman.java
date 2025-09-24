@@ -106,7 +106,7 @@ public class Peminjaman extends AppCompatActivity {
 
     // ambil data siswa dari API
     private void fetchSiswa() {
-        String url = "http://192.168.4.123/ASPAJ/v1/get_siswa.php";
+        String url = "http://10.0.2.2/android/v1/get_siswa.php";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     siswaData.clear();
@@ -129,7 +129,7 @@ public class Peminjaman extends AppCompatActivity {
 
     // ambil barang
     private void fetchBarang() {
-        String url = "http://192.168.4.123/ASPAJ/v1/get_barang.php";
+        String url = "http://10.0.2.2/android/v1/get_barang.php";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     listBarang.clear();
@@ -151,7 +151,7 @@ public class Peminjaman extends AppCompatActivity {
 
     // ambil kelas
     private void fetchKelas() {
-        String url = "http://192.168.4.123/ASPAJ/v1/get_kelas.php";
+        String url = "http://10.0.2.2/android/v1/get_kelas.php";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     listKelas.clear();
@@ -185,7 +185,7 @@ public class Peminjaman extends AppCompatActivity {
             return;
         }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://172.16.100.120/ASPAJ/v1/peminjaman.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://10.0.2.2/android/v1/peminjaman.php",
                 response -> {
                     try {
                         org.json.JSONObject jsonResponse = new org.json.JSONObject(response);
