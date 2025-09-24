@@ -13,7 +13,10 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="RiwayatPeminjaman">
+      <SelectionState runConfigName="Peminjaman">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="pengembalian">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
