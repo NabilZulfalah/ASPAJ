@@ -34,7 +34,6 @@ class pengembalian : AppCompatActivity() {
     private var imageFile: File? = null
 
     private val PICK_IMAGE = 101
-    private val kelasList = arrayOf("X RPL 1", "XI TITL 1", "X DKV 2", "XII TAV 1", "XI TOI 2", "XII TKJ 3")
     private val kondisiList = arrayOf("baik", "rusak")
 
     private val TIMEOUT_MS = 30000
@@ -43,11 +42,6 @@ class pengembalian : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_return_form)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         etNama = findViewById(R.id.etNama)
         spinnerKelas = findViewById(R.id.spinnerKelas)
@@ -59,28 +53,18 @@ class pengembalian : AppCompatActivity() {
 
         progressBar.visibility = ProgressBar.GONE
 
-        // isi spinner kelas
-        val kelasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kelasList)
-        spinnerKelas.adapter = kelasAdapter
-
         // isi spinner kondisi
         val kondisiAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kondisiList)
         spinnerKondisi.adapter = kondisiAdapter
 
-        // Event: kelas dipilih → fetch nama dari server
-        spinnerKelas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                val selectedKelas = kelasList[position]
-                fetchNamaByKelas(selectedKelas)
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        // 🔹 ambil kelas dari server
+        fetchKelas()
 
         btnPickPhoto.setOnClickListener { openGallery() }
 
         btnSubmit.setOnClickListener {
             val nama = etNama.text.toString().trim()
-            val kelas = spinnerKelas.selectedItem.toString()
+            val kelas = spinnerKelas.selectedItem?.toString() ?: ""
 
             if (nama.isEmpty() || kelas.isEmpty()) {
                 toast("Nama dan kelas harus diisi")
@@ -96,7 +80,52 @@ class pengembalian : AppCompatActivity() {
         }
     }
 
-    // 🔹 Ambil nama dari server sesuai kelas
+    // 🔹 Ambil kelas dari server
+    private fun fetchKelas() {
+        showLoading("Mengambil daftar kelas...")
+
+        val url = "http://10.0.2.2/android/v1/get_kelas.php"
+        val request = StringRequest(Request.Method.GET, url,
+            { response ->
+                hideLoading()
+                try {
+                    val obj = JSONObject(response)
+                    if (obj.getString("status") == "success") {
+                        val arr: JSONArray = obj.getJSONArray("kelas")
+                        val kelasList = ArrayList<String>()
+                        for (i in 0 until arr.length()) {
+                            kelasList.add(arr.getString(i))
+                        }
+
+                        val kelasAdapter = ArrayAdapter(this,
+                            android.R.layout.simple_spinner_dropdown_item, kelasList)
+                        spinnerKelas.adapter = kelasAdapter
+
+                        // event: fetch nama setiap kali kelas berubah
+                        spinnerKelas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                                val selectedKelas = kelasList[position]
+                                fetchNamaByKelas(selectedKelas)
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        }
+                    } else {
+                        toast(obj.getString("message"))
+                    }
+                } catch (e: Exception) {
+                    toast("Parsing error: ${e.message}")
+                }
+            },
+            {
+                hideLoading()
+                toast("Network error saat ambil kelas")
+            })
+
+        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        Volley.newRequestQueue(this).add(request)
+    }
+
+    // 🔹 Ambil nama siswa dari server sesuai kelas
     private fun fetchNamaByKelas(kelas: String) {
         showLoading("Mengambil daftar nama...")
 
@@ -112,7 +141,9 @@ class pengembalian : AppCompatActivity() {
                         for (i in 0 until arr.length()) {
                             listNama.add(arr.getString(i))
                         }
-                        val namaAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, listNama)
+
+                        val namaAdapter = ArrayAdapter(this,
+                            android.R.layout.simple_dropdown_item_1line, listNama)
                         etNama.setAdapter(namaAdapter)
                         etNama.setText("")
                     } else {
@@ -130,9 +161,7 @@ class pengembalian : AppCompatActivity() {
             }) {
             @Throws(AuthFailureError::class)
             override fun getParams(): MutableMap<String, String> {
-                val params = HashMap<String, String>()
-                params["kelas"] = kelas
-                return params
+                return hashMapOf("kelas" to kelas)
             }
         }
 
@@ -140,7 +169,7 @@ class pengembalian : AppCompatActivity() {
         Volley.newRequestQueue(this).add(request)
     }
 
-    // 🔹 Check borrowing
+    // 🔹 Check borrowing sebelum submit
     private fun checkBorrowing(nama: String, kelas: String) {
         showLoading("Checking borrowing data...")
 
@@ -148,11 +177,15 @@ class pengembalian : AppCompatActivity() {
         val request = object : StringRequest(Method.POST, url,
             { response ->
                 hideLoading()
-                if (response.equals("exists", ignoreCase = true)) {
-                    val kondisi = spinnerKondisi.selectedItem.toString()
-                    updateStatus(nama, kelas, kondisi)
-                } else {
-                    toast("Data tidak ditemukan / tidak approved")
+                when (response.trim().lowercase()) {
+                    "exists" -> {
+                        val kondisi = spinnerKondisi.selectedItem.toString()
+                        updateStatus(nama, kelas, kondisi)
+                    }
+                    "pending" -> toast("Barang belum dipinjam")
+                    "returned" -> toast("Barang sudah dikembalikan sebelumnya")
+                    "notfound" -> toast("Data tidak ditemukan")
+                    else -> toast("Server: $response")
                 }
             },
             {
