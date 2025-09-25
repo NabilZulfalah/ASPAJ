@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Asset Name"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewKodeBarang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Kode Barang"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewJumlahStok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jumlah Stok"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewLokasiBarang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lokasi Barang"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Category"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewMerk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Merk"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewSumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sumber"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewTahun"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tahun"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textViewValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Value: 0.0"
+            android:layout_marginTop="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/buttonEdit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit" />
+
+            <Button
+                android:id="@+id/buttonDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Delete"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

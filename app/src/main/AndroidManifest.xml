@@ -3,6 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Storage permissions for file access -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        android:usesPermissionFlags="neverForLocation" />
+
+    <!-- For Android 13+ granular media permissions -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
+    <!-- All files access permission for Android 11+ -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        android:minSdkVersion="30" />
 
     <application
         android:allowBackup="true"
@@ -14,6 +31,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
 
         <activity
@@ -25,7 +43,15 @@
             android:exported="false" />
 
         <activity
-            android:name=".MainActivity2"
+            android:name=".AssetListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AddAssetActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +59,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Apache POI XML parser configurations -->
+        <meta-data
+            android:name="org.apache.poi.javax.xml.stream.XMLInputFactory"
+            android:value="com.fasterxml.aalto.stax.InputFactoryImpl" />
+        <meta-data
+            android:name="org.apache.poi.javax.xml.stream.XMLOutputFactory"
+            android:value="com.fasterxml.aalto.stax.OutputFactoryImpl" />
+        <meta-data
+            android:name="org.apache.poi.javax.xml.stream.XMLEventFactory"
+            android:value="com.fasterxml.aalto.stax.EventFactoryImpl" />
     </application>
 
 </manifest>

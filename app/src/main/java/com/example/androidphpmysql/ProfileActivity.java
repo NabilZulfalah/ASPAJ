@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,9 +17,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView textViewUsername, textViewEmail;
+    private Button buttonAssetList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +44,14 @@ public class ProfileActivity extends AppCompatActivity {
         // Bind UI
         textViewUsername = findViewById(R.id.textViewUsername);
         textViewEmail = findViewById(R.id.textViewEmail);
+        buttonAssetList = findViewById(R.id.buttonAssetList);
 
         // Set data user
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
         textViewEmail.setText(SharedPrefManager.getInstance(this).getUserEmail());
+
+        // Set listeners
+        buttonAssetList.setOnClickListener(this);
 
         // Handle insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -75,5 +82,12 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.buttonAssetList) {
+            startActivity(new Intent(this, AssetListActivity.class));
+        }
     }
 }

@@ -7,7 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context=".MainActivity2">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout"

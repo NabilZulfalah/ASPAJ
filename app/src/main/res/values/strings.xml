@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">AndroidPHPMySQL</string>
+    <string-array name="jurusan_array">
+        <item>Rekayasa Perangkat Lunak</item>
+        <item>Teknik Otomasi Industri</item>
+        <item>Desain Komunikasi Visual</item>
+        <item>Teknik Audio Video</item>
+        <item>Teknik Komputer Jaringan</item>
+        <item>Teknik Instalasi Tenaga Listrik</item>
+    </string-array>
+
+    <!-- Excel Import Strings -->
+    <string name="import_excel">Import from Excel</string>
+    <string name="import_success">Assets imported successfully from Excel</string>
+    <string name="import_failed">Failed to import assets from Excel</string>
+    <string name="file_permission_denied">File permission denied</string>
+    <string name="select_excel_file">Select Excel File</string>
+    <string name="invalid_excel_format">Invalid Excel file format</string>
 </resources>
