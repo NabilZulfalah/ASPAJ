@@ -37,4 +37,7 @@ public class RequestHandler {
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
     }
+
+    public static class VolleyMultipartRequest {
+    }
 }

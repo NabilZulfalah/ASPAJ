@@ -33,7 +33,10 @@
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
-
+        <activity android:name=".pengembalian" android:exported="true"/>
+        <activity
+            android:name=".Peminjaman"
+            android:exported="true"/>
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
@@ -60,7 +63,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Apache POI XML parser configurations -->
+       <!-- Apache POI XML parser configurations -->
         <meta-data
             android:name="org.apache.poi.javax.xml.stream.XMLInputFactory"
             android:value="com.fasterxml.aalto.stax.InputFactoryImpl" />

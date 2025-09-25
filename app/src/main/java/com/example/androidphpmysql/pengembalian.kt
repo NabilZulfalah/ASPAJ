@@ -9,6 +9,7 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.AuthFailureError
@@ -39,6 +40,9 @@ class pengembalian : AppCompatActivity() {
     private val TIMEOUT_MS = 30000
     private val MAX_RETRIES = 3
 
+    // 🔹 Tambahkan deklarasi listKelas
+    private val listKelas = ArrayList<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_return_form)
@@ -51,10 +55,11 @@ class pengembalian : AppCompatActivity() {
         btnSubmit = findViewById(R.id.btnSubmit)
         progressBar = findViewById(R.id.progressBar)
 
-        progressBar.visibility = ProgressBar.GONE
+        progressBar.visibility = View.GONE
 
         // isi spinner kondisi
-        val kondisiAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kondisiList)
+        val kondisiAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kondisiList)
         spinnerKondisi.adapter = kondisiAdapter
 
         // 🔹 ambil kelas dari server
@@ -82,47 +87,35 @@ class pengembalian : AppCompatActivity() {
 
     // 🔹 Ambil kelas dari server
     private fun fetchKelas() {
-        showLoading("Mengambil daftar kelas...")
-
         val url = "http://10.0.2.2/android/v1/get_kelas.php"
-        val request = StringRequest(Request.Method.GET, url,
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
             { response ->
-                hideLoading()
+                listKelas.clear()
                 try {
-                    val obj = JSONObject(response)
-                    if (obj.getString("status") == "success") {
-                        val arr: JSONArray = obj.getJSONArray("kelas")
-                        val kelasList = ArrayList<String>()
-                        for (i in 0 until arr.length()) {
-                            kelasList.add(arr.getString(i))
-                        }
-
-                        val kelasAdapter = ArrayAdapter(this,
-                            android.R.layout.simple_spinner_dropdown_item, kelasList)
-                        spinnerKelas.adapter = kelasAdapter
-
-                        // event: fetch nama setiap kali kelas berubah
-                        spinnerKelas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                                val selectedKelas = kelasList[position]
-                                fetchNamaByKelas(selectedKelas)
-                            }
-                            override fun onNothingSelected(parent: AdapterView<*>?) {}
-                        }
-                    } else {
-                        toast(obj.getString("message"))
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        listKelas.add(jsonArray.getString(i))
                     }
+                    spinnerKelas.adapter = ArrayAdapter(
+                        this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        listKelas
+                    )
                 } catch (e: Exception) {
-                    toast("Parsing error: ${e.message}")
+                    Toast.makeText(this@pengembalian, "Error parsing kelas data", Toast.LENGTH_SHORT)
+                        .show()
                 }
             },
-            {
-                hideLoading()
-                toast("Network error saat ambil kelas")
-            })
-
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-        Volley.newRequestQueue(this).add(request)
+            { error ->
+                Toast.makeText(
+                    this@pengembalian,
+                    "Error fetching kelas: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+        Volley.newRequestQueue(this).add(stringRequest)
     }
 
     // 🔹 Ambil nama siswa dari server sesuai kelas
@@ -142,8 +135,11 @@ class pengembalian : AppCompatActivity() {
                             listNama.add(arr.getString(i))
                         }
 
-                        val namaAdapter = ArrayAdapter(this,
-                            android.R.layout.simple_dropdown_item_1line, listNama)
+                        val namaAdapter = ArrayAdapter(
+                            this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            listNama
+                        )
                         etNama.setAdapter(namaAdapter)
                         etNama.setText("")
                     } else {
@@ -165,7 +161,8 @@ class pengembalian : AppCompatActivity() {
             }
         }
 
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        request.retryPolicy =
+            DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         Volley.newRequestQueue(this).add(request)
     }
 
@@ -182,6 +179,7 @@ class pengembalian : AppCompatActivity() {
                         val kondisi = spinnerKondisi.selectedItem.toString()
                         updateStatus(nama, kelas, kondisi)
                     }
+
                     "pending" -> toast("Barang belum dipinjam")
                     "returned" -> toast("Barang sudah dikembalikan sebelumnya")
                     "notfound" -> toast("Data tidak ditemukan")
@@ -197,7 +195,8 @@ class pengembalian : AppCompatActivity() {
             }
         }
 
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        request.retryPolicy =
+            DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         Volley.newRequestQueue(this).add(request)
     }
 
@@ -226,7 +225,8 @@ class pengembalian : AppCompatActivity() {
             }
         }
 
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        request.retryPolicy =
+            DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         Volley.newRequestQueue(this).add(request)
     }
 
@@ -258,7 +258,8 @@ class pengembalian : AppCompatActivity() {
     // 🔹 Utils
     private fun isNetworkAvailable(): Boolean {
         return try {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
             activeNetwork?.isConnected == true
         } catch (e: Exception) {
@@ -267,12 +268,12 @@ class pengembalian : AppCompatActivity() {
     }
 
     private fun showLoading(message: String) {
-        progressBar.visibility = ProgressBar.VISIBLE
+        progressBar.visibility = View.VISIBLE
         toast(message)
     }
 
     private fun hideLoading() {
-        progressBar.visibility = ProgressBar.GONE
+        progressBar.visibility = View.GONE
     }
 
     private fun clearForm() {
@@ -288,3 +289,4 @@ class pengembalian : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
+
