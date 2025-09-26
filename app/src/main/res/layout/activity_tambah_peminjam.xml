@@ -1,45 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TambahPeminjamActivity"
-    android:padding="24dp">
+    android:background="#F8F9FA">
 
-    <EditText
-        android:id="@+id/etNama"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Masukkan Nama"
-        android:inputType="textPersonName"
-        android:padding="12dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    <!-- Top Wave -->
+    <ImageView
+        android:id="@+id/topWave"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/top_wave" />
 
-    <EditText
-        android:id="@+id/etKelas"
-        android:layout_width="0dp"
+    <!-- Konten Utama -->
+    <LinearLayout
+        android:id="@+id/formLayout"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Masukkan Kelas"
-        android:inputType="text"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/etNama"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_centerInParent="true">
 
-    <Button
-        android:id="@+id/btnTambah"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Simpan"
-        android:backgroundTint="#2196F3"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/etKelas"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Input Nama -->
+        <EditText
+            android:id="@+id/edtNama"
+            android:hint="Nama"
+            android:inputType="textPersonName"
+            android:autofillHints="name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Input Kelas -->
+        <EditText
+            android:id="@+id/edtKelas"
+            android:hint="Kelas"
+            android:inputType="text"
+            android:autofillHints="organization"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Tombol Simpan -->
+        <Button
+            android:id="@+id/btnSimpan"
+            android:text="SIMPAN"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#2196F3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Bottom Wave -->
+    <ImageView
+        android:id="@+id/bottomWave"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_wave" />
+
+</RelativeLayout>

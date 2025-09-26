@@ -62,6 +62,7 @@ class activity_main_menu : AppCompatActivity() {
         // --- Handle item menu NavigationDrawer ---
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+<<<<<<< HEAD
                 R.id.nav_home -> {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
@@ -77,6 +78,13 @@ class activity_main_menu : AppCompatActivity() {
                 R.id.nav_pengembalian -> {
                     startActivity(Intent(this, pengembalianActivity::class.java))
                 }
+=======
+                R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
+                R.id.nav_list_barang -> {startActivity(Intent(this, activityListBarang::class.java)) }
+                R.id.nav_peminjam -> startActivity(Intent(this, Peminjaman::class.java))
+                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
+                R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
+>>>>>>> origin/Frontend
 
                 // ✅ Tambahkan Logout
                 R.id.nav_logout -> {
@@ -95,6 +103,7 @@ class activity_main_menu : AppCompatActivity() {
             true
         }
 
+<<<<<<< HEAD
         // --- PERBAIKAN: Tombol MaterialCardView (bukan LinearLayout) ---
         findViewById<MaterialCardView>(R.id.listbarangBtn).setOnClickListener {
             startActivity(Intent(this, activityListBarang::class.java))
@@ -104,6 +113,18 @@ class activity_main_menu : AppCompatActivity() {
         }
         findViewById<MaterialCardView>(R.id.peminjamBtn).setOnClickListener {
             startActivity(Intent(this, activity_data_peminjam::class.java))
+=======
+
+        // --- Tombol LinearLayout (opsional) ---
+        findViewById<LinearLayout>(R.id.listbarangBtn).setOnClickListener {
+            startActivity(Intent(this, activityListBarang::class.java))
+        }
+        findViewById<LinearLayout>(R.id.riwayatBtn).setOnClickListener {
+            startActivity(Intent(this, RiwayatPeminjaman::class.java))
+        }
+        findViewById<LinearLayout>(R.id.peminjamBtn).setOnClickListener {
+            startActivity(Intent(this, Peminjaman::class.java))
+>>>>>>> origin/Frontend
         }
         findViewById<MaterialCardView>(R.id.pengembalianBtn).setOnClickListener {
             startActivity(Intent(this, pengembalianActivity::class.java))
