@@ -82,16 +82,32 @@ class Peminjaman : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        // --- Handle item menu NavigationDrawer ---
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
-                R.id.nav_list_barang -> {}
-                R.id.nav_peminjam -> startActivity(Intent(this, Peminjaman::class.java))
-                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
-                R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
+                R.id.nav_home -> {
+                    startActivity(Intent(this, activity_main_menu::class.java))
+                }
+                R.id.nav_list_barang -> {
+                    startActivity(Intent(this, activityListBarang::class.java))
+                }
+                R.id.nav_peminjam -> {
+                    startActivity(Intent(this, pengembalianActivity::class.java))
+                }
+                R.id.nav_riwayat -> {
+                    startActivity(Intent(this, RiwayatActivity::class.java))
+                }
+                R.id.nav_pengembalian -> {
+                    startActivity(Intent(this, pengembalianActivity::class.java))
+                }
+
+                // ✅ Tambahkan Logout
                 R.id.nav_logout -> {
+                    // Hapus session (kalau pakai SharedPreferences)
                     val prefs = getSharedPreferences("user_session", MODE_PRIVATE)
                     prefs.edit().clear().apply()
+
+                    // Kembali ke LoginActivity
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

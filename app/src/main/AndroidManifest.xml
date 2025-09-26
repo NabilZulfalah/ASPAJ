@@ -21,18 +21,18 @@
         <activity android:name=".LoginActivity" android:exported="false" />
         <activity android:name=".RiwayatActivity" android:exported="true" />
         <activity android:name=".activity_data_peminjam" android:exported="true" />
-        <activity android:name=".activity_list_barang" android:exported="true" />
-        <activity android:name=".activity_main_menu" android:exported="true"/>
-        <activity android:name=".pengembalianActivity" android:exported="true" />
-        <activity android:name=".Peminjaman" android:exported="true" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+        <activity android:name=".activityListBarang" android:exported="true" />
+        <activity android:name=".activity_main_menu" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
-
+        <activity android:name=".pengembalianActivity" android:exported="true" />
+        <activity android:name=".Peminjaman" android:exported="true" />
         <activity android:name=".MainActivity2" android:exported="false"/>
+        <activity android:name=".EditBarangActivity" android:exported="false"/>
+        <activity android:name=".TambahAssetActivity" android:exported="false"/>
     </application>
 
 </manifest>

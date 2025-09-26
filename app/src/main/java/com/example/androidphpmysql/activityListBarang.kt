@@ -1,28 +1,36 @@
 package com.example.androidphpmysql
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import java.util.*
 
 class activityListBarang : AppCompatActivity() {
 
+    private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var navigationView: NavigationView
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: BarangAdapter
     private lateinit var searchEditText: EditText
-    private lateinit var filterButton: Button
+    private lateinit var searchContainer: TextInputLayout
     private lateinit var fabTambahBarang: FloatingActionButton
-    private lateinit var toolbar: Toolbar
     private lateinit var emptyTextView: TextView
 
     private val barangList = mutableListOf<Barang>()
@@ -50,16 +58,65 @@ class activityListBarang : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_barang)
 
+        // --- Setup Drawer + Toolbar ---
+        drawerLayout = findViewById(R.id.drawerLayout)
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "List Barang"
+
+        navigationView = findViewById(R.id.navigationView)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        )
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
+                R.id.nav_list_barang -> startActivity(Intent(this, activityListBarang::class.java))
+                R.id.nav_peminjam -> startActivity(Intent(this, pengembalianActivity::class.java))
+                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatActivity::class.java))
+                R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
+                R.id.nav_logout -> {
+                    val prefs = getSharedPreferences("user_session", MODE_PRIVATE)
+                    prefs.edit().clear().apply()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
+                }
+            }
+            drawerLayout.closeDrawers()
+            true
+        }
 
         recyclerView = findViewById(R.id.recyclerViewBarang)
         searchEditText = findViewById(R.id.searchEditText)
-        filterButton = findViewById(R.id.filterButton)
+        searchContainer = findViewById(R.id.searchContainer)
         fabTambahBarang = findViewById(R.id.fabTambahBarang)
         emptyTextView = findViewById(R.id.emptyTextView)
+
+        // Warna biru aktif
+        val activeColor = getColor(R.color.blue_500)
+        searchContainer.setBoxStrokeColor(activeColor)
+        searchContainer.defaultHintTextColor = ColorStateList.valueOf(activeColor)
+
+        // Listener filter icon
+        searchContainer.setEndIconOnClickListener { showFilterMenu() }
+
+        // Fokus search bar -> tetap biru
+        searchEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus || searchEditText.text!!.isNotEmpty()) {
+                searchContainer.setBoxStrokeColor(activeColor)
+                searchContainer.defaultHintTextColor = ColorStateList.valueOf(activeColor)
+            } else {
+                searchContainer.setBoxStrokeColor(Color.GRAY)
+                searchContainer.defaultHintTextColor = ColorStateList.valueOf(Color.GRAY)
+            }
+        }
 
         loadBarangData()
 
@@ -69,9 +126,7 @@ class activityListBarang : AppCompatActivity() {
                 intent.putExtra("BARANG", Gson().toJson(barang))
                 editBarangLauncher.launch(intent)
             },
-            onDeleteClick = { barang ->
-                showDeleteConfirmation(barang)
-            }
+            onDeleteClick = { barang -> showDeleteConfirmation(barang) }
         )
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -83,8 +138,6 @@ class activityListBarang : AppCompatActivity() {
                 true
             } else false
         }
-
-        filterButton.setOnClickListener { showFilterDialog() }
 
         fabTambahBarang.setOnClickListener {
             val intent = Intent(this, TambahAssetActivity::class.java)
@@ -100,9 +153,9 @@ class activityListBarang : AppCompatActivity() {
         barangList.clear()
         barangList.addAll(
             listOf(
-                Barang("1".toInt(),"Laptop ASUS","C001",10,"Lab Komputer","RPL","ASUS","Dana BOS","2022","Laptop untuk pembelajaran siswa",8500000.0),
-                Barang("2".toInt(),"Proyektor Epson","C002",5,"Ruang Kelas 1","Multimedia","Epson","Hibah","2021","Proyektor ruang kelas",5000000.0),
-                Barang("3".toInt(),"Printer Canon","C003",3,"Guru","Umum","Canon","Dana BOS","2023","Printer untuk administrasi",2500000.0)
+                Barang(1,"Laptop ASUS","C001",10,"Lab Komputer","RPL","ASUS","Dana BOS","2022","Laptop untuk pembelajaran siswa",8500000.0),
+                Barang(2,"Proyektor Epson","C002",5,"Ruang Kelas 1","Multimedia","Epson","Hibah","2021","Proyektor ruang kelas",5000000.0),
+                Barang(3,"Printer Canon","C003",3,"Guru","Umum","Canon","Dana BOS","2023","Printer untuk administrasi",2500000.0)
             )
         )
     }
@@ -124,6 +177,19 @@ class activityListBarang : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
+    private fun showFilterMenu() {
+        val options = arrayOf("Filter Data", "Import dari Excel")
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Pilih Aksi")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showFilterDialog()
+                    1 -> importFromExcel()
+                }
+            }
+            .show()
+    }
+
     private fun showFilterDialog() {
         val filterOptions = arrayOf("Semua", "Lab Komputer", "Ruang Kelas", "Guru", "Stok < 5")
         MaterialAlertDialogBuilder(this)
@@ -131,6 +197,10 @@ class activityListBarang : AppCompatActivity() {
             .setItems(filterOptions) { _, which -> applyFilter(which) }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun importFromExcel() {
+        Toast.makeText(this, "Fitur import Excel belum diimplementasikan", Toast.LENGTH_SHORT).show()
     }
 
     private fun applyFilter(index: Int) {
@@ -166,8 +236,12 @@ class activityListBarang : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == android.R.id.home){
-            finish()
+        if (item.itemId == android.R.id.home) {
+            if (drawerLayout.isDrawerOpen(navigationView)) {
+                drawerLayout.closeDrawers()
+            } else {
+                drawerLayout.openDrawer(navigationView)
+            }
             return true
         }
         return super.onOptionsItemSelected(item)

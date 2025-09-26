@@ -7,12 +7,12 @@ import android.os.Looper
 import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.navigation.NavigationView
 
 class activity_main_menu : AppCompatActivity() {
@@ -62,11 +62,21 @@ class activity_main_menu : AppCompatActivity() {
         // --- Handle item menu NavigationDrawer ---
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
-                R.id.nav_list_barang -> {}
-                R.id.nav_peminjam -> startActivity(Intent(this, activity_data_peminjam::class.java))
-                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatActivity::class.java))
-                R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
+                R.id.nav_home -> {
+                    startActivity(Intent(this, activity_main_menu::class.java))
+                }
+                R.id.nav_list_barang -> {
+                    startActivity(Intent(this, activityListBarang::class.java))
+                }
+                R.id.nav_peminjam -> {
+                    startActivity(Intent(this, pengembalianActivity::class.java))
+                }
+                R.id.nav_riwayat -> {
+                    startActivity(Intent(this, RiwayatActivity::class.java))
+                }
+                R.id.nav_pengembalian -> {
+                    startActivity(Intent(this, pengembalianActivity::class.java))
+                }
 
                 // ✅ Tambahkan Logout
                 R.id.nav_logout -> {
@@ -85,18 +95,17 @@ class activity_main_menu : AppCompatActivity() {
             true
         }
 
-
-        // --- Tombol LinearLayout (opsional) ---
-        findViewById<LinearLayout>(R.id.listbarangBtn).setOnClickListener {
-            startActivity(Intent(this, activity_list_barang::class.java))
+        // --- PERBAIKAN: Tombol MaterialCardView (bukan LinearLayout) ---
+        findViewById<MaterialCardView>(R.id.listbarangBtn).setOnClickListener {
+            startActivity(Intent(this, activityListBarang::class.java))
         }
-        findViewById<LinearLayout>(R.id.riwayatBtn).setOnClickListener {
+        findViewById<MaterialCardView>(R.id.riwayatBtn).setOnClickListener {
             startActivity(Intent(this, RiwayatActivity::class.java))
         }
-        findViewById<LinearLayout>(R.id.peminjamBtn).setOnClickListener {
+        findViewById<MaterialCardView>(R.id.peminjamBtn).setOnClickListener {
             startActivity(Intent(this, activity_data_peminjam::class.java))
         }
-        findViewById<LinearLayout>(R.id.pengembalianBtn).setOnClickListener {
+        findViewById<MaterialCardView>(R.id.pengembalianBtn).setOnClickListener {
             startActivity(Intent(this, pengembalianActivity::class.java))
         }
 
