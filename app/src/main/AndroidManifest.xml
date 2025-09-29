@@ -4,6 +4,10 @@
     package="com.example.androidphpmysql" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
@@ -33,50 +37,26 @@
         <activity
             android:name=".RiwayatPeminjaman"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:screenOrientation="portrait"/>
+            />
         <activity
-            android:name=".activityListBarang"
+            android:name=".ActivityListBarang"
             android:exported="true" />
         <activity
             android:name=".pengembalianActivity"
             android:exported="true" />
         <activity
             android:name=".activity_main_menu"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".Peminjaman"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="true"/>
 
-<<<<<<< HEAD
-        <activity android:name=".ProfileActivity" android:exported="false" />
-        <activity android:name=".LoginActivity" android:exported="false" />
-        <activity android:name=".RiwayatActivity" android:exported="true" />
-        <activity android:name=".activity_data_peminjam" android:exported="true" />
-        <activity android:name=".activityListBarang" android:exported="true" />
-        <activity android:name=".activity_main_menu" android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".pengembalianActivity" android:exported="true" />
-        <activity android:name=".Peminjaman" android:exported="true" />
-        <activity android:name=".MainActivity2" android:exported="false"/>
-        <activity android:name=".EditBarangActivity" android:exported="false"/>
-        <activity android:name=".TambahAssetActivity" android:exported="false"/>
-=======
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".MainActivity2"
-            android:exported="false" />
->>>>>>> origin/Frontend
     </application>
 
 </manifest>

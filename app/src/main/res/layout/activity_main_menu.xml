@@ -263,7 +263,7 @@
                             <ImageView
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
-                                android:src="@drawable/ic_return" />
+                                android:src="@drawable/ic_return_local_backup" />
 
                             <TextView
                                 android:layout_width="wrap_content"

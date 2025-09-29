@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_plus"
+            android:src="@drawable/ic_plus_local_backup"
             app:backgroundTint="@color/blue_500"
             app:tint="#FFFFFF" />
 

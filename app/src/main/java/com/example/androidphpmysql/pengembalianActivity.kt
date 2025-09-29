@@ -56,14 +56,14 @@ class pengembalianActivity : AppCompatActivity() {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activityListBarang::class.java))
+                    startActivity(Intent(this, ActivityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
-<<<<<<< HEAD
+
                     startActivity(Intent(this, pengembalianActivity::class.java))
-=======
+
                     startActivity(Intent(this, Peminjaman::class.java))
->>>>>>> origin/Frontend
+
                 }
                 R.id.nav_riwayat -> {
                     startActivity(Intent(this, RiwayatPeminjaman::class.java))

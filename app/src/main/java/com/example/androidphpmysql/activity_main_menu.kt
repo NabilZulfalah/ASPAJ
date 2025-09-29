@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -22,8 +23,6 @@ class activity_main_menu : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toolbar: MaterialToolbar
     private lateinit var navigationView: NavigationView
-
-    // --- untuk animasi typing ---
     private lateinit var typingText: TextView
     private val handler = Handler(Looper.getMainLooper())
     private var index = 0
@@ -33,7 +32,7 @@ class activity_main_menu : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
 
-        // --- Animasi header/footer ---
+        // Animasi header/footer
         headerWave = findViewById(R.id.headerWave)
         footerWave = findViewById(R.id.footerWave)
 
@@ -43,7 +42,7 @@ class activity_main_menu : AppCompatActivity() {
         headerWave.startAnimation(topAnimation)
         footerWave.startAnimation(bottomAnimation)
 
-        // --- Toolbar + Drawer setup ---
+        // Toolbar + Drawer setup
         toolbar = findViewById(R.id.toolbar)
         drawerLayout = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navigationView)
@@ -59,40 +58,27 @@ class activity_main_menu : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // --- Handle item menu NavigationDrawer ---
+        // Navigation Drawer
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-<<<<<<< HEAD
                 R.id.nav_home -> {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activityListBarang::class.java))
+                    startActivity(Intent(this, ActivityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
-                    startActivity(Intent(this, pengembalianActivity::class.java))
+                    startActivity(Intent(this, Peminjaman::class.java))
                 }
                 R.id.nav_riwayat -> {
-                    startActivity(Intent(this, RiwayatActivity::class.java))
+                    startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 }
                 R.id.nav_pengembalian -> {
                     startActivity(Intent(this, pengembalianActivity::class.java))
                 }
-=======
-                R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
-                R.id.nav_list_barang -> {startActivity(Intent(this, activityListBarang::class.java)) }
-                R.id.nav_peminjam -> startActivity(Intent(this, Peminjaman::class.java))
-                R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
-                R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
->>>>>>> origin/Frontend
-
-                // ✅ Tambahkan Logout
                 R.id.nav_logout -> {
-                    // Hapus session (kalau pakai SharedPreferences)
                     val prefs = getSharedPreferences("user_session", MODE_PRIVATE)
                     prefs.edit().clear().apply()
-
-                    // Kembali ke LoginActivity
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -103,34 +89,21 @@ class activity_main_menu : AppCompatActivity() {
             true
         }
 
-<<<<<<< HEAD
-        // --- PERBAIKAN: Tombol MaterialCardView (bukan LinearLayout) ---
+        // Tombol MaterialCardView
         findViewById<MaterialCardView>(R.id.listbarangBtn).setOnClickListener {
-            startActivity(Intent(this, activityListBarang::class.java))
+            startActivity(Intent(this, ActivityListBarang::class.java))
         }
         findViewById<MaterialCardView>(R.id.riwayatBtn).setOnClickListener {
-            startActivity(Intent(this, RiwayatActivity::class.java))
-        }
-        findViewById<MaterialCardView>(R.id.peminjamBtn).setOnClickListener {
-            startActivity(Intent(this, activity_data_peminjam::class.java))
-=======
-
-        // --- Tombol LinearLayout (opsional) ---
-        findViewById<LinearLayout>(R.id.listbarangBtn).setOnClickListener {
-            startActivity(Intent(this, activityListBarang::class.java))
-        }
-        findViewById<LinearLayout>(R.id.riwayatBtn).setOnClickListener {
             startActivity(Intent(this, RiwayatPeminjaman::class.java))
         }
-        findViewById<LinearLayout>(R.id.peminjamBtn).setOnClickListener {
+        findViewById<MaterialCardView>(R.id.peminjamBtn).setOnClickListener {
             startActivity(Intent(this, Peminjaman::class.java))
->>>>>>> origin/Frontend
         }
         findViewById<MaterialCardView>(R.id.pengembalianBtn).setOnClickListener {
             startActivity(Intent(this, pengembalianActivity::class.java))
         }
 
-        // --- Inisialisasi TextView + mulai animasi typing ---
+        // Animasi typing
         typingText = findViewById(R.id.typingText)
         startTypingAnimation()
     }
@@ -143,13 +116,12 @@ class activity_main_menu : AppCompatActivity() {
                 if (index < textToType.length) {
                     typingText.append(textToType[index].toString())
                     index++
-                    handler.postDelayed(this, 80) // kecepatan ketik
+                    handler.postDelayed(this, 80)
                 }
             }
         }, 80)
     }
 
-    // Supaya toggle hamburger ikut handle tombol back/home
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }

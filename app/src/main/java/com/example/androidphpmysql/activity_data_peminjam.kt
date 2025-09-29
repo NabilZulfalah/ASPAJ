@@ -48,18 +48,18 @@ class activity_data_peminjam : AppCompatActivity() {
         // --- Navigation Drawer ---
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-<<<<<<< HEAD
+
                 R.id.nav_home -> {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activityListBarang::class.java))
+                    startActivity(Intent(this, ActivityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
                     startActivity(Intent(this, pengembalianActivity::class.java))
                 }
                 R.id.nav_riwayat -> {
-                    startActivity(Intent(this, RiwayatActivity::class.java))
+                    startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 }
                 R.id.nav_pengembalian -> {
                     startActivity(Intent(this, pengembalianActivity::class.java))
@@ -77,12 +77,12 @@ class activity_data_peminjam : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-=======
-                R.id.nav_list_barang -> startActivity(Intent(this, activityListBarang::class.java))
+
+                R.id.nav_list_barang -> startActivity(Intent(this, ActivityListBarang::class.java))
                 R.id.nav_peminjam -> { /* sudah di sini */ }
                 R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
->>>>>>> origin/Frontend
+
             }
             drawerLayout.closeDrawers()
             true

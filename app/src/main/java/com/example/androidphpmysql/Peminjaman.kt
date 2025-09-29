@@ -85,33 +85,33 @@ class Peminjaman : AppCompatActivity() {
         // --- Handle item menu NavigationDrawer ---
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-<<<<<<< HEAD
+
                 R.id.nav_home -> {
                     startActivity(Intent(this, activity_main_menu::class.java))
                 }
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activityListBarang::class.java))
+                    startActivity(Intent(this, ActivityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> {
                     startActivity(Intent(this, pengembalianActivity::class.java))
                 }
                 R.id.nav_riwayat -> {
-                    startActivity(Intent(this, RiwayatActivity::class.java))
+                    startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 }
                 R.id.nav_pengembalian -> {
                     startActivity(Intent(this, pengembalianActivity::class.java))
                 }
 
                 // ✅ Tambahkan Logout
-=======
+
                 R.id.nav_home -> startActivity(Intent(this, activity_main_menu::class.java))
                 R.id.nav_list_barang -> {
-                    startActivity(Intent(this, activityListBarang::class.java))
+                    startActivity(Intent(this, ActivityListBarang::class.java))
                 }
                 R.id.nav_peminjam -> startActivity(Intent(this, Peminjaman::class.java))
                 R.id.nav_riwayat -> startActivity(Intent(this, RiwayatPeminjaman::class.java))
                 R.id.nav_pengembalian -> startActivity(Intent(this, pengembalianActivity::class.java))
->>>>>>> origin/Frontend
+
                 R.id.nav_logout -> {
                     // Hapus session (kalau pakai SharedPreferences)
                     val prefs = getSharedPreferences("user_session", MODE_PRIVATE)
@@ -175,7 +175,7 @@ class Peminjaman : AppCompatActivity() {
     }
 
     private fun fetchSiswa() {
-        val url = "http://192.168.1.27/ASPAJ/v1/get_siswa.php"
+        val url = "http://192.168.4.50/android/v1/get_siswa.php"
         val stringRequest = StringRequest(Request.Method.GET, url,
             { response ->
                 siswaData.clear()
@@ -196,7 +196,7 @@ class Peminjaman : AppCompatActivity() {
     }
 
     private fun fetchBarang() {
-        val url = "http://192.168.1.27/ASPAJ/v1/get_barang.php"
+        val url = "http://192.168.4.50/android/v1/get_barang.php"
         val stringRequest = StringRequest(Request.Method.GET, url,
             { response ->
                 listBarang.clear()
@@ -216,7 +216,7 @@ class Peminjaman : AppCompatActivity() {
     }
 
     private fun fetchKelas() {
-        val url = "http://192.168.1.27/ASPAJ/v1/get_kelas.php"
+        val url = "http://192.168.4.50/android/v1/get_kelas.php"
         val stringRequest = StringRequest(Request.Method.GET, url,
             { response ->
                 listKelas.clear()
@@ -248,7 +248,7 @@ class Peminjaman : AppCompatActivity() {
             return
         }
 
-        val stringRequest = object : StringRequest(Method.POST, "http://192.168.1.27/ASPAJ/v1/peminjaman.php",
+        val stringRequest = object : StringRequest(Method.POST, "http://192.168.4.50/android/v1/peminjaman.php",
             { response ->
                 try {
                     val jsonResponse = JSONObject(response)
