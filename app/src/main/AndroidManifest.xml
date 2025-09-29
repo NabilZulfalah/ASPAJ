@@ -63,6 +63,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".RiwayatPeminjaman"
+            android:exported="true" />
+
        <!-- Apache POI XML parser configurations -->
         <meta-data
             android:name="org.apache.poi.javax.xml.stream.XMLInputFactory"
