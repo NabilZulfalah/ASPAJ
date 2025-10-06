@@ -11,33 +11,16 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Progress Bar for loading -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone" />
-
-        <!-- Progress Percentage Text -->
-        <TextView
-            android:id="@+id/textProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0%"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone" />
-
         <!-- Welcome Text -->
+
+        <!-- Cards container -->
+
         <TextView
             android:id="@+id/textViewWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Selamat datang user [nama] di peminjaman asset1"
+            android:text="Selamat datang user [nama] di peminjaman asset"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -197,10 +180,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewPending"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="16dp"
-            android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"/>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </ScrollView>
