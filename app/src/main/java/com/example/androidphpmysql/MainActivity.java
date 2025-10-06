@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity2 extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "MainActivity2";
 
@@ -39,13 +39,10 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
 
         // ✅ Pastikan layout yang benar dipakai
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
 
-        if(SharedPrefManager.getInstance(this).isLoggedIn()){
-            finish();
-            startActivity(new Intent(this, ProfileActivity.class));
-            return;
-        }
+        // ✅ HAPUS: Redirect otomatis ke ProfileActivity
+        // Aplikasi akan selalu mulai dari layar register/login
 
         // Binding view
         editTextEmail = findViewById(R.id.editTextEmail);

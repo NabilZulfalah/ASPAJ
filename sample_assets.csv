@@ -1,0 +1,6 @@
+id,namaBarang,kodeBarang,jumlahStok,lokasiBarang,jurusanBarang,merk,hargaSatuan,sumber,tahun,deskripsi
+1,Laptop ASUS VivoBook,LT-AS-001,5,Lab RPL 1,Rekayasa Perangkat Lunak,ASUS,8500000,Pembelian,2023,Laptop untuk praktikum programming
+2,Proyektor Epson,PR-EP-002,2,Ruang Kelas A1,Teknik Komputer Jaringan,Epson,4500000,Hibah,2022,Proyektor untuk presentasi
+3,Meja Kerja,MJ-KJ-003,20,Workshop,Teknik Otomasi Industri,Standard,750000,Pembelian,2023,Meja kerja untuk praktikum
+4,Kamera DSLR Canon,KM-CN-004,3,Studio Foto,Desain Komunikasi Visual,Canon,12500000,Pembelian,2024,Kamera untuk praktikum fotografi
+5,Speaker Audio System,SP-AU-005,4,Ruang Audio,Teknik Audio Video,Yamaha,3200000,Hibah,2022,Speaker system untuk studio audio

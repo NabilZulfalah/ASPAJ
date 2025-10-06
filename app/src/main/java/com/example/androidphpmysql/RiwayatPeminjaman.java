@@ -194,59 +194,49 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                                 : "Semua Kelas";
                 final String nameFilter = editTextSearchName.getText().toString().trim();
 
-                // For demo, always load and filter mock data
-                loadMockData(statusFilter, jurusanFilter, kelasFilter, nameFilter);
+                String url = "http://192.168.4.123/ASPAJ/v1/get_borrowings.php?status=" + statusFilter + "&jurusan="
+                                + jurusanFilter + "&kelas=" + kelasFilter + "&name=" + nameFilter;
 
-                // Uncomment below to use API
-                /*
-                 * String url = "http://192.168.4.123/ASPAJ/v1/get_borrowings.php?status=" +
-                 * statusFilter + "&jurusan="
-                 * + jurusanFilter + "&kelas=" + kelasFilter + "&name=" + nameFilter;
-                 * 
-                 * StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                 * response -> {
-                 * borrowingList.clear();
-                 * try {
-                 * JSONArray jsonArray = new JSONArray(response);
-                 * for (int i = 0; i < jsonArray.length(); i++) {
-                 * JSONObject obj = jsonArray.getJSONObject(i);
-                 * Borrowing borrowing = new Borrowing(
-                 * obj.optInt("no", i + 1),
-                 * obj.optString("foto_profile", ""),
-                 * obj.optString("nama_murid", ""),
-                 * obj.optString("kelas", ""),
-                 * obj.optString("barang_jumlah", ""),
-                 * obj.optString("tujuan", ""),
-                 * obj.optString("tanggal_jam", ""),
-                 * obj.optString("status", ""),
-                 * obj.optString("kondisi_pengembalian", ""),
-                 * obj.optString("dikembalikan_oleh", ""),
-                 * obj.optString("photo", ""),
-                 * obj.optString("aksi", ""));
-                 * borrowingList.add(borrowing);
-                 * }
-                 * adapter.notifyItemRangeInserted(0, borrowingList.size());
-                 * } catch (Exception e) {
-                 * Toast.makeText(RiwayatPeminjaman.this, "Error parsing borrowing data",
-                 * Toast.LENGTH_SHORT)
-                 * .show();
-                 * }
-                 * },
-                 * error -> {
-                 * android.util.Log.e("RiwayatPeminjaman", "Error fetching borrowing data",
-                 * error);
-                 * String message = error.getMessage();
-                 * if (message == null)
-                 * message = "Unknown error";
-                 * Toast.makeText(RiwayatPeminjaman.this,
-                 * "Error fetching borrowing data: " + message + ". Loading mock data.",
-                 * Toast.LENGTH_SHORT).show();
-                 * 
-                 * // Load mock data as fallback
-                 * loadMockData(statusFilter, jurusanFilter, kelasFilter, nameFilter);
-                 * });
-                 * Volley.newRequestQueue(this).add(stringRequest);
-                 */
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                response -> {
+                                        borrowingList.clear();
+                                        try {
+                                                JSONArray jsonArray = new JSONArray(response);
+                                                for (int i = 0; i < jsonArray.length(); i++) {
+                                                        JSONObject obj = jsonArray.getJSONObject(i);
+                                                        Borrowing borrowing = new Borrowing(
+                                                                        obj.optInt("no", i + 1),
+                                                                        obj.optString("foto_profile", ""),
+                                                                        obj.optString("nama_murid", ""),
+                                                                        obj.optString("kelas", ""),
+                                                                        obj.optString("barang_jumlah", ""),
+                                                                        obj.optString("tujuan", ""),
+                                                                        obj.optString("tanggal_jam", ""),
+                                                                        obj.optString("status", ""),
+                                                                        obj.optString("kondisi_pengembalian", ""),
+                                                                        obj.optString("dikembalikan_oleh", ""),
+                                                                        obj.optString("photo", ""),
+                                                                        obj.optString("aksi", ""));
+                                                        borrowingList.add(borrowing);
+                                                }
+                                                adapter.notifyDataSetChanged();
+                                        } catch (Exception e) {
+                                                Toast.makeText(RiwayatPeminjaman.this, "Error parsing borrowing data",
+                                                                Toast.LENGTH_SHORT).show();
+                                                android.util.Log.e("RiwayatPeminjaman", "Error parsing borrowing data",
+                                                                e);
+                                        }
+                                },
+                                error -> {
+                                        android.util.Log.e("RiwayatPeminjaman", "Error fetching borrowing data", error);
+                                        String message = error.getMessage();
+                                        if (message == null)
+                                                message = "Unknown error";
+                                        Toast.makeText(RiwayatPeminjaman.this,
+                                                        "Error fetching borrowing data: " + message,
+                                                        Toast.LENGTH_SHORT).show();
+                                });
+                Volley.newRequestQueue(this).add(stringRequest);
         }
 
         // Data model class
@@ -283,81 +273,4 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                 }
         }
 
-        private boolean matchesJurusan(String jurusanFilter, String barangJumlah) {
-                switch (jurusanFilter) {
-                        case "Rekayasa Perangkat Lunak":
-                                return barangJumlah.contains("Laptop");
-                        case "Teknik Instalasi Tenaga Listrik":
-                                return barangJumlah.contains("Proyektor");
-                        case "Desain Komunikasi Visual":
-                                return barangJumlah.contains("Kamera DSLR");
-                        case "Teknik Audio Video":
-                                return barangJumlah.contains("Speaker");
-                        case "Teknik Otomasi Industri":
-                                return barangJumlah.contains("PLC Kit");
-                        case "Teknik Komputer Jaringan":
-                                return barangJumlah.contains("Router");
-                        default:
-                                return false;
-                }
-        }
-
-        private void loadMockData(String statusFilter, String jurusanFilter, String kelasFilter, String nameFilter) {
-                borrowingList.clear();
-                // Mock data with various statuses, jurusans, kelas
-                List<Borrowing> allData = new ArrayList<>();
-                allData.add(new Borrowing(1, "", "Budi Santoso", "X RPL 1", "2 Laptop", "Praktikum RPL",
-                                "2025-09-18 10:00", "approved", "Baik", "Guru A", "", "Lihat"));
-                allData.add(new Borrowing(2, "", "Siti Aminah", "XI TITL 1", "1 Proyektor", "Proyek TITL",
-                                "2025-09-17 09:30", "pending", "", "", "", "Lihat"));
-                allData.add(new Borrowing(3, "", "Andi Wijaya", "X DKV 2", "1 Kamera DSLR", "Fotografi",
-                                "2025-09-16 14:00", "returned", "Baik", "Guru B", "", "Lihat"));
-                allData.add(new Borrowing(4, "", "Rina Sari", "XII TAV 1", "2 Speaker", "Audio Recording",
-                                "2025-09-15 11:00", "approved", "Sedang", "Guru C", "", "Lihat"));
-                allData.add(new Borrowing(5, "", "Dedi Kurniawan", "XI TOI 2", "1 PLC Kit", "Otomasi",
-                                "2025-09-14 08:00",
-                                "rejected", "", "", "", "Lihat"));
-                allData.add(new Borrowing(6, "", "Maya Putri", "XII TKJ 3", "3 Router", "Jaringan",
-                                "2025-09-13 13:00",
-                                "pending", "", "", "", "Lihat"));
-                allData.add(
-                                new Borrowing(7, "", "Ahmad Fauzi", "X RPL 1", "1 Laptop", "Coding", "2025-09-12 15:00",
-                                                "returned", "Rusak", "Guru D", "", "Lihat"));
-                allData.add(new Borrowing(8, "", "Lina Marlina", "XI TITL 1", "1 Proyektor", "Presentasi",
-                                "2025-09-11 10:30", "approved", "Baik", "Guru E", "", "Lihat"));
-                allData.add(new Borrowing(9, "", "Rudi Hartono", "X DKV 2", "1 Kamera DSLR", "Video",
-                                "2025-09-10 12:00",
-                                "pending", "", "", "", "Lihat"));
-                allData.add(new Borrowing(10, "", "Sari Dewi", "XII TAV 1", "1 Speaker", "Sound Test",
-                                "2025-09-09 09:00",
-                                "returned", "Baik", "Guru F", "", "Lihat"));
-                allData.add(new Borrowing(11, "", "Tono Suryo", "XI TOI 2", "1 PLC Kit", "Automation",
-                                "2025-09-08 14:30",
-                                "approved", "Baik", "Guru G", "", "Lihat"));
-                allData.add(new Borrowing(12, "", "Nina Kartika", "XII TKJ 3", "2 Router", "Network Setup",
-                                "2025-09-07 11:15", "rejected", "", "", "", "Lihat"));
-                allData.add(new Borrowing(13, "", "Bambang Subeno", "X RPL 1", "1 Laptop", "Web Dev",
-                                "2025-09-06 16:00", "pending", "", "", "", "Lihat"));
-                allData.add(new Borrowing(14, "", "Yuni Susanti", "XI TITL 1", "1 Proyektor", "Demo",
-                                "2025-09-05 10:45",
-                                "returned", "Baik", "Guru H", "", "Lihat"));
-                allData.add(new Borrowing(15, "", "Eko Prasetyo", "X DKV 2", "1 Kamera DSLR", "Photography",
-                                "2025-09-04 13:30", "approved", "Sedang", "Guru I", "", "Lihat"));
-                allData.add(new Borrowing(16, "", "Fajar Setiawan", "X RPL 1", "1 Router", "Network Setup",
-                                "2025-09-03 14:00", "pending", "", "", "", "Lihat"));
-
-                for (Borrowing b : allData) {
-                        boolean statusMatch = statusFilter.equals("Semua Status")
-                                        || b.status.equalsIgnoreCase(statusFilter);
-                        boolean jurusanMatch = jurusanFilter.equals("Semua Jurusan")
-                                        || matchesJurusan(jurusanFilter, b.barangJumlah);
-                        boolean kelasMatch = kelasFilter.equals("Semua Kelas") || b.kelas.equalsIgnoreCase(kelasFilter);
-                        boolean nameMatch = nameFilter.isEmpty() ||
-                                b.namaMurid.toLowerCase().contains(nameFilter.toLowerCase());
-                        if (statusMatch && jurusanMatch && kelasMatch && nameMatch) {
-                                borrowingList.add(b);
-                        }
-                }
-                adapter.notifyDataSetChanged();
-        }
 }
