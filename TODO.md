@@ -1,5 +1,7 @@
-- [x] Create api/get_kelas.php to fetch kelas names from school_classes table
-- [x] Edit activity_peminjaman.xml: Change etKelas to Spinner with id spinnerKelas
-- [x] Edit Peminjaman.java: Add spinnerKelas, fetch data from API, populate spinner, remove auto-set kelas from siswa listener, add validation in submitForm for all fields
-- [x] Edit api/peminjaman.php: Use prepared statements to prevent SQL injection and return JSON responses
-- [x] Edit Peminjaman.java: Update submitForm to parse JSON response from peminjaman.php API
+# TODO: Integrate Borrowings API into RiwayatPeminjaman
+
+## Step 1: Create API Endpoint
+- [x] Create `API_PHP/v1/get_borrowings.php` with mysqli connection, JOINs for required fields, and filtering logic for status, jurusan, kelas, name.
+
+## Step 2: Update Android Activity
+- [x] Edit `RiwayatPeminjaman.java` to uncomment/enable Volley request, remove `loadMockData()` call, and clean up unused methods.

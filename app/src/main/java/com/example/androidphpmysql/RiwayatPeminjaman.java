@@ -1,29 +1,28 @@
 package com.example.androidphpmysql;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RiwayatPeminjaman extends AppCompatActivity {
@@ -37,72 +36,12 @@ public class RiwayatPeminjaman extends AppCompatActivity {
         private final List<String> jurusanList = new ArrayList<>();
         private final List<String> kelasList = new ArrayList<>();
 
-        // Toolbar & Drawer
-        private Toolbar toolbar;
-        private DrawerLayout drawerLayout;
-        private NavigationView navigationView;
-
-        // Wave
-        private View headerWave, footerWave;
-
         @Override
         protected void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_riwayat_peminjaman);
-
                 try {
-                        // --- Wave animation ---
-                        headerWave = findViewById(R.id.headerWave);
-                        footerWave = findViewById(R.id.footerWave);
+                        super.onCreate(savedInstanceState);
+                        setContentView(R.layout.activity_riwayat_peminjaman);
 
-                        Animation topAnimation = AnimationUtils.loadAnimation(this, R.anim.top_slide);
-                        Animation bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_slide);
-
-                        if (headerWave != null) headerWave.startAnimation(topAnimation);
-                        if (footerWave != null) footerWave.startAnimation(bottomAnimation);
-
-                        // --- Toolbar & Drawer ---
-                        toolbar = findViewById(R.id.toolbar);
-                        setSupportActionBar(toolbar);
-
-                        drawerLayout = findViewById(R.id.drawerLayout);
-                        navigationView = findViewById(R.id.navigationView);
-
-                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                                this,
-                                drawerLayout,
-                                toolbar,
-                                R.string.navigation_drawer_open,
-                                R.string.navigation_drawer_close
-                        );
-                        drawerLayout.addDrawerListener(toggle);
-                        toggle.syncState();
-
-                        navigationView.setNavigationItemSelectedListener(menuItem -> {
-                                int id = menuItem.getItemId();
-                                if (id == R.id.nav_home) {
-                                        startActivity(new Intent(this, activity_main_menu.class));
-                                } else if (id == R.id.nav_peminjam) {
-                                        startActivity(new Intent(this, Peminjaman.class));
-                                } else if (id == R.id.nav_riwayat) {
-                                        startActivity(new Intent(this, RiwayatPeminjaman.class));
-                                } else if (id == R.id.nav_pengembalian) {
-                                        startActivity(new Intent(this, pengembalianActivity.class));
-                                } else if (id == R.id.nav_logout) {
-                                        getSharedPreferences("user_session", MODE_PRIVATE)
-                                                .edit()
-                                                .clear()
-                                                .apply();
-                                        Intent intent = new Intent(this, LoginActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                }
-                                drawerLayout.closeDrawers();
-                                return true;
-                        });
-
-                        // --- RecyclerView + Filter setup ---
                         spinnerStatus = findViewById(R.id.spinnerStatus);
                         spinnerJurusan = findViewById(R.id.spinnerJurusan);
                         spinnerKelas = findViewById(R.id.spinnerKelas);
@@ -110,11 +49,10 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                         RecyclerView recyclerView = findViewById(R.id.recyclerViewRiwayat);
 
                         recyclerView.setLayoutManager(
-                                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                                        new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
                         adapter = new RiwayatPeminjamanAdapter(borrowingList);
                         recyclerView.setAdapter(adapter);
 
-                        // Hardcode kelas contoh
                         List<String> testData = new ArrayList<>();
                         testData.add("Semua Kelas");
                         testData.add("X RPL 1");
@@ -124,23 +62,25 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                         testData.add("XI TOI 2");
                         testData.add("XII TKJ 3");
                         ArrayAdapter<String> kelasAdapter = new ArrayAdapter<>(this,
-                                android.R.layout.simple_spinner_item,
-                                testData);
+                                        android.R.layout.simple_spinner_item,
+                                        testData);
                         kelasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerKelas.setAdapter(kelasAdapter);
 
-                        // Init dropdowns
+                        // Initialize dropdowns
                         initStatusDropdown();
                         fetchJurusan();
                         fetchKelas();
 
-                        // Set listeners
+                        // Set listeners to refresh data on filter change
+                        spinnerStatus.setOnItemSelectedListener(filterListener);
                         spinnerJurusan.setOnItemSelectedListener(filterListener);
                         spinnerKelas.setOnItemSelectedListener(filterListener);
 
                         editTextSearchName.addTextChangedListener(new TextWatcher() {
                                 @Override
-                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                }
 
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -148,35 +88,39 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void afterTextChanged(Editable s) {}
+                                public void afterTextChanged(Editable s) {
+                                }
                         });
 
-                        // Load data awal
+                        // Initial data load
                         fetchBorrowingHistory();
-
                 } catch (Exception e) {
                         android.util.Log.e("RiwayatPeminjaman", "Error in onCreate", e);
-                        Toast.makeText(this, "Error initializing activity: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Error initializing activity: " + e.getMessage(), Toast.LENGTH_LONG)
+                                        .show();
                 }
         }
 
         private void initStatusDropdown() {
+                // Hardcoded status options based on database enum
                 statusList.clear();
-                statusList.add("Status");
+                statusList.add("Semua Status");
                 statusList.add("pending");
                 statusList.add("approved");
                 statusList.add("rejected");
                 statusList.add("returned");
 
                 ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this,
-                        android.R.layout.simple_spinner_dropdown_item,
-                        statusList);
+                                android.R.layout.simple_spinner_dropdown_item,
+                                statusList);
                 spinnerStatus.setAdapter(statusAdapter);
         }
 
         private void fetchJurusan() {
+                // For simplicity, hardcode jurusan based on commodities table distinct jurusan
+                // values
                 jurusanList.clear();
-                jurusanList.add("Jurusan");
+                jurusanList.add("Semua Jurusan");
                 jurusanList.add("Rekayasa Perangkat Lunak");
                 jurusanList.add("Teknik Instalasi Tenaga Listrik");
                 jurusanList.add("Desain Komunikasi Visual");
@@ -185,28 +129,46 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                 jurusanList.add("Teknik Komputer Jaringan");
 
                 ArrayAdapter<String> jurusanAdapter = new ArrayAdapter<>(this,
-                        android.R.layout.simple_spinner_item,
-                        jurusanList);
+                                android.R.layout.simple_spinner_item,
+                                jurusanList);
                 jurusanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerJurusan.setAdapter(jurusanAdapter);
         }
 
         private void fetchKelas() {
-                // Untuk demo pakai hardcode, bisa diganti request API
-                kelasList.clear();
-                kelasList.add("Kelas");
-                kelasList.add("X RPL 1");
-                kelasList.add("XI TITL 1");
-                kelasList.add("X DKV 2");
-                kelasList.add("XII TAV 1");
-                kelasList.add("XI TOI 2");
-                kelasList.add("XII TKJ 3");
-
-                ArrayAdapter<String> kelasAdapter = new ArrayAdapter<>(this,
-                        android.R.layout.simple_spinner_item,
-                        kelasList);
-                kelasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerKelas.setAdapter(kelasAdapter);
+                String url = "http://10.0.2.2/ASPAJ/v1/get_kelas.php";
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                response -> {
+                                        Toast.makeText(RiwayatPeminjaman.this, "Response: " + response,
+                                                        Toast.LENGTH_LONG).show();
+                                        kelasList.clear();
+                                        try {
+                                                JSONArray jsonArray = new JSONArray(response);
+                                                kelasList.add("Semua Kelas");
+                                                for (int i = 0; i < jsonArray.length(); i++) {
+                                                        String kelas = jsonArray.getString(i);
+                                                        kelasList.add(kelas);
+                                                        android.util.Log.d("RiwayatPeminjaman",
+                                                                        "Kelas added: " + kelas);
+                                                }
+                                                ArrayAdapter<String> kelasAdapter = new ArrayAdapter<>(this,
+                                                                android.R.layout.simple_spinner_item, kelasList);
+                                                kelasAdapter.setDropDownViewResource(
+                                                                android.R.layout.simple_spinner_dropdown_item);
+                                                spinnerKelas.setAdapter(kelasAdapter);
+                                        } catch (Exception e) {
+                                                Toast.makeText(RiwayatPeminjaman.this, "Error parsing kelas data",
+                                                                Toast.LENGTH_SHORT).show();
+                                                android.util.Log.e("RiwayatPeminjaman", "Error parsing kelas data", e);
+                                        }
+                                },
+                                error -> {
+                                        Toast.makeText(RiwayatPeminjaman.this,
+                                                        "Error fetching kelas: " + error.getMessage(),
+                                                        Toast.LENGTH_SHORT).show();
+                                        android.util.Log.e("RiwayatPeminjaman", "Error fetching kelas", error);
+                                });
+                Volley.newRequestQueue(this).add(stringRequest);
         }
 
         private final AdapterView.OnItemSelectedListener filterListener = new AdapterView.OnItemSelectedListener() {
@@ -216,71 +178,99 @@ public class RiwayatPeminjaman extends AppCompatActivity {
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
         };
 
         private void fetchBorrowingHistory() {
-                String statusFilter = spinnerStatus.getSelectedItem() != null
-                        ? spinnerStatus.getSelectedItem().toString()
-                        : "Status";
-                String jurusanFilter = spinnerJurusan.getSelectedItem() != null
-                        ? spinnerJurusan.getSelectedItem().toString()
-                        : "Jurusan";
-                String kelasFilter = spinnerKelas.getSelectedItem() != null
-                        ? spinnerKelas.getSelectedItem().toString()
-                        : "Kelas";
-                String nameFilter = editTextSearchName.getText().toString().trim();
+                final String statusFilter = spinnerStatus.getSelectedItem() != null
+                                ? spinnerStatus.getSelectedItem().toString()
+                                : "Semua Status";
+                final String jurusanFilter = spinnerJurusan.getSelectedItem() != null
+                                ? spinnerJurusan.getSelectedItem().toString()
+                                : "Semua Jurusan";
+                final String kelasFilter = spinnerKelas.getSelectedItem() != null
+                                ? spinnerKelas.getSelectedItem().toString()
+                                : "Semua Kelas";
+                final String nameFilter = editTextSearchName.getText().toString().trim();
 
-                loadMockData(statusFilter, jurusanFilter, kelasFilter, nameFilter);
+                String url = "http://192.168.4.123/ASPAJ/v1/get_borrowings.php?status=" + statusFilter + "&jurusan="
+                                + jurusanFilter + "&kelas=" + kelasFilter + "&name=" + nameFilter;
+
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                response -> {
+                                        borrowingList.clear();
+                                        try {
+                                                JSONArray jsonArray = new JSONArray(response);
+                                                for (int i = 0; i < jsonArray.length(); i++) {
+                                                        JSONObject obj = jsonArray.getJSONObject(i);
+                                                        Borrowing borrowing = new Borrowing(
+                                                                        obj.optInt("no", i + 1),
+                                                                        obj.optString("foto_profile", ""),
+                                                                        obj.optString("nama_murid", ""),
+                                                                        obj.optString("kelas", ""),
+                                                                        obj.optString("barang_jumlah", ""),
+                                                                        obj.optString("tujuan", ""),
+                                                                        obj.optString("tanggal_jam", ""),
+                                                                        obj.optString("status", ""),
+                                                                        obj.optString("kondisi_pengembalian", ""),
+                                                                        obj.optString("dikembalikan_oleh", ""),
+                                                                        obj.optString("photo", ""),
+                                                                        obj.optString("aksi", ""));
+                                                        borrowingList.add(borrowing);
+                                                }
+                                                adapter.notifyDataSetChanged();
+                                        } catch (Exception e) {
+                                                Toast.makeText(RiwayatPeminjaman.this, "Error parsing borrowing data",
+                                                                Toast.LENGTH_SHORT).show();
+                                                android.util.Log.e("RiwayatPeminjaman", "Error parsing borrowing data",
+                                                                e);
+                                        }
+                                },
+                                error -> {
+                                        android.util.Log.e("RiwayatPeminjaman", "Error fetching borrowing data", error);
+                                        String message = error.getMessage();
+                                        if (message == null)
+                                                message = "Unknown error";
+                                        Toast.makeText(RiwayatPeminjaman.this,
+                                                        "Error fetching borrowing data: " + message,
+                                                        Toast.LENGTH_SHORT).show();
+                                });
+                Volley.newRequestQueue(this).add(stringRequest);
         }
 
-        // --- Model Borrowing ---
+        // Data model class
         public static class Borrowing {
                 public int no;
+                public String fotoProfile;
                 public String namaMurid;
                 public String kelas;
                 public String barangJumlah;
+                public String tujuan;
                 public String tanggalJam;
                 public String status;
-                public String fotoProfile;
-                public String tujuan;
                 public String kondisiPengembalian;
                 public String dikembalikanOleh;
                 public String photo;
                 public String aksi;
 
-
-                public Borrowing(int no, String namaMurid, String kelas, String barangJumlah,
-                                 String tanggalJam, String status) {
+                public Borrowing(int no, String fotoProfile, String namaMurid, String kelas, String barangJumlah,
+                                String tujuan,
+                                String tanggalJam, String status, String kondisiPengembalian, String dikembalikanOleh,
+                                String photo, String aksi) {
                         this.no = no;
+                        this.fotoProfile = fotoProfile;
                         this.namaMurid = namaMurid;
                         this.kelas = kelas;
                         this.barangJumlah = barangJumlah;
+                        this.tujuan = tujuan;
                         this.tanggalJam = tanggalJam;
                         this.status = status;
+                        this.kondisiPengembalian = kondisiPengembalian;
+                        this.dikembalikanOleh = dikembalikanOleh;
+                        this.photo = photo;
+                        this.aksi = aksi;
                 }
         }
 
-        private void loadMockData(String statusFilter, String jurusanFilter, String kelasFilter, String nameFilter) {
-                borrowingList.clear();
-
-                List<Borrowing> allData = new ArrayList<>();
-                allData.add(new Borrowing(1, "Budi Santoso", "X RPL 1", "2 Laptop", "2025-09-18 10:00", "approved"));
-                allData.add(new Borrowing(2, "Siti Aminah", "XI TITL 1", "1 Proyektor", "2025-09-17 09:30", "pending"));
-                allData.add(new Borrowing(3, "Andi Wijaya", "X DKV 2", "1 Kamera DSLR", "2025-09-16 14:00", "returned"));
-                allData.add(new Borrowing(4, "Rina Sari", "XII TAV 1", "2 Speaker", "2025-09-15 11:00", "approved"));
-
-                for (Borrowing b : allData) {
-                        boolean statusMatch = statusFilter.equals("Status") || b.status.equalsIgnoreCase(statusFilter);
-                        boolean kelasMatch = kelasFilter.equals("Kelas") || b.kelas.equalsIgnoreCase(kelasFilter);
-                        boolean nameMatch = nameFilter.isEmpty() || b.namaMurid.toLowerCase().contains(nameFilter.toLowerCase());
-
-                        if (statusMatch && kelasMatch && nameMatch) {
-                                borrowingList.add(b);
-                        }
-                }
-
-                adapter.notifyDataSetChanged();
-        }
 }
-
