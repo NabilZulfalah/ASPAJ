@@ -20,7 +20,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class Peminjaman : AppCompatActivity() {
+class Peminjamans : AppCompatActivity() {
 
     private lateinit var spinnerBarang: Spinner
     private lateinit var spinnerKelas: Spinner
@@ -154,7 +154,7 @@ class Peminjaman : AppCompatActivity() {
                         listSiswaFiltered.add(nama)
                     }
                 }
-                siswaAdapter = ArrayAdapter(this@Peminjaman, android.R.layout.simple_dropdown_item_1line, listSiswaFiltered)
+                siswaAdapter = ArrayAdapter(this@Peminjamans, android.R.layout.simple_dropdown_item_1line, listSiswaFiltered)
                 etNamaSiswa.setAdapter(siswaAdapter)
             }
 

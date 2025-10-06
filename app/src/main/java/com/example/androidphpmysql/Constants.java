@@ -3,6 +3,7 @@ package com.example.androidphpmysql;
 public class Constants {
     private static final String ROOT_URL = "http://192.168.4.153/Android/v1/";
 
+    // Auth
     public static final String URL_REGISTER = ROOT_URL + "registerUser.php";
     public static final String URL_LOGIN = ROOT_URL + "loginUser.php";
 
@@ -11,4 +12,8 @@ public class Constants {
     public static final String URL_ADD_ASSET = ROOT_URL + "addAsset.php";
     public static final String URL_UPDATE_ASSET = ROOT_URL + "updateAsset.php";
     public static final String URL_DELETE_ASSET = ROOT_URL + "deleteAsset.php";
+
+    // Borrowing (Peminjaman)
+    public static final String URL_GET_PENDING_BORROWINGS = ROOT_URL + "getPendingBorrowings.php";
+    public static final String URL_UPDATE_STATUS = ROOT_URL + "updateBorrowingStatus.php";
 }

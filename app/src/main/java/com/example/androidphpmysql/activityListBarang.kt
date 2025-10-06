@@ -2,7 +2,6 @@ package com.example.androidphpmysql
 
 import android.Manifest
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,38 +10,29 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.textfield.TextInputEditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.AuthFailureError
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import com.google.gson.Gson
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import com.example.androidphpmysql.ExcelUtils
-import java.util.*
-import java.util.concurrent.locks.ReentrantLock
 
 class ActivityListBarang : AppCompatActivity() {
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: BarangAdapter
     private lateinit var assetList: MutableList<Asset>
@@ -81,21 +71,18 @@ class ActivityListBarang : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        // ✅ PERBAIKAN: Pastikan ID RecyclerView sesuai dengan layout
-        recyclerView = findViewById(R.id.recyclerViewBarang) // atau R.id.recyclerView
+        recyclerView = findViewById(R.id.recyclerViewBarang)
         progressDialog = ProgressDialog(this)
         progressDialog.setCancelable(false)
 
         assetList = mutableListOf()
         fullAssetList = mutableListOf()
 
-        // FAB click listener
         val fabTambahBarang = findViewById<FloatingActionButton>(R.id.fabTambahBarang)
         fabTambahBarang.setOnClickListener {
             showAddOptionsDialog()
         }
 
-        // Search functionality
         val searchEditText = findViewById<TextInputEditText>(R.id.searchEditText)
         searchEditText.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -105,7 +92,6 @@ class ActivityListBarang : AppCompatActivity() {
             override fun afterTextChanged(s: android.text.Editable?) {}
         })
 
-        // Filter click listener
         val searchContainer = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.searchContainer)
         searchContainer.setEndIconOnClickListener {
             showFilterDialog()
@@ -113,7 +99,6 @@ class ActivityListBarang : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        // ✅ PERBAIKAN: Gunakan BarangAdapter yang benar
         adapter = BarangAdapter(assetList,
             onEditClick = { asset ->
                 val intent = Intent(this, EditBarangActivity::class.java)
@@ -210,25 +195,18 @@ class ActivityListBarang : AppCompatActivity() {
         assetList.clear()
         fullAssetList.clear()
 
-        // Data dummy untuk testing
-        assetList.addAll(getSampleAssets())
-        fullAssetList.addAll(assetList)
+        assetList.addAll(
+            listOf(
+                Asset(1, "Laptop Dell", "LP001", 5, "Lab Komputer 1", "Teknik Informatika", "Dell", 12000000.0, "BOS", "2023", "Laptop spesifikasi tinggi"),
+                Asset(2, "Proyektor Epson", "PJ002", 3, "Ruang Kelas", "Sistem Informasi", "Epson", 5000000.0, "BOPTN", "2022", "Proyektor HD")
+            )
+        )
 
+        fullAssetList.addAll(assetList)
         adapter.notifyDataSetChanged()
         updateEmptyState()
         Toast.makeText(this, "Menggunakan data dummy", Toast.LENGTH_SHORT).show()
     }
-
-    private fun getSampleAssets(): List<Asset> {
-        return listOf(
-            Asset(1, "Laptop Dell", "LP001", 5, "Lab Komputer 1", "Teknik Informatika", "Dell", 12000000.0, "BOS", "2023", "Laptop spesifikasi tinggi"),
-            Asset(2, "Proyektor Epson", "PJ002", 3, "Ruang Kelas", "Sistem Informasi", "Epson", 5000000.0, "BOPTN", "2022", "Proyektor HD"),
-            Asset(3, "Printer Canon", "PR003", 2, "Ruang Guru", "Multimedia", "Canon", 2500000.0, "BOS", "2023", "Printer warna"),
-            Asset(4, "Kamera DSLR", "KM004", 1, "Lab Multimedia", "Multimedia", "Canon", 8000000.0, "BOPTN", "2024", "Kamera untuk praktik")
-        )
-    }
-
-
 
     private fun showFilterDialog() {
         val filterOptions = arrayOf("Semua", "Stok Rendah (< 5)", "Lab Komputer", "Ruang Kelas")
@@ -244,18 +222,12 @@ class ActivityListBarang : AppCompatActivity() {
 
     private fun applyFilter(filterType: Int) {
         assetList.clear()
-
         when (filterType) {
-            0 -> assetList.addAll(fullAssetList) // Semua
-            1 -> assetList.addAll(fullAssetList.filter { it.jumlahStok < 5 }) // Stok rendah
-            2 -> assetList.addAll(fullAssetList.filter {
-                it.lokasiBarang?.contains("Lab", true) == true
-            }) // Lab
-            3 -> assetList.addAll(fullAssetList.filter {
-                it.lokasiBarang?.contains("Ruang", true) == true
-            }) // Ruang
+            0 -> assetList.addAll(fullAssetList)
+            1 -> assetList.addAll(fullAssetList.filter { it.jumlahStok < 5 })
+            2 -> assetList.addAll(fullAssetList.filter { it.lokasiBarang?.contains("Lab", true) == true })
+            3 -> assetList.addAll(fullAssetList.filter { it.lokasiBarang?.contains("Ruang", true) == true })
         }
-
         adapter.notifyDataSetChanged()
         updateEmptyState()
     }
@@ -267,10 +239,10 @@ class ActivityListBarang : AppCompatActivity() {
         } else {
             val filteredList = fullAssetList.filter { asset ->
                 asset.namaBarang?.contains(query, true) == true ||
-                asset.kodeBarang?.contains(query, true) == true ||
-                asset.lokasiBarang?.contains(query, true) == true ||
-                asset.jurusanBarang?.contains(query, true) == true ||
-                asset.merk?.contains(query, true) == true
+                        asset.kodeBarang?.contains(query, true) == true ||
+                        asset.lokasiBarang?.contains(query, true) == true ||
+                        asset.jurusanBarang?.contains(query, true) == true ||
+                        asset.merk?.contains(query, true) == true
             }
             assetList.addAll(filteredList)
         }
@@ -323,6 +295,7 @@ class ActivityListBarang : AppCompatActivity() {
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
     }
 
+    // === IMPORT EXCEL SECTION ===
     private fun importFromExcel() {
         if (checkStoragePermission()) {
             openFilePicker()
@@ -389,19 +362,11 @@ class ActivityListBarang : AppCompatActivity() {
                 addAsset(asset,
                     onSuccess = {
                         successCount++
-                        if (successCount + errorCount == totalAssets) {
-                            progressDialog.dismiss()
-                            loadAssets()
-                            Toast.makeText(this, "Import selesai: $successCount berhasil, $errorCount gagal", Toast.LENGTH_LONG).show()
-                        }
+                        checkImportCompletion(successCount, errorCount, totalAssets)
                     },
                     onError = {
                         errorCount++
-                        if (successCount + errorCount == totalAssets) {
-                            progressDialog.dismiss()
-                            loadAssets()
-                            Toast.makeText(this, "Import selesai: $successCount berhasil, $errorCount gagal", Toast.LENGTH_LONG).show()
-                        }
+                        checkImportCompletion(successCount, errorCount, totalAssets)
                     }
                 )
             }
@@ -410,10 +375,16 @@ class ActivityListBarang : AppCompatActivity() {
         }
     }
 
-    private fun updateEmptyState() {
-        // Update UI ketika tidak ada data
-        val emptyTextView = findViewById<TextView>(R.id.emptyTextView)
-        emptyTextView?.visibility = if (assetList.isEmpty()) View.VISIBLE else View.GONE
+    private fun checkImportCompletion(successCount: Int, errorCount: Int, total: Int) {
+        if (successCount + errorCount == total) {
+            progressDialog.dismiss()
+            loadAssets()
+            Toast.makeText(
+                this,
+                "Import selesai: $successCount berhasil, $errorCount gagal",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun showAddOptionsDialog() {
@@ -430,6 +401,10 @@ class ActivityListBarang : AppCompatActivity() {
             .show()
     }
 
+    private fun updateEmptyState() {
+        val emptyTextView = findViewById<TextView>(R.id.emptyTextView)
+        emptyTextView?.visibility = if (assetList.isEmpty()) View.VISIBLE else View.GONE
+    }
     private fun addAsset(asset: Asset, onSuccess: () -> Unit, onError: () -> Unit) {
         val stringRequest = object : StringRequest(
             Method.POST, Constants.URL_ADD_ASSET,
@@ -467,7 +442,6 @@ class ActivityListBarang : AppCompatActivity() {
 
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
     }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -482,16 +456,14 @@ class ActivityListBarang : AppCompatActivity() {
             }
         }
     }
-
     override fun onResume() {
         super.onResume()
-        loadAssets() // Refresh data
+        loadAssets()
     }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
-            loadAssets() // Refresh data setelah edit
+            loadAssets()
         }
     }
 }

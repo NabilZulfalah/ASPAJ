@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView textViewUsername, textViewEmail;
-    private Button buttonAssetList;
+    private Button buttonLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +38,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         // Bind UI
         textViewUsername = findViewById(R.id.textViewUsername);
         textViewEmail = findViewById(R.id.textViewEmail);
-        buttonAssetList = findViewById(R.id.buttonAssetList);
+        buttonLogout = findViewById(R.id.btnLogout);
 
         // Set data user
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
         textViewEmail.setText(SharedPrefManager.getInstance(this).getUserEmail());
 
         // Set listeners
-        buttonAssetList.setOnClickListener(this);
+        buttonLogout.setOnClickListener(this);
 
         // Handle insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -80,8 +80,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.buttonAssetList) {
-            startActivity(new Intent(this, AssetListActivity.class));
+        if (view.getId() == R.id.btnLogout) {
+            startActivity(new Intent(this, LoginActivity.class));
         }
     }
 }

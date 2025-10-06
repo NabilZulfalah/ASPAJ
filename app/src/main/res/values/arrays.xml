@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="jurusan_array">
+        <item>Rekayasa Perangkat Lunak (RPL)</item>
+        <item>Teknik Komputer dan Jaringan (TKJ)</item>
+        <item>Multimedia</item>
+        <item>Akuntansi</item>
+        <item>Administrasi Perkantoran</item>
+        <item>Bisnis Daring dan Pemasaran</item>
+        <item>Teknik Kendaraan Ringan (TKR)</item>
+        <item>Teknik Sepeda Motor (TSM)</item>
+    </string-array>
+</resources>
