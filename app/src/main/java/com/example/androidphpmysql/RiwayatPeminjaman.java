@@ -136,7 +136,7 @@ public class RiwayatPeminjaman extends AppCompatActivity {
         }
 
         private void fetchKelas() {
-                String url = "http://192.168.4.123/ASPAJ/v1/get_kelas.php";
+                String url = "http://10.0.2.2/ASPAJ/v1/get_kelas.php";
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                 response -> {
                                         Toast.makeText(RiwayatPeminjaman.this, "Response: " + response,
