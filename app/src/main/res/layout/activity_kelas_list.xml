@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/button_add_kelas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+ Tambah Kelas"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/button_import_kelas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Import"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:elevation="2dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter: "
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <Spinner
+            android:id="@+id/spinner_program_filter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/program_filter_options"
+            android:prompt="@string/spinner_prompt_program" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:elevation="2dp"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:id="@+id/edittext_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Cari nama kelas / program studi / deskripsi"
+            android:padding="8dp"
+            android:inputType="text"
+            android:background="@null"
+            android:layout_marginEnd="8dp"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/button_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cari"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white"
+            android:padding="8dp"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_kelas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:elevation="2dp"
+        android:clipToPadding="false"
+        android:padding="8dp"
+        android:scrollbars="vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/white"
+        android:padding="12dp"
+        android:elevation="2dp">
+
+        <TextView
+            android:id="@+id/textview_pagination_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Menampilkan 1 sampai 6 dari 6 data"
+            android:textSize="12sp"
+            android:gravity="start"
+            android:layout_marginEnd="16dp" />
+
+        <Button
+            android:id="@+id/button_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="◀ Sebelumnya"
+            android:enabled="false"
+            android:alpha="0.5"
+            android:layout_marginEnd="8dp"
+            android:textSize="11sp"
+            android:minWidth="100dp" />
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Selanjutnya ▶"
+            android:enabled="false"
+            android:alpha="0.5"
+            android:textSize="11sp"
+            android:minWidth="100dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
