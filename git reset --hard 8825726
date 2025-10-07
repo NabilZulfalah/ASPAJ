@@ -1,0 +1,75 @@
+[33mef6bcf2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mFrontend[m[33m)[m commit function conf
+[33m270e402[m commit function conf
+[33mec109a1[m[33m ([m[1;31morigin/Frontend[m[33m)[m commit function conf
+[33m62f2dfe[m Merge remote-tracking branch 'origin/Backend' into Frontend
+[33m8825726[m[33m ([m[1;31morigin/Backend[m[33m, [m[1;32mBackend[m[33m)[m tampilan dashbord
+[33m551295d[m Merge branch 'Backend' of https://github.com/NabilZulfalah/ASPAJ into Backend
+[33m387ed4a[m tampilan dashbord
+[33mebbfe7b[m List barang crud
+[33m7f26b0a[m mengintegrasikan database dengan tabel tersendiri di Riwayat Pengembalian
+[33m275527f[m Backup sebelum merge
+[33mca62389[m Merge remote-tracking branch 'origin/Frontend' into Frontend
+[33m5ac1c7f[m backup sebelum merge
+[33m5cca96f[m tambah fitur tambah data + perbaikan side bar
+[33mf41026b[m commit (submit foto belum jalan)
+[33m5c0883c[m commit revisi pengembalian
+[33m83599d4[m commit revisi pengembalian
+[33m2e0146b[m Register dan login sudah ditambahkan, kode register di MainActivity2.java dan login di LoginActivity.java. Kalau ada yang mau ditanyakan boleh bertanya ke saya (Nabil)
+[33m5729e70[m Merge remote-tracking branch 'origin/Backend' into Backend
+[33m8ac170d[m Register dan login sudah ditambahkan, kode register di MainActivity2.java dan login di LoginActivity.java. Kalau ada yang mau ditanyakan boleh bertanya ke saya (Nabil)
+[33m5b64a4a[m Register dan login sudah ditambahkan, kode register di MainActivity2.java dan login di LoginActivity.java. Kalau ada yang mau ditanyakan boleh bertanya ke saya (Nabil)
+[33mc8b6908[m commit revisi pengembalian
+[33mcffc6f9[m commit local
+[33m0b6d32e[m Rename .java to .kt
+[33md4016ac[m commit local
+[33m2f7838b[m commit local
+[33mb4c63cf[m form pengembalian
+[33m75c4e8d[m memperbaiki riwayat dan peminjaman
+[33m1f80708[m menambahkan fungsi tambah
+[33m9b0bfb6[m Merge branch 'Backend' of https://github.com/NabilZulfalah/ASPAJ into Backend
+[33m8685ae0[m Merge remote-tracking branch 'origin/Frontend' into Frontend
+[33m5bdd60b[m menambahkan fungsi tambah
+[33m9b9ca0e[m Merge remote-tracking branch 'origin/Frontend' into Frontend
+[33m9ea5e6b[m memperbaiki riwayat dan peminjaman
+[33m4ace28e[m list barang+ tambah data + edit data
+[33m0a00eb3[m Tambah riwayat peminjam dan form peminjam
+[33me04f748[m Merge remote-tracking branch 'origin/Frontend' into Frontend
+[33m97d13f3[m list barang+ tambah data + edit data
+[33ma9573df[m Frontend terbaru untuk stylize Riwayat Peminjaman
+[33mf83f1ac[m Merge remote-tracking branch 'origin/Frontend' into Frontend
+[33m95bfd98[m tampilan dashbord
+[33m886c23c[m merge dari Backend ke Frontend yang terbaru
+[33m6a99813[m Revisi (commit FE) untuk Riwayat peminjaman hal yang masih kurang adalah : 1. tambahin dummy data biar kita bisa test dan tahu pengoperasiannya
+[33m047c6c3[m Revisi untuk Riwayat peminjaman hal yang masih kurang adalah : 1. tambahin dummy data biar kita bisa test dan tahu pengoperasiannya
+[33m8bd9f45[m Revisi untuk Riwayat peminjaman hal yang masih kurang adalah : 1. tambahin dummy data biar kita bisa test dan tahu pengoperasiannya
+[33m142abe7[m prototype untuk Riwayat peminjaman hal yang masih kurang adalah : 1. tambahin dummy data biar kita bisa test dan tahu pengoperasiannya
+[33m43dc779[m mengambil dari merge commit backend
+[33me6b3c79[m menambahkan form peminjaman
+[33mb112e98[m menambahkan form peminjaman
+[33m9ae9580[m main menu + list barang
+[33mc2bbcb5[m Merge remote-tracking branch 'origin/Frontend' into Frontend
+[33m446fc40[m Merge branch 'Backend' of https://github.com/NabilZulfalah/ASPAJ into Backend
+[33m7178c3f[m prototype untuk Riwayat peminjaman hal yang masih kurang adalah : 1. tambahin dummy data biar kita bisa test dan tahu pengoperasiannya
+[33mb53649c[m tampilan dashboard baru
+[33md8db272[m tampilan dashbord
+[33mf5a5195[m menambahkan form peminjaman
+[33m2f60cb6[m prototype untuk Riwayat peminjaman hal yang masih kurang adalah : 1. ui yang masih terlalu atas 2. tambahin judul biar tahu 3. tambahin dummy data biar kita bisa test dan tahu pengoperasiannya
+[33mf19a609[m menarik form peminjaman dari backend ke front end
+[33ma5e3660[m fix tombol tombol + tambah tombol log out di side bar
+[33mef7dd06[m commit merge
+[33m7cae05d[m penambahan crud(tambah di peminjam)
+[33m80f13ac[m Merge branch 'Backend' of https://github.com/NabilZulfalah/ASPAJ into Backend
+[33m5b782d4[m form peminjaman
+[33m0739587[m kelola aset
+[33mc5d49a0[m menambahkan riwayat pengembalian peminjam dan list baranag
+[33m7b7a265[m menambahkan navbar
+[33mdbdcf7e[m menambahkan main menu
+[33me211e93[m Merge branch 'Frontend' of https://github.com/NabilZulfalah/ASPAJ into Frontend
+[33m93c2bdd[m menambahkan main menu
+[33ma9ac169[m menambahkan main menu
+[33md2ab9af[m UI Register + Login PAGE
+[33mf3f5fd3[m UI Login page + Asset
+[33m7acc422[m Register dan login sudah ditambahkan, kode register di MainActivity2.java dan login di LoginActivity.java. Kalau ada yang mau ditanyakan boleh bertanya ke saya (Nabil)
+[33m67dd59d[m Register dan login sudah ditambahkan, kode register di MainActivity2.java dan login di LoginActivity.java. Kalau ada yang mau ditanyakan boleh bertanya ke saya (Nabil)
+[33mbf323bf[m starting point di sini (main)
+[33m635aa95[m kjdfoe
