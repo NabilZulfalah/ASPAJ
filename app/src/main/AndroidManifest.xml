@@ -51,6 +51,14 @@
             android:exported="false" />
 
         <activity
+            android:name=".Peminjaman"
+            android:exported="false" />
+
+        <activity
+            android:name=".pengembalian"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -59,6 +67,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".UserListActivity" android:exported="false" />
+        <activity android:name=".AddUserActivity" android:exported="false" />
+
+        <activity android:name=".KelasListActivity" android:exported="false" />
+        <activity android:name=".AddKelasActivity" android:exported="false" />
 
         <!-- Apache POI XML parser configurations -->
         <meta-data

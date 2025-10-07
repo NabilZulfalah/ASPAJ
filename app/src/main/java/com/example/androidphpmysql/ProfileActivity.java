@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView textViewUsername, textViewEmail;
-    private Button buttonAssetList;
+    private Button buttonAssetList, buttonUserManagement, buttonKelasManagement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +45,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         textViewUsername = findViewById(R.id.textViewUsername);
         textViewEmail = findViewById(R.id.textViewEmail);
         buttonAssetList = findViewById(R.id.buttonAssetList);
+        buttonUserManagement = findViewById(R.id.buttonUserManagement);
+        buttonKelasManagement = findViewById(R.id.buttonKelasManagement);
 
         // Set data user
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
@@ -52,6 +54,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         // Set listeners
         buttonAssetList.setOnClickListener(this);
+        buttonUserManagement.setOnClickListener(this);
+        buttonKelasManagement.setOnClickListener(this);
 
         // Handle insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -88,6 +92,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         if (view.getId() == R.id.buttonAssetList) {
             startActivity(new Intent(this, AssetListActivity.class));
+        } else if (view.getId() == R.id.buttonUserManagement) {
+            startActivity(new Intent(this, UserListActivity.class));
+        } else if (view.getId() == R.id.buttonKelasManagement) {
+            startActivity(new Intent(this, KelasListActivity.class));
         }
     }
 }

@@ -9,6 +9,27 @@
         <item>Teknik Instalasi Tenaga Listrik</item>
     </string-array>
 
+    <string-array name="role_filter_options">
+        <item>Semua Role</item>
+        <item>officers</item>
+        <item>students</item>
+    </string-array>
+
+    <string-array name="program_filter_options">
+        <item>Semua Program Studi</item>
+        <item>Rekayasa Perangkat Lunak</item>
+        <item>Teknik Otomasi Industri</item>
+        <item>Desain Komunikasi Visual</item>
+        <item>Teknik Audio Video</item>
+        <item>Teknik Komputer Jaringan</item>
+        <item>Teknik Instalasi Tenaga Listrik</item>
+    </string-array>
+
+    <string-array name="status_options">
+        <item>Approved</item>
+        <item>Unverified</item>
+    </string-array>
+
     <!-- Excel Import Strings -->
     <string name="import_excel">Import from Excel</string>
     <string name="import_success">Assets imported successfully from Excel</string>
@@ -16,4 +37,7 @@
     <string name="file_permission_denied">File permission denied</string>
     <string name="select_excel_file">Select Excel File</string>
     <string name="invalid_excel_format">Invalid Excel file format</string>
+
+    <!-- Spinner Prompts -->
+    <string name="spinner_prompt_program">Semua Program Studi</string>
 </resources>

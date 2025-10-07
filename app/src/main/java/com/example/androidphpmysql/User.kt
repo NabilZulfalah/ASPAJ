@@ -1,4 +1,10 @@
 package com.example.androidphpmysql
 
-class User {
-}
+import java.io.Serializable
+
+data class User(
+    var name: String = "",
+    var email: String = "",
+    var role: String = "",
+    var status: String = ""
+) : Serializable

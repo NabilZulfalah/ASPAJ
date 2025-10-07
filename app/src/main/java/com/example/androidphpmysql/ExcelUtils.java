@@ -2,12 +2,15 @@ package com.example.androidphpmysql;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -364,6 +367,272 @@ public class ExcelUtils {
         } catch (Exception e) {
             Log.w(TAG, "Error getting int cell value: " + e.getMessage());
             return 0;
+        }
+    }
+
+    /**
+     * Import kelas from Excel file using URI
+     * Expected Excel columns: name, level, program_study, capacity
+     */
+    public static List<Kelas> importKelasFromExcel(Context context, Uri uri) {
+        Log.d(TAG, "=== STARTING KELAS EXCEL IMPORT ===");
+        Log.d(TAG, "URI: " + uri.toString());
+
+        List<Kelas> kelasList = new ArrayList<>();
+        InputStream inputStream = null;
+        Workbook workbook = null;
+
+        try {
+            // Step 1: Open input stream
+            Log.d(TAG, "Step 1: Opening input stream...");
+            inputStream = context.getContentResolver().openInputStream(uri);
+            if (inputStream == null) {
+                Log.e(TAG, "ERROR: Could not open input stream from URI");
+                return kelasList;
+            }
+            Log.d(TAG, "✓ Input stream opened successfully");
+
+            // Step 2: Get filename and determine format
+            String fileName = getFileName(context, uri);
+            Log.d(TAG, "Step 2: File name: " + fileName);
+
+            // Step 3: Create workbook
+            Log.d(TAG, "Step 3: Creating workbook...");
+            try {
+                if (fileName != null && fileName.toLowerCase().endsWith(".xls")) {
+                    Log.d(TAG, "Creating HSSFWorkbook for .xls file");
+                    workbook = new HSSFWorkbook(inputStream);
+                } else {
+                    Log.d(TAG, "Creating XSSFWorkbook for .xlsx file");
+                    workbook = new XSSFWorkbook(inputStream);
+                }
+                Log.d(TAG, "✓ Workbook created successfully");
+            } catch (Exception e) {
+                Log.e(TAG, "ERROR: Failed to create workbook: " + e.getMessage(), e);
+                throw new RuntimeException("Invalid Excel file format. Error: " + e.getMessage(), e);
+            }
+
+            // Step 4: Get sheet
+            Log.d(TAG, "Step 4: Getting sheet...");
+            Sheet sheet = workbook.getSheetAt(0);
+            if (sheet == null) {
+                Log.e(TAG, "ERROR: No sheet found in Excel file");
+                return kelasList;
+            }
+            Log.d(TAG, "✓ Sheet found: " + sheet.getSheetName());
+
+            // Step 5: Check rows
+            int lastRowNum = sheet.getLastRowNum();
+            int firstRowNum = sheet.getFirstRowNum();
+            Log.d(TAG, "Step 5: Sheet info - First row: " + firstRowNum + ", Last row: " + lastRowNum);
+            Log.d(TAG, "Total rows: " + (lastRowNum - firstRowNum + 1));
+
+            if (lastRowNum < 1) {
+                Log.w(TAG, "WARNING: Sheet has no data rows (only header or empty)");
+                return kelasList;
+            }
+
+            // Step 6: Check header row
+            Row headerRow = sheet.getRow(0);
+            if (headerRow != null) {
+                Log.d(TAG, "Step 6: Header row found, checking columns...");
+                for (int i = 0; i < 5; i++) {
+                    Cell cell = headerRow.getCell(i);
+                    String cellValue = getStringCellValue(cell);
+                    Log.d(TAG, "Header[" + i + "]: '" + cellValue + "'");
+                }
+            } else {
+                Log.w(TAG, "WARNING: No header row found");
+            }
+
+            // Step 7: Process data rows
+            Log.d(TAG, "Step 7: Processing data rows...");
+            int successCount = 0;
+            int skipCount = 0;
+            int errorCount = 0;
+
+            for (int i = 1; i <= lastRowNum; i++) {
+                Log.d(TAG, "Processing row " + i + "...");
+
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    Log.d(TAG, "Row " + i + " is null, skipping");
+                    skipCount++;
+                    continue;
+                }
+
+                // Check if row is empty
+                if (isRowEmpty(row)) {
+                    Log.d(TAG, "Row " + i + " is empty, skipping");
+                    skipCount++;
+                    continue;
+                }
+
+                try {
+                    Kelas kelas = parseRowToKelas(row, i);
+                    if (kelas != null) {
+                        kelasList.add(kelas);
+                        successCount++;
+                        Log.d(TAG, "✓ Row " + i + " parsed successfully: " + kelas.getName());
+                    } else {
+                        skipCount++;
+                        Log.d(TAG, "Row " + i + " returned null kelas, skipping");
+                    }
+                } catch (Exception e) {
+                    errorCount++;
+                    Log.w(TAG, "Error parsing row " + i + ": " + e.getMessage(), e);
+                }
+            }
+
+            Log.d(TAG, "=== KELAS IMPORT SUMMARY ===");
+            Log.d(TAG, "Total rows processed: " + (lastRowNum));
+            Log.d(TAG, "Successful: " + successCount);
+            Log.d(TAG, "Skipped: " + skipCount);
+            Log.d(TAG, "Errors: " + errorCount);
+            Log.d(TAG, "Final kelas list size: " + kelasList.size());
+
+        } catch (Exception e) {
+            Log.e(TAG, "FATAL ERROR during kelas Excel import: " + e.getMessage(), e);
+            kelasList.clear();
+            throw new RuntimeException("Kelas Excel import failed: " + e.getMessage(), e);
+        } finally {
+            // Cleanup
+            try {
+                if (workbook != null) workbook.close();
+                if (inputStream != null) inputStream.close();
+                Log.d(TAG, "✓ Resources cleaned up");
+            } catch (IOException e) {
+                Log.e(TAG, "Error cleaning up resources", e);
+            }
+        }
+
+        Log.d(TAG, "=== KELAS EXCEL IMPORT COMPLETED ===");
+        return kelasList;
+    }
+
+    /**
+     * Parse a single row to Kelas object
+     * Expected columns: name, level, program_study, capacity
+     */
+    // ExcelUtils.java - parseRowToKelas (sekitar baris 500)
+
+    private static Kelas parseRowToKelas(Row row, int rowIndex) {
+        Log.d(TAG, "Parsing row " + rowIndex + ":");
+
+        Kelas kelas = new Kelas();
+
+        // ID - set to null for now, will be assigned by DB
+        kelas.setId(null);
+
+        // Name - required
+        String name = getStringCellValue(row.getCell(0));
+        if (name.trim().isEmpty()) {
+            Log.w(TAG, "  ERROR: Name is empty, skipping row");
+            return null;
+        }
+        kelas.setName(name);
+        Log.d(TAG, "  Name: '" + name + "'");
+
+        // Level
+        String level = getStringCellValue(row.getCell(1));
+        kelas.setLevel(level);
+        Log.d(TAG, "  Level: '" + level + "'");
+
+        // Program Study - required
+        String programStudy = getStringCellValue(row.getCell(2));
+        if (programStudy.trim().isEmpty()) {
+            Log.w(TAG, "  ERROR: Program Study is empty, skipping row");
+            return null;
+        }
+        kelas.setProgramStudy(programStudy);
+        Log.d(TAG, "  Program Study: '" + programStudy + "'");
+
+        // Capacity
+        String capacity = getStringCellValue(row.getCell(3));
+        kelas.setCapacity(capacity);
+        Log.d(TAG, "  Capacity: '" + capacity + "'");
+
+        // Description <-- PERBAIKAN DITAMBAHKAN DI SINI (ASUMSI KOLOM 4)
+        String description = getStringCellValue(row.getCell(4));
+        kelas.setDescription(description);
+        Log.d(TAG, "  Description: '" + description + "'");
+
+        Log.d(TAG, "  Complete kelas: " + name + " | Program: " + programStudy);
+        return kelas;
+    }
+
+    /**
+     * Export kelas list to Excel file
+     * Columns: ID, Name, Program Study, Description, Created At, Updated At
+     */
+    public static boolean writeKelasToExcel(Context context, List<Kelas> kelasList, String filename) {
+        Log.d(TAG, "=== STARTING KELAS EXCEL EXPORT ===");
+        Log.d(TAG, "Filename: " + filename);
+        Log.d(TAG, "Kelas list size: " + kelasList.size());
+
+        if (kelasList.isEmpty()) {
+            Log.w(TAG, "No kelas data to export");
+            return false;
+        }
+
+        Workbook workbook = null;
+        FileOutputStream outputStream = null;
+
+        try {
+            // Create workbook
+            workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Kelas");
+
+            // Create header row
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"ID", "Name", "Program Study", "Description", "Created At", "Updated At"};
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font headerFont = workbook.createFont();
+                headerFont.setBold(true);
+                headerStyle.setFont(headerFont);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Add data rows
+            int rowNum = 1;
+            for (Kelas kelas : kelasList) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(kelas.getId());
+                row.createCell(1).setCellValue(kelas.getName());
+                row.createCell(2).setCellValue(kelas.getProgramStudy());
+                row.createCell(3).setCellValue(kelas.getDescription() != null ? kelas.getDescription() : "");
+                row.createCell(4).setCellValue(kelas.getCreatedAt() != null ? kelas.getCreatedAt() : "");
+                row.createCell(5).setCellValue(kelas.getUpdatedAt() != null ? kelas.getUpdatedAt() : "");
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < 6; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Save to file
+            File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = new File(downloadsDir, filename);
+            outputStream = new FileOutputStream(file);
+            workbook.write(outputStream);
+
+            Log.d(TAG, "✓ Export successful: " + file.getAbsolutePath());
+            return true;
+
+        } catch (Exception e) {
+            Log.e(TAG, "ERROR during kelas export: " + e.getMessage(), e);
+            return false;
+        } finally {
+            try {
+                if (outputStream != null) outputStream.close();
+                if (workbook != null) workbook.close();
+                Log.d(TAG, "✓ Resources cleaned up");
+            } catch (IOException e) {
+                Log.e(TAG, "Error cleaning up export resources", e);
+            }
         }
     }
 }
