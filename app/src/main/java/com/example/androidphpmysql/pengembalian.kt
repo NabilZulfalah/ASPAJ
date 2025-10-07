@@ -9,12 +9,9 @@ import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.*
-
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.android.volley.AuthFailureError
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
@@ -38,20 +35,17 @@ class pengembalian : AppCompatActivity() {
     private var imageFile: File? = null
 
     private val PICK_IMAGE = 101
-    private val kelasList = arrayOf("X RPL 1", "XI TITL 1", "X DKV 2", "XII TAV 1", "XI TOI 2", "XII TKJ 3")
     private val kondisiList = arrayOf("baik", "rusak")
 
     private val TIMEOUT_MS = 30000
     private val MAX_RETRIES = 3
 
+    // 🔹 Tambahkan deklarasi listKelas
+    private val listKelas = ArrayList<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_return_form)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         etNama = findViewById(R.id.etNama)
         spinnerKelas = findViewById(R.id.spinnerKelas)
@@ -61,30 +55,21 @@ class pengembalian : AppCompatActivity() {
         btnSubmit = findViewById(R.id.btnSubmit)
         progressBar = findViewById(R.id.progressBar)
 
-        progressBar.visibility = ProgressBar.GONE
-
-        // isi spinner kelas
-        val kelasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kelasList)
-        spinnerKelas.adapter = kelasAdapter
+        progressBar.visibility = View.GONE
 
         // isi spinner kondisi
-        val kondisiAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kondisiList)
+        val kondisiAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, kondisiList)
         spinnerKondisi.adapter = kondisiAdapter
 
-        // Event: kelas dipilih → fetch nama dari server
-        spinnerKelas.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
-                val selectedKelas = kelasList[position]
-                fetchNamaByKelas(selectedKelas)
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        // 🔹 ambil kelas dari server
+        fetchKelas()
 
         btnPickPhoto.setOnClickListener { openGallery() }
 
         btnSubmit.setOnClickListener {
             val nama = etNama.text.toString().trim()
-            val kelas = spinnerKelas.selectedItem.toString()
+            val kelas = spinnerKelas.selectedItem?.toString() ?: ""
 
             if (nama.isEmpty() || kelas.isEmpty()) {
                 toast("Nama dan kelas harus diisi")
@@ -100,7 +85,40 @@ class pengembalian : AppCompatActivity() {
         }
     }
 
-    // 🔹 Ambil nama dari server sesuai kelas
+    // 🔹 Ambil kelas dari server
+    private fun fetchKelas() {
+        val url = "http://10.0.2.2/android/v1/get_kelas.php"
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response ->
+                listKelas.clear()
+                try {
+                    val jsonArray = JSONArray(response)
+                    for (i in 0 until jsonArray.length()) {
+                        listKelas.add(jsonArray.getString(i))
+                    }
+                    spinnerKelas.adapter = ArrayAdapter(
+                        this,
+                        android.R.layout.simple_spinner_dropdown_item,
+                        listKelas
+                    )
+                } catch (e: Exception) {
+                    Toast.makeText(this@pengembalian, "Error parsing kelas data", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            },
+            { error ->
+                Toast.makeText(
+                    this@pengembalian,
+                    "Error fetching kelas: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+        Volley.newRequestQueue(this).add(stringRequest)
+    }
+
+    // 🔹 Ambil nama siswa dari server sesuai kelas
     private fun fetchNamaByKelas(kelas: String) {
         showLoading("Mengambil daftar nama...")
 
@@ -116,7 +134,12 @@ class pengembalian : AppCompatActivity() {
                         for (i in 0 until arr.length()) {
                             listNama.add(arr.getString(i))
                         }
-                        val namaAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, listNama)
+
+                        val namaAdapter = ArrayAdapter(
+                            this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            listNama
+                        )
                         etNama.setAdapter(namaAdapter)
                         etNama.setText("")
                     } else {
@@ -134,17 +157,16 @@ class pengembalian : AppCompatActivity() {
             }) {
             @Throws(AuthFailureError::class)
             override fun getParams(): MutableMap<String, String> {
-                val params = HashMap<String, String>()
-                params["kelas"] = kelas
-                return params
+                return hashMapOf("kelas" to kelas)
             }
         }
 
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        request.retryPolicy =
+            DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         Volley.newRequestQueue(this).add(request)
     }
 
-    // 🔹 Check borrowing
+    // 🔹 Check borrowing sebelum submit
     private fun checkBorrowing(nama: String, kelas: String) {
         showLoading("Checking borrowing data...")
 
@@ -152,11 +174,16 @@ class pengembalian : AppCompatActivity() {
         val request = object : StringRequest(Method.POST, url,
             { response ->
                 hideLoading()
-                if (response.equals("exists", ignoreCase = true)) {
-                    val kondisi = spinnerKondisi.selectedItem.toString()
-                    updateStatus(nama, kelas, kondisi)
-                } else {
-                    toast("Data tidak ditemukan / tidak approved")
+                when (response.trim().lowercase()) {
+                    "exists" -> {
+                        val kondisi = spinnerKondisi.selectedItem.toString()
+                        updateStatus(nama, kelas, kondisi)
+                    }
+
+                    "pending" -> toast("Barang belum dipinjam")
+                    "returned" -> toast("Barang sudah dikembalikan sebelumnya")
+                    "notfound" -> toast("Data tidak ditemukan")
+                    else -> toast("Server: $response")
                 }
             },
             {
@@ -168,7 +195,8 @@ class pengembalian : AppCompatActivity() {
             }
         }
 
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        request.retryPolicy =
+            DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         Volley.newRequestQueue(this).add(request)
     }
 
@@ -197,7 +225,8 @@ class pengembalian : AppCompatActivity() {
             }
         }
 
-        request.retryPolicy = DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        request.retryPolicy =
+            DefaultRetryPolicy(TIMEOUT_MS, MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         Volley.newRequestQueue(this).add(request)
     }
 
@@ -229,7 +258,8 @@ class pengembalian : AppCompatActivity() {
     // 🔹 Utils
     private fun isNetworkAvailable(): Boolean {
         return try {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo
             activeNetwork?.isConnected == true
         } catch (e: Exception) {
@@ -238,12 +268,12 @@ class pengembalian : AppCompatActivity() {
     }
 
     private fun showLoading(message: String) {
-        progressBar.visibility = ProgressBar.VISIBLE
+        progressBar.visibility = View.VISIBLE
         toast(message)
     }
 
     private fun hideLoading() {
-        progressBar.visibility = ProgressBar.GONE
+        progressBar.visibility = View.GONE
     }
 
     private fun clearForm() {
@@ -259,3 +289,4 @@ class pengembalian : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
+

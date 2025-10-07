@@ -1,69 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <!-- Nama siswa (AutoCompleteTextView) -->
-    <AutoCompleteTextView
-        android:id="@+id/etNama"
+    <LinearLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nama Siswa"
-        android:completionThreshold="1"
-        android:inputType="textPersonName"
-        android:layout_marginBottom="12dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- Spinner kelas -->
-    <Spinner
-        android:id="@+id/spinnerKelas"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_marginBottom="12dp" />
+        <!-- Nama siswa -->
+        <AutoCompleteTextView
+            android:id="@+id/etNama"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama Siswa"
+            android:completionThreshold="1"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="12dp" />
 
-    <!-- Spinner kondisi -->
-    <Spinner
-        android:id="@+id/spinnerKondisi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dropdown"
-        android:layout_marginBottom="12dp" />
+        <!-- Spinner kelas -->
+        <Spinner
+            android:id="@+id/spinnerKelas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:layout_marginBottom="12dp" />
 
-    <!-- Image Preview -->
-    <ImageView
-        android:id="@+id/imgPreview"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:background="#E0E0E0"
-        android:layout_marginBottom="12dp" />
+        <!-- Spinner kondisi -->
+        <Spinner
+            android:id="@+id/spinnerKondisi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:layout_marginBottom="12dp" />
 
-    <!-- Pick Photo Button -->
-    <Button
-        android:id="@+id/btnPickPhoto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pilih Foto"
-        android:layout_marginBottom="8dp" />
+        <!-- Image Preview -->
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:background="#E0E0E0"
+            android:contentDescription="Preview Foto"
+            android:layout_marginBottom="12dp" />
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/btnSubmit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_marginBottom="12dp" />
+        <!-- Pick Photo Button -->
+        <Button
+            android:id="@+id/btnPickPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pilih Foto"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Progress Bar -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginBottom="12dp" />
 
-</LinearLayout>
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView>

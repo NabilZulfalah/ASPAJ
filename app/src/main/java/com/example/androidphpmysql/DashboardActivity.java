@@ -1,157 +1,227 @@
 package com.example.androidphpmysql;
 
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
 import com.example.androidphpmysql.adapters.PendingBorrowingsAdapter;
 import com.example.androidphpmysql.models.Borrowing;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardActivity extends AppCompatActivity {
 
     private TextView textViewWelcome;
     private TextView textViewPeminjamAktif, textViewTotalAset, textViewMenungguPersetujuan, textViewBelumDikembalikan;
     private RecyclerView recyclerViewPending;
-
-    private SQLiteDatabase database;
+    private ProgressBar progressBar;
 
     private PendingBorrowingsAdapter adapter;
-    private List<Borrowing> pendingBorrowingsList;
+    private final List<Borrowing> pendingBorrowingsList = new ArrayList<>();
+    private ProgressDialog progressDialog;
+
+    private boolean isLoading = false; // 🚫 mencegah panggilan ganda API
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        initViews();
+        setupRecyclerView();
+        setupListeners();
+
+        // Load awal
+        loadDashboardData();
+        loadPendingBorrowings();
+    }
+
+    private void initViews() {
         textViewWelcome = findViewById(R.id.textViewWelcome);
         textViewPeminjamAktif = findViewById(R.id.textViewPeminjamAktif);
         textViewTotalAset = findViewById(R.id.textViewTotalAset);
         textViewMenungguPersetujuan = findViewById(R.id.textViewMenungguPersetujuan);
         textViewBelumDikembalikan = findViewById(R.id.textViewBelumDikembalikan);
         recyclerViewPending = findViewById(R.id.recyclerViewPending);
+        progressBar = findViewById(R.id.progressBar);
 
-        // Set welcome message with username
         String username = SharedPrefManager.getInstance(this).getUsername();
-        textViewWelcome.setText("Selamat datang user " + username + " di peminjaman aset");
+        textViewWelcome.setText("Selamat datang " + username + " di peminjaman aset");
+    }
 
-        // Open or create database
-        database = openOrCreateDatabase("asetkejuruan.db", MODE_PRIVATE, null);
-
-        // Cek apakah tabel ada
-        if (checkTableExists("borrowings") && checkTableExists("students") && checkTableExists("commodities")) {
-            loadDashboardData();
-            loadPendingBorrowings();
-        } else {
-            Log.e("DashboardActivity", "Salah satu tabel tidak ditemukan di database!");
-        }
-
-        // Setup RecyclerView dengan list kosong dulu
-        pendingBorrowingsList = new ArrayList<>();
-        adapter = new PendingBorrowingsAdapter(pendingBorrowingsList);
+    private void setupRecyclerView() {
+        adapter = new PendingBorrowingsAdapter(this, pendingBorrowingsList);
         recyclerViewPending.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPending.setAdapter(adapter);
     }
 
-    private boolean checkTableExists(String tableName) {
-        boolean exists = false;
-        Cursor cursor = null;
-        try {
-            cursor = database.rawQuery(
-                    "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
-                    new String[]{tableName});
-            exists = cursor.moveToFirst();
-        } catch (SQLException e) {
-            Log.e("DashboardActivity", "Error checking table: " + tableName, e);
-        } finally {
-            if (cursor != null) cursor.close();
-        }
-        return exists;
+    private void setupListeners() {
+        adapter.setOnApproveRejectListener(new PendingBorrowingsAdapter.OnApproveRejectListener() {
+            @Override
+            public void onApproveClick(Borrowing borrowing, int position) {
+                updateBorrowingStatus(borrowing.getId(), "approved", position);
+            }
+
+            @Override
+            public void onRejectClick(Borrowing borrowing, int position) {
+                updateBorrowingStatus(borrowing.getId(), "rejected", position);
+            }
+        });
     }
 
     private void loadDashboardData() {
-        Cursor cursor;
-
-        // Peminjam Aktif
-        int peminjamAktif = 0;
-        cursor = database.rawQuery(
-                "SELECT COUNT(DISTINCT student_id) FROM borrowings WHERE status = 'approved' AND (return_date IS NULL OR return_date > date('now'))",
-                null);
-        if (cursor.moveToFirst()) {
-            peminjamAktif = cursor.getInt(0);
-        }
-        cursor.close();
-        textViewPeminjamAktif.setText(String.valueOf(peminjamAktif));
-
-        // Total Aset
-        int totalAset = 0;
-        cursor = database.rawQuery("SELECT SUM(stock) FROM commodities", null);
-        if (cursor.moveToFirst()) {
-            totalAset = cursor.getInt(0);
-        }
-        cursor.close();
-        textViewTotalAset.setText(String.valueOf(totalAset));
-
-        // Menunggu Persetujuan
-        int menungguPersetujuan = 0;
-        cursor = database.rawQuery("SELECT COUNT(*) FROM borrowings WHERE status = 'pending'", null);
-        if (cursor.moveToFirst()) {
-            menungguPersetujuan = cursor.getInt(0);
-        }
-        cursor.close();
-        textViewMenungguPersetujuan.setText(String.valueOf(menungguPersetujuan));
-
-        // Belum Dikembalikan
-        int belumDikembalikan = 0;
-        cursor = database.rawQuery(
-                "SELECT COUNT(*) FROM borrowings WHERE status = 'approved' AND return_date < date('now')",
-                null);
-        if (cursor.moveToFirst()) {
-            belumDikembalikan = cursor.getInt(0);
-        }
-        cursor.close();
-        textViewBelumDikembalikan.setText(String.valueOf(belumDikembalikan));
+        // sementara static, bisa ambil dari API nanti
+        textViewPeminjamAktif.setText("0");
+        textViewTotalAset.setText("0");
+        textViewMenungguPersetujuan.setText("0");
+        textViewBelumDikembalikan.setText("0");
     }
 
     private void loadPendingBorrowings() {
-        pendingBorrowingsList.clear();
+        if (isLoading) return; // ⛔ cegah double load
+        isLoading = true;
+        showProgressDialog("Memuat data...");
 
-        Cursor cursor = database.rawQuery(
-                "SELECT b.id, s.name, b.borrow_date, b.return_date FROM borrowings b " +
-                        "JOIN students s ON b.student_id = s.id WHERE b.status = 'pending'",
-                null);
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                Constants.URL_GET_PENDING_BORROWINGS,
+                response -> {
+                    hideProgressDialog();
+                    isLoading = false;
+                    Log.d("DashboardActivity", "Response: " + response);
 
-        if (cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(0);
-                String studentName = cursor.getString(1);
-                String borrowDate = cursor.getString(2);
-                String returnDate = cursor.isNull(3) ? "-" : cursor.getString(3); // handle null date
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        if (json.optString("status").equals("success")) {
+                            JSONArray data = json.getJSONArray("data");
+                            pendingBorrowingsList.clear();
 
-                Borrowing borrowing = new Borrowing(id, studentName, borrowDate, returnDate);
-                pendingBorrowingsList.add(borrowing);
-            } while (cursor.moveToNext());
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+
+                                int id = obj.optInt("id", 0);
+                                String studentName = obj.optString("student_name", "-");
+                                String borrowDate = obj.optString("borrow_date", "-");
+                                String returnDate = obj.optString("return_date", "-");
+                                String status = obj.optString("status", "pending");
+                                String tujuan = obj.optString("tujuan", "-");
+                                String kelas = obj.optString("class", "-");
+
+                                pendingBorrowingsList.add(new Borrowing(id, studentName, borrowDate, returnDate, status, tujuan, kelas));
+                            }
+
+                            adapter.notifyDataSetChanged();
+                            textViewMenungguPersetujuan.setText(String.valueOf(pendingBorrowingsList.size()));
+                        } else {
+                            Toast.makeText(this, "Tidak ada data", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        Log.e("DashboardActivity", "JSON Error: " + e.getMessage());
+                        Toast.makeText(this, "Kesalahan parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    hideProgressDialog();
+                    isLoading = false;
+                    Log.e("DashboardActivity", "Volley Error: " + error.toString());
+                    Toast.makeText(this, "Tidak dapat terhubung ke server", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        RequestHandler.getInstance(this).addToRequestQueue(request);
+    }
+
+    private void updateBorrowingStatus(int borrowingId, String status, int position) {
+        showProgressDialog("Memproses...");
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                Constants.URL_UPDATE_STATUS,
+                response -> {
+                    hideProgressDialog();
+                    Log.d("DashboardActivity", "Update Response: " + response);
+
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        if (json.optString("status").equals("success")) {
+                            Toast.makeText(this,
+                                    status.equals("approved") ? "Peminjaman disetujui" : "Peminjaman ditolak",
+                                    Toast.LENGTH_SHORT).show();
+
+                            pendingBorrowingsList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            textViewMenungguPersetujuan.setText(String.valueOf(pendingBorrowingsList.size()));
+                        } else {
+                            Toast.makeText(this, json.optString("message", "Gagal mengupdate"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Kesalahan membaca response", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    hideProgressDialog();
+                    Toast.makeText(this, "Koneksi gagal: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", String.valueOf(borrowingId));
+                params.put("status", status);
+                return params;
+            }
+        };
+
+        RequestHandler.getInstance(this).addToRequestQueue(request);
+    }
+
+    private void showProgressDialog(String message) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
         }
-        cursor.close();
+        if (!isFinishing()) {
+            progressDialog.setMessage(message);
+            progressDialog.show();
+        }
+    }
 
-        adapter.notifyDataSetChanged(); // refresh RecyclerView
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing() && !isFinishing()) {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // ⚡ hanya reload data kalau belum ada
+        if (pendingBorrowingsList.isEmpty()) {
+            loadPendingBorrowings();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (database != null && database.isOpen()) {
-            database.close();
-        }
+        hideProgressDialog();
     }
 }

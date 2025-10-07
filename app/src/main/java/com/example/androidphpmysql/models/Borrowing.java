@@ -5,53 +5,28 @@ public class Borrowing {
     private String studentName;
     private String borrowDate;
     private String returnDate;
+    private String status;
+    private String tujuan;
+    private String kelas;
 
-    // Constructor tanpa id (jika id tidak diperlukan)
-    public Borrowing(String studentName, String borrowDate, String returnDate) {
-        this.studentName = studentName;
-        this.borrowDate = borrowDate;
-        this.returnDate = returnDate;
-    }
-
-    // Constructor dengan id (jika id ikut dipakai)
-    public Borrowing(int id, String studentName, String borrowDate, String returnDate) {
+    // Constructor lengkap
+    public Borrowing(int id, String studentName, String borrowDate, String returnDate,
+                     String status, String tujuan, String kelas) {
         this.id = id;
         this.studentName = studentName;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
+        this.status = status;
+        this.tujuan = tujuan;
+        this.kelas = kelas;
     }
 
     // Getter
-    public int getId() {
-        return id;
-    }
-
-    public String getStudentName() {
-        return studentName;
-    }
-
-    public String getBorrowDate() {
-        return borrowDate;
-    }
-
-    public String getReturnDate() {
-        return returnDate;
-    }
-
-    // Setter (opsional, kalau kamu mau ubah data nanti)
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
-    }
-
-    public void setBorrowDate(String borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
-    public void setReturnDate(String returnDate) {
-        this.returnDate = returnDate;
-    }
+    public int getId() { return id; }
+    public String getStudentName() { return studentName; }
+    public String getBorrowDate() { return borrowDate; }
+    public String getReturnDate() { return returnDate; }
+    public String getStatus() { return status; }
+    public String getTujuan() { return tujuan; }
+    public String getKelas() { return kelas; }
 }

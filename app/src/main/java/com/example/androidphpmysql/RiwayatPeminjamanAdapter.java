@@ -14,7 +14,7 @@ import java.util.List;
 
 public class RiwayatPeminjamanAdapter extends RecyclerView.Adapter<RiwayatPeminjamanAdapter.ViewHolder> {
 
-    private final List<RiwayatPeminjaman.Borrowing> borrowingList;
+    private List<RiwayatPeminjaman.Borrowing> borrowingList;
 
     public RiwayatPeminjamanAdapter(List<RiwayatPeminjaman.Borrowing> borrowingList) {
         this.borrowingList = borrowingList;
@@ -22,23 +22,15 @@ public class RiwayatPeminjamanAdapter extends RecyclerView.Adapter<RiwayatPeminj
 
     @NonNull
     @Override
-    public RiwayatPeminjamanAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_riwayat_peminjaman, parent, false);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_riwayat_peminjaman, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RiwayatPeminjamanAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RiwayatPeminjaman.Borrowing borrowing = borrowingList.get(position);
-
         holder.tvNo.setText(String.valueOf(borrowing.no));
-        // Load profile photo with placeholder only
-        if (!borrowing.fotoProfile.isEmpty()) {
-            // Image loading library not available, skip loading image from URL
-            // You can implement image loading later or use a placeholder
-            holder.ivFotoProfile.setImageResource(R.drawable.ic_launcher_foreground);
-        }
         holder.tvNamaMurid.setText(borrowing.namaMurid);
         holder.tvKelas.setText(borrowing.kelas);
         holder.tvBarangJumlah.setText(borrowing.barangJumlah);
@@ -47,15 +39,10 @@ public class RiwayatPeminjamanAdapter extends RecyclerView.Adapter<RiwayatPeminj
         holder.tvStatus.setText(borrowing.status);
         holder.tvKondisiPengembalian.setText(borrowing.kondisiPengembalian);
         holder.tvDikembalikanOleh.setText(borrowing.dikembalikanOleh);
-
-        // Load return photo or placeholder
-        if (!borrowing.photo.isEmpty()) {
-            // Image loading library not available, skip loading image from URL
-            holder.ivPhoto.setImageResource(R.drawable.ic_launcher_foreground);
-        }
-
         holder.btnAksi.setText(borrowing.aksi);
-        // You can add click listener for btnAksi if needed (im here if there are any changes)
+        // Set images if needed, using default for now
+        // holder.ivFotoProfile.setImageResource(...);
+        // holder.ivPhoto.setImageResource(...);
     }
 
     @Override

@@ -1,4 +1,4 @@
-    package com.example.androidphpmysql;
+package com.example.androidphpmysql;
 
     public class Constants {
         private static final String ROOT_URL = "http://192.168.1.121/android/v1/";
@@ -23,4 +23,9 @@
         public static final String URL_ADD_KELAS = ROOT_URL + "addKelas.php";
         public static final String URL_UPDATE_KELAS = ROOT_URL + "updateKelas.php";
         public static final String URL_DELETE_KELAS = ROOT_URL + "deleteKelas.php";
+
+        // 🔹 Borrowing
+        public static final String URL_GET_PENDING_BORROWINGS = ROOT_URL + "get_pending_borrowings.php";
+        public static final String URL_UPDATE_STATUS = ROOT_URL + "update_status.php";
     }
+
