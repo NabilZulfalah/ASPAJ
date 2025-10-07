@@ -52,13 +52,13 @@ public class DashboardActivityProgressBar extends AppCompatActivity {
         recyclerViewPending = findViewById(R.id.recyclerViewPending);
         progressBar = findViewById(R.id.progressBar);
 
-        // Set welcome message with username
+        // Set welcome message
         String username = SharedPrefManager.getInstance(this).getUsername();
         textViewWelcome.setText("Selamat datang user " + username + " di peminjaman aset");
 
         // Setup RecyclerView
         pendingBorrowingsList = new ArrayList<>();
-        adapter = new PendingBorrowingsAdapter(pendingBorrowingsList);
+        adapter = new PendingBorrowingsAdapter(this, pendingBorrowingsList); // ✅ tambahkan context
         recyclerViewPending.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPending.setAdapter(adapter);
 
@@ -81,8 +81,7 @@ public class DashboardActivityProgressBar extends AppCompatActivity {
     }
 
     private void loadDashboardData() {
-        // For now, set static values or load from API
-        // You can implement API calls for dashboard statistics if needed
+        // Dummy sementara (bisa diganti API)
         textViewPeminjamAktif.setText("0");
         textViewTotalAset.setText("0");
         textViewMenungguPersetujuan.setText("0");
@@ -162,16 +161,15 @@ public class DashboardActivityProgressBar extends AppCompatActivity {
 
                             if (jsonObject.getString("status").equals("success")) {
                                 Toast.makeText(DashboardActivityProgressBar.this,
-                                    status.equals("approved") ? "Peminjaman disetujui" : "Peminjaman ditolak",
-                                    Toast.LENGTH_SHORT).show();
+                                        status.equals("approved") ? "Peminjaman disetujui" : "Peminjaman ditolak",
+                                        Toast.LENGTH_SHORT).show();
 
-                                // Remove item from list and update UI
                                 adapter.removeItem(position);
                                 textViewMenungguPersetujuan.setText(String.valueOf(pendingBorrowingsList.size()));
                             } else {
                                 Toast.makeText(DashboardActivityProgressBar.this,
-                                    "Gagal mengupdate status: " + jsonObject.getString("message"),
-                                    Toast.LENGTH_SHORT).show();
+                                        "Gagal mengupdate status: " + jsonObject.getString("message"),
+                                        Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             Log.e("DashboardActivity", "JSON Error: " + e.getMessage());
