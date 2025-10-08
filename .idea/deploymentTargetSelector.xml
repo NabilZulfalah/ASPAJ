@@ -16,9 +16,6 @@
       <SelectionState runConfigName="DashboardActivityProgressBar (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="DashboardActivityProgressBar (2)">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="pengembalian">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
