@@ -1,2 +1,3 @@
-- [x] Modify ProfileActivity.java onClick method to show Toast "Network Error occurred" for each button instead of starting activities.
-- [ ] Test the app to verify buttons show the error message on click.
+- [x] Modify activity_profile.xml to add RecyclerView for assets
+- [x] Modify ProfileActivity.java to include RecyclerView setup and loadAssets method
+- [ ] Test the implementation

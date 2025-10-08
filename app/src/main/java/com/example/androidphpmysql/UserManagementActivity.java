@@ -43,36 +43,41 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
     private void loadUsers() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, Constants.URL_GET_USERS, new Response.Listener<String>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject obj = new JSONObject(response);
-                    if (!obj.getBoolean("error")) {
-                        JSONArray users = obj.getJSONArray("users");
+                    public void onResponse(String response) {
+                        try {
+                            // Remove any leading characters before JSON object
+                            int jsonStart = response.indexOf("{");
+                            if (jsonStart > 0) {
+                                response = response.substring(jsonStart);
+                            }
+                            JSONObject obj = new JSONObject(response);
+                            if (!obj.getBoolean("error")) {
+                                JSONArray users = obj.getJSONArray("users");
 
-                        for (int i = 0; i < users.length(); i++) {
-                            JSONObject userObject = users.getJSONObject(i);
+                                for (int i = 0; i < users.length(); i++) {
+                                    JSONObject userObject = users.getJSONObject(i);
 
-                            int id = userObject.getInt("id");
-                            String name = userObject.optString("name", "");
-                            String email = userObject.optString("email", "");
-                            String role = userObject.optString("role", "");
-                            String approvalStatus = userObject.optString("approval_status", "");
+                                    int id = userObject.optInt("id", 0);
+                                    String name = userObject.optString("name", "");
+                                    String email = userObject.optString("email", "");
+                                    String role = userObject.optString("role", "");
+                                    String approvalStatus = userObject.optString("approval_status", "");
 
-                            User user = new User(id, name, email, role, approvalStatus);
+                                    User user = new User(id, name, email, role, approvalStatus);
 
-                            userList.add(user);
+                                    userList.add(user);
+                                }
+
+                                adapter = new UserAdapter(UserManagementActivity.this, userList, UserManagementActivity.this);
+                                recyclerView.setAdapter(adapter);
+                            } else {
+                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Error parsing data", Toast.LENGTH_SHORT).show();
                         }
-
-                        adapter = new UserAdapter(UserManagementActivity.this, userList, UserManagementActivity.this);
-                        recyclerView.setAdapter(adapter);
-                    } else {
-                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Error parsing data", Toast.LENGTH_SHORT).show();
-                }
-            }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {

@@ -16,11 +16,38 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView textViewUsername, textViewEmail;
     private Button buttonAssetList, buttonUserManagement, buttonKelasManagement;
+    private RecyclerView recyclerView;
+    private AssetAdapter adapter;
+    private List<Asset> assetList;
+
+    private RecyclerView recyclerViewUsers;
+    private UserAdapter userAdapter;
+    private List<User> userList;
+
+    private RecyclerView recyclerViewKelas;
+    private SchoolClassAdapter kelasAdapter;
+    private List<Kelas> kelasList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +74,26 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonAssetList = findViewById(R.id.buttonAssetList);
         buttonUserManagement = findViewById(R.id.buttonUserManagement);
         buttonKelasManagement = findViewById(R.id.buttonKelasManagement);
+
+        recyclerView = findViewById(R.id.recyclerViewAssets);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerViewUsers = findViewById(R.id.recyclerViewUsers);
+        recyclerViewUsers.setHasFixedSize(true);
+        recyclerViewUsers.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerViewKelas = findViewById(R.id.recyclerViewKelas);
+        recyclerViewKelas.setHasFixedSize(true);
+        recyclerViewKelas.setLayoutManager(new LinearLayoutManager(this));
+
+        assetList = new ArrayList<>();
+        userList = new ArrayList<>();
+        kelasList = new ArrayList<>();
+
+        loadAssets();
+        loadUsers();
+        loadKelas();
 
         // Set data user
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
@@ -97,5 +144,176 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         } else if (view.getId() == R.id.buttonKelasManagement) {
             startActivity(new Intent(this, KelasManagementActivity.class));
         }
+    }
+
+    public void loadAssets() {
+        assetList.clear();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Constants.URL_GET_ASSETS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if (!obj.getBoolean("error")) {
+                        JSONArray assets = obj.getJSONArray("commodities");
+
+                        for (int i = 0; i < assets.length(); i++) {
+                            JSONObject assetObject = assets.getJSONObject(i);
+
+                            int id = assetObject.getInt("id");
+                            String namaBarang = assetObject.optString("name", "");
+                            String kodeBarang = assetObject.optString("code", "");
+                            String jumlahStok = String.valueOf(assetObject.optInt("stock", 0));
+                            String lokasiBarang = assetObject.optString("lokasi", "");
+                            String jurusanBarang = assetObject.optString("jurusan", "");
+                            String merk = assetObject.optString("merk", "");
+                            double hargaSatuan = assetObject.isNull("harga_satuan") ? 0.0 : assetObject.getDouble("harga_satuan");
+                            String sumber = assetObject.optString("sumber", "");
+                            String tahun = assetObject.isNull("tahun") ? "" : String.valueOf(assetObject.getInt("tahun"));
+                            String deskripsi = assetObject.optString("deskripsi", "");
+
+                            Asset asset = new Asset(id, namaBarang, kodeBarang, jumlahStok, lokasiBarang, jurusanBarang, merk, hargaSatuan, sumber, tahun, deskripsi);
+
+                            assetList.add(asset);
+                        }
+
+                        adapter = new AssetAdapter(ProfileActivity.this, assetList);
+                        recyclerView.setAdapter(adapter);
+                    } else {
+                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Error parsing data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String errorMsg = error.getMessage();
+                if (errorMsg == null || errorMsg.isEmpty()) {
+                    errorMsg = "Network error occurred";
+                }
+                Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    public void loadUsers() {
+        userList = new ArrayList<>();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Constants.URL_GET_USERS, new Response.Listener<String>() {
+            @Override
+                    public void onResponse(String response) {
+                        try {
+                            // Remove any leading characters before JSON object
+                            int jsonStart = response.indexOf("{");
+                            if (jsonStart > 0) {
+                                response = response.substring(jsonStart);
+                            }
+                            JSONObject obj = new JSONObject(response);
+                            if (!obj.getBoolean("error")) {
+                                JSONArray users = obj.getJSONArray("users");
+
+                        for (int i = 0; i < users.length(); i++) {
+                            JSONObject userObject = users.getJSONObject(i);
+
+                            int id = userObject.optInt("id", 0);
+                            String name = userObject.optString("name", "");
+                            String email = userObject.optString("email", "");
+                            String role = userObject.optString("role", "");
+                            String approvalStatus = userObject.optString("approval_status", "");
+
+                            User user = new User(id, name, email, role, approvalStatus);
+
+                            userList.add(user);
+                        }
+
+                        userAdapter = new UserAdapter(ProfileActivity.this, userList, null);
+                        recyclerViewUsers.setAdapter(userAdapter);
+                    } else {
+                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Error parsing user data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String errorMsg = error.getMessage();
+                if (errorMsg == null || errorMsg.isEmpty()) {
+                    errorMsg = "Network error occurred";
+                }
+                Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+    public void loadKelas() {
+        kelasList = new ArrayList<>();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, Constants.URL_GET_KELAS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject obj = new JSONObject(response);
+                    if (!obj.getBoolean("error")) {
+                        JSONArray kelasArray = obj.getJSONArray("school_classes");
+
+                        for (int i = 0; i < kelasArray.length(); i++) {
+                            JSONObject kelasObject = kelasArray.getJSONObject(i);
+
+                            String id = String.valueOf(kelasObject.optInt("id", 0));
+                            String name = kelasObject.optString("name", "");
+                            String level = kelasObject.optString("level", "");
+                            String programStudy = kelasObject.optString("program_study", "");
+                            String capacity = kelasObject.optString("capacity", "");
+                            String description = kelasObject.optString("description", "");
+
+                            Kelas kelas = new Kelas(id, name, level, programStudy, capacity, description, "", "");
+
+                            kelasList.add(kelas);
+                        }
+
+                        List<SchoolClass> schoolClassList = new ArrayList<>();
+                        for (Kelas k : kelasList) {
+                            int capacity = 0;
+                            try {
+                                capacity = Integer.parseInt(k.getCapacity());
+                            } catch (NumberFormatException e) {
+                                capacity = 0;
+                            }
+                            SchoolClass sc = new SchoolClass(Integer.parseInt(k.getId()), k.getName(), k.getLevel(), k.getProgramStudy(), capacity, k.getDescription());
+                            schoolClassList.add(sc);
+                        }
+
+                        kelasAdapter = new SchoolClassAdapter(ProfileActivity.this, schoolClassList, null);
+                        recyclerViewKelas.setAdapter(kelasAdapter);
+                    } else {
+                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Error parsing kelas data", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String errorMsg = error.getMessage();
+                if (errorMsg == null || errorMsg.isEmpty()) {
+                    errorMsg = "Network error occurred";
+                }
+                Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 }
