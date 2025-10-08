@@ -27,11 +27,23 @@
             android:exported="false" />
 
         <activity
+            android:name=".AddAssetActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".UserManagementActivity"
             android:exported="false" />
 
         <activity
+            android:name=".AddUserActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".KelasManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AddKelasActivity"
             android:exported="false" />
 
 
