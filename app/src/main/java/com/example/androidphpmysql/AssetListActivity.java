@@ -13,7 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -58,7 +60,16 @@ public class AssetListActivity extends AppCompatActivity {
     private AssetAdapter adapter;
     private List<Asset> assetList;
     private List<Asset> fullAssetList;
+    private List<Asset> filteredAssetList;
+    private List<Asset> displayedAssetList;
     private ProgressDialog progressDialog;
+
+    private int currentPage = 0;
+    private int itemsPerPage = 10;
+    private int totalPages = 0;
+
+    private Button buttonPrevious, buttonNext;
+    private TextView textViewPaginationInfo;
 
     // Activity result launcher for file picker
     private ActivityResultLauncher<Intent> filePickerLauncher;
@@ -81,8 +92,28 @@ public class AssetListActivity extends AppCompatActivity {
 
         assetList = new ArrayList<>();
         fullAssetList = new ArrayList<>();
-        adapter = new AssetAdapter(this, assetList);
+        filteredAssetList = new ArrayList<>();
+        displayedAssetList = new ArrayList<>();
+        adapter = new AssetAdapter(this, displayedAssetList);
         recyclerView.setAdapter(adapter);
+
+        buttonPrevious = findViewById(R.id.button_previous);
+        buttonNext = findViewById(R.id.button_next);
+        textViewPaginationInfo = findViewById(R.id.textview_pagination_info);
+
+        buttonPrevious.setOnClickListener(v -> {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+
+        buttonNext.setOnClickListener(v -> {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updatePagination();
+            }
+        });
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -93,7 +124,7 @@ public class AssetListActivity extends AppCompatActivity {
         loadAssets();
     }
 
-    private void loadAssets() {
+    public void loadAssets() {
         progressDialog.setMessage("Loading assets...");
         progressDialog.show();
 
@@ -168,7 +199,7 @@ public class AssetListActivity extends AppCompatActivity {
                                 assetList.add(asset);
                                 fullAssetList.add(asset);
                             }
-                            adapter.notifyDataSetChanged();
+                            filterAssets("");
                         } catch (JSONException e) {
                             Log.e(TAG, "JSON parse error", e);
                             Toast.makeText(getApplicationContext(),
@@ -253,18 +284,20 @@ public class AssetListActivity extends AppCompatActivity {
     }
 
     private void filterAssets(String query) {
-        assetList.clear();
+        filteredAssetList.clear();
         if (query.isEmpty()) {
-            assetList.addAll(fullAssetList);
+            filteredAssetList.addAll(fullAssetList);
         } else {
             for (Asset asset : fullAssetList) {
                 if (asset.getNamaBarang().toLowerCase().contains(query.toLowerCase()) ||
                     asset.getKodeBarang().toLowerCase().contains(query.toLowerCase())) {
-                    assetList.add(asset);
+                    filteredAssetList.add(asset);
                 }
             }
         }
-        adapter.notifyDataSetChanged();
+        totalPages = (int) Math.ceil((double) filteredAssetList.size() / itemsPerPage);
+        currentPage = 0;
+        updatePagination();
     }
 
     private void showFilterDialog() {
@@ -308,15 +341,34 @@ public class AssetListActivity extends AppCompatActivity {
     }
 
     private void filterAssetsByCriteria(String tahun, String jurusan) {
-        assetList.clear();
+        filteredAssetList.clear();
         for (Asset asset : fullAssetList) {
             boolean matchesTahun = "All".equals(tahun) || asset.getTahun().equals(tahun);
             boolean matchesJurusan = "All".equals(jurusan) || asset.getJurusanBarang().equals(jurusan);
             if (matchesTahun && matchesJurusan) {
-                assetList.add(asset);
+                filteredAssetList.add(asset);
             }
         }
+        totalPages = (int) Math.ceil((double) filteredAssetList.size() / itemsPerPage);
+        currentPage = 0;
+        updatePagination();
+    }
+
+    private void updatePagination() {
+        displayedAssetList.clear();
+        int startIndex = currentPage * itemsPerPage;
+        int endIndex = Math.min(startIndex + itemsPerPage, filteredAssetList.size());
+        for (int i = startIndex; i < endIndex; i++) {
+            displayedAssetList.add(filteredAssetList.get(i));
+        }
         adapter.notifyDataSetChanged();
+
+        // Update pagination info
+        textViewPaginationInfo.setText("Page " + (currentPage + 1) + " of " + totalPages);
+
+        // Enable/disable buttons
+        buttonPrevious.setEnabled(currentPage > 0);
+        buttonNext.setEnabled(currentPage < totalPages - 1);
     }
 
 

@@ -52,4 +52,37 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- Pagination UI -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/button_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Previous"
+            android:enabled="false" />
+
+        <TextView
+            android:id="@+id/textview_pagination_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Page 1 of 1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:enabled="false" />
+
+    </LinearLayout>
+
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -37,13 +38,19 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
     private static final int REQUEST_ADD_USER = 1;
     private static final int REQUEST_EDIT_USER = 2;
 
-    private Button buttonAddUser, buttonSearch;
+    private Button buttonAddUser, buttonSearch, buttonPrevious, buttonNext;
     private EditText editTextSearch;
     private Spinner spinnerRoleFilter;
     private RecyclerView recyclerViewUsers;
     private UserAdapter userAdapter;
     private List<User> userList = new ArrayList<>();
     private List<User> filteredUserList = new ArrayList<>();
+    private List<User> displayedUserList = new ArrayList<>();
+    private TextView textViewPaginationInfo;
+
+    private int currentPage = 0;
+    private int itemsPerPage = 10;
+    private int totalPages = 0;
 
     private String selectedRoleFilter = "Semua Role";
 
@@ -57,10 +64,13 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
         editTextSearch = findViewById(R.id.edittext_search);
         spinnerRoleFilter = findViewById(R.id.spinner_role_filter);
         recyclerViewUsers = findViewById(R.id.recyclerview_users);
+        buttonPrevious = findViewById(R.id.button_previous);
+        buttonNext = findViewById(R.id.button_next);
+        textViewPaginationInfo = findViewById(R.id.textview_pagination_info);
 
         // Setup RecyclerView
         recyclerViewUsers.setLayoutManager(new LinearLayoutManager(this));
-        userAdapter = new UserAdapter(this, filteredUserList, this);
+        userAdapter = new UserAdapter(this, displayedUserList, this);
         recyclerViewUsers.setAdapter(userAdapter);
 
         // Setup role filter spinner
@@ -89,6 +99,20 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
         });
 
         buttonSearch.setOnClickListener(v -> filterUsers());
+
+        buttonPrevious.setOnClickListener(v -> {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePagination();
+            }
+        });
+
+        buttonNext.setOnClickListener(v -> {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                updatePagination();
+            }
+        });
 
         // Load initial user data (this could be from backend API)
         loadUsers();
@@ -153,7 +177,9 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
             }
         }
 
-        userAdapter.notifyDataSetChanged();
+        totalPages = (int) Math.ceil((double) filteredUserList.size() / itemsPerPage);
+        currentPage = 0;
+        updatePagination();
     }
 
     @Override
@@ -172,8 +198,7 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             if (!jsonResponse.getBoolean("error")) {
-                                userList.remove(user);
-                                filterUsers();
+                                loadUsers();
                                 Toast.makeText(UserListActivity.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(UserListActivity.this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
@@ -199,6 +224,23 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
         };
 
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    private void updatePagination() {
+        displayedUserList.clear();
+        int startIndex = currentPage * itemsPerPage;
+        int endIndex = Math.min(startIndex + itemsPerPage, filteredUserList.size());
+        for (int i = startIndex; i < endIndex; i++) {
+            displayedUserList.add(filteredUserList.get(i));
+        }
+        userAdapter.updateData(displayedUserList);
+
+        // Update pagination info
+        textViewPaginationInfo.setText("Page " + (currentPage + 1) + " of " + totalPages);
+
+        // Enable/disable buttons
+        buttonPrevious.setEnabled(currentPage > 0);
+        buttonNext.setEnabled(currentPage < totalPages - 1);
     }
 
     @Override

@@ -44,6 +44,11 @@ public class AssetAdapter extends RecyclerView.Adapter<AssetAdapter.AssetViewHol
         this.progressDialog.setCancelable(false);
     }
 
+    public void updateData(List<Asset> newList, int startIndex) {
+        this.assetList = newList;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public AssetViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -112,8 +117,7 @@ public class AssetAdapter extends RecyclerView.Adapter<AssetAdapter.AssetViewHol
                             JSONObject jsonObject = new JSONObject(response);
                             Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                             if (jsonObject.getBoolean("success")) {
-                                assetList.remove(position);
-                                notifyItemRemoved(position);
+                                ((AssetListActivity) context).loadAssets();
                             }
                         } catch (JSONException e) {
                             Log.e(TAG, "JSON parse error", e);
