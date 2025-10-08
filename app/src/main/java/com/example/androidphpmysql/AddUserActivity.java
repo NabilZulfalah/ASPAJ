@@ -1,8 +1,9 @@
 package com.example.androidphpmysql;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,13 +11,17 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.DefaultRetryPolicy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,56 +29,68 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddUserActivity extends AppCompatActivity {
+public class AddUserActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "AddUserActivity";
 
     private EditText editTextName, editTextEmail;
-    private Spinner spinnerRole, spinnerStatus;
-    private Button buttonSave, buttonCancel;
-
-    private User userToEdit;
+    private Spinner spinnerRole, spinnerApprovalStatus;
+    private Button buttonSimpan, buttonKembali;
+    private ProgressDialog progressDialog;
+    private int userId = -1; // -1 for new user, otherwise edit mode
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
 
-        editTextName = findViewById(R.id.edittext_name);
-        editTextEmail = findViewById(R.id.edittext_email);
-        spinnerRole = findViewById(R.id.spinner_role);
-        spinnerStatus = findViewById(R.id.spinner_status);
-        buttonSave = findViewById(R.id.button_save);
-        buttonCancel = findViewById(R.id.button_cancel);
+        // Setup Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(userId == -1 ? "Tambah User" : "Edit User");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
+        // Bind views
+        editTextName = findViewById(R.id.editTextName);
+        editTextEmail = findViewById(R.id.editTextEmail);
+        spinnerRole = findViewById(R.id.spinnerRole);
+        spinnerApprovalStatus = findViewById(R.id.spinnerApprovalStatus);
+        buttonSimpan = findViewById(R.id.buttonSimpan);
+        buttonKembali = findViewById(R.id.buttonKembali);
+
+        // Set spinner adapters
         ArrayAdapter<CharSequence> roleAdapter = ArrayAdapter.createFromResource(this,
-                R.array.role_filter_options, android.R.layout.simple_spinner_item);
+                R.array.role_array, android.R.layout.simple_spinner_item);
         roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRole.setAdapter(roleAdapter);
 
-        ArrayAdapter<CharSequence> statusAdapter = ArrayAdapter.createFromResource(this,
-                R.array.status_options, android.R.layout.simple_spinner_item);
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(statusAdapter);
+        ArrayAdapter<CharSequence> approvalAdapter = ArrayAdapter.createFromResource(this,
+                R.array.approval_array, android.R.layout.simple_spinner_item);
+        approvalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerApprovalStatus.setAdapter(approvalAdapter);
 
-        // Check if editing existing user
-        userToEdit = (User) getIntent().getSerializableExtra("user");
-        if (userToEdit != null) {
-            editTextName.setText(userToEdit.getName());
-            editTextEmail.setText(userToEdit.getEmail());
-            setSpinnerSelection(spinnerRole, userToEdit.getRole());
-            setSpinnerSelection(spinnerStatus, userToEdit.getStatus());
-            editTextEmail.setEnabled(false); // Email as unique ID, disable editing
-        }
+        buttonSimpan.setOnClickListener(this);
+        buttonKembali.setOnClickListener(v -> finish());
 
-        buttonSave.setOnClickListener(v -> saveUser());
-        buttonCancel.setOnClickListener(v -> finish());
-    }
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
 
-    private void setSpinnerSelection(Spinner spinner, String value) {
-        ArrayAdapter adapter = (ArrayAdapter) spinner.getAdapter();
-        for (int i = 0; i < adapter.getCount(); i++) {
-            if (adapter.getItem(i).toString().equalsIgnoreCase(value)) {
-                spinner.setSelection(i);
-                break;
+        // Check if editing
+        if (getIntent().hasExtra("user_id")) {
+            userId = getIntent().getIntExtra("user_id", -1);
+            editTextName.setText(getIntent().getStringExtra("user_name"));
+            editTextEmail.setText(getIntent().getStringExtra("user_email"));
+            String role = getIntent().getStringExtra("user_role");
+            if (role != null) {
+                int spinnerPosition = roleAdapter.getPosition(role);
+                spinnerRole.setSelection(spinnerPosition);
+            }
+            String approval = getIntent().getStringExtra("user_approval_status");
+            if (approval != null) {
+                int spinnerPosition = approvalAdapter.getPosition(approval);
+                spinnerApprovalStatus.setSelection(spinnerPosition);
             }
         }
     }
@@ -81,87 +98,80 @@ public class AddUserActivity extends AppCompatActivity {
     private void saveUser() {
         String name = editTextName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
-        String role = spinnerRole.getSelectedItem().toString();
-        String status = spinnerStatus.getSelectedItem().toString();
+        String role = spinnerRole.getSelectedItem() != null ? spinnerRole.getSelectedItem().toString() : "";
+        String approvalStatus = spinnerApprovalStatus.getSelectedItem() != null ? spinnerApprovalStatus.getSelectedItem().toString() : "";
 
-        if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "Nama harus diisi", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Email harus diisi", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || email.isEmpty() || role.isEmpty() || approvalStatus.isEmpty()) {
+            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String url = (userToEdit == null) ? Constants.URL_ADD_USER : Constants.URL_UPDATE_USER;
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Add logging to see what we received
-                        android.util.Log.d("ServerResponse", "Response: " + response);
+        progressDialog.setMessage("Saving user...");
+        progressDialog.show();
 
-                        try {
-                            // Trim any whitespace that might interfere
-                            response = response.trim();
+        String url = (userId == -1) ? Constants.URL_ADD_USER : Constants.URL_UPDATE_USER;
+        int method = Request.Method.POST;
 
-                            // Check if response looks like JSON
-                            if (!response.startsWith("{")) {
-                                Toast.makeText(AddUserActivity.this,
-                                        "Server error: Invalid response format",
-                                        Toast.LENGTH_LONG).show();
-                                android.util.Log.e("ServerResponse", "Non-JSON response: " + response);
-                                return;
-                            }
-
-                            JSONObject jsonResponse = new JSONObject(response);
-                            if (!jsonResponse.getBoolean("error")) {
-                                User user = new User(name, email, role, status);
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra("user", user);
-                                setResult(RESULT_OK, resultIntent);
-                                finish();
-                                Toast.makeText(AddUserActivity.this,
-                                        "User saved successfully",
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(AddUserActivity.this,
-                                        "Error: " + jsonResponse.getString("message"),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(AddUserActivity.this,
-                                    "Error: Server returned invalid data",
-                                    Toast.LENGTH_LONG).show();
-                            android.util.Log.e("JSONError", "Failed to parse: " + response, e);
+        StringRequest stringRequest = new StringRequest(
+                method,
+                url,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "SAVE_RESPONSE: " + response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String message = jsonObject.optString("message", "Unknown error");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                        if (jsonObject.getBoolean("success")) {
+                            finish();
                         }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSON parse error", e);
+                        Toast.makeText(getApplicationContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String errorMsg = "Network error";
-                        if (error.networkResponse != null) {
-                            errorMsg += " (Code: " + error.networkResponse.statusCode + ")";
-                        }
-                        Toast.makeText(AddUserActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-                        android.util.Log.e("NetworkError", "Error: " + error.toString());
-                    }
-                }) {
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "Volley error", error);
+                    Toast.makeText(getApplicationContext(), "Error saving user", Toast.LENGTH_SHORT).show();
+                }
+        ) {
+            @Nullable
             @Override
-            protected Map<String, String> getParams() {
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("name", name);
                 params.put("email", email);
                 params.put("role", role);
-                if (userToEdit != null) {
-                    params.put("status", status);
+                params.put("approval_status", approvalStatus);
+                if (userId != -1) {
+                    params.put("id", String.valueOf(userId));
                 }
                 return params;
             }
         };
 
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.buttonSimpan) {
+            saveUser();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

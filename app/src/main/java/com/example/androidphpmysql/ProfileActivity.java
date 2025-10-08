@@ -93,9 +93,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (view.getId() == R.id.buttonAssetList) {
             startActivity(new Intent(this, AssetListActivity.class));
         } else if (view.getId() == R.id.buttonUserManagement) {
-            startActivity(new Intent(this, UserListActivity.class));
+            startActivity(new Intent(this, UserManagementActivity.class));
         } else if (view.getId() == R.id.buttonKelasManagement) {
-            startActivity(new Intent(this, KelasListActivity.class));
+            startActivity(new Intent(this, KelasManagementActivity.class));
         }
     }
 }

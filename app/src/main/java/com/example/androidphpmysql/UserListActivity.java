@@ -134,10 +134,11 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                             for (int i = 0; i < usersArray.length(); i++) {
                                 JSONObject userObj = usersArray.getJSONObject(i);
                                 User user = new User(
+                                        userObj.getInt("id"),
                                         userObj.getString("name"),
                                         userObj.getString("email"),
                                         userObj.getString("role"),
-                                        userObj.getString("status")
+                                        userObj.getString("approval_status")
                                 );
                                 userList.add(user);
                             }

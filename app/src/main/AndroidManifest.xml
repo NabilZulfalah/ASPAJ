@@ -22,13 +22,21 @@
             android:name=".ProfileActivity"
             android:exported="false" />
 
-
         <activity
-            android:name=".LoginActivity"
+            android:name=".AssetListActivity"
             android:exported="false" />
 
         <activity
-            android:name=".DashboardActivity"
+            android:name=".UserManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".KelasManagementActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

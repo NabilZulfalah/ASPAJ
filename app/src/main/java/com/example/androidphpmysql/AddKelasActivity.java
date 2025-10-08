@@ -1,9 +1,9 @@
 package com.example.androidphpmysql;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,13 +11,17 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.DefaultRetryPolicy;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,164 +33,157 @@ public class AddKelasActivity extends AppCompatActivity implements View.OnClickL
 
     private static final String TAG = "AddKelasActivity";
 
-    private EditText editTextName, editTextLevel, editTextDescription, editTextCapacity;
-    private Spinner spinnerProgramStudy;
-    private Button buttonSave;
+    private EditText editTextName, editTextCapacity, editTextDescription;
+    private Spinner spinnerLevel, spinnerProgramStudy;
+    private Button buttonSimpan, buttonKembali;
     private ProgressDialog progressDialog;
-
-    private boolean isEditMode = false;
-    private Kelas kelasToEdit;
+    private int kelasId = -1; // -1 for new kelas, otherwise edit mode
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_kelas);
 
-        // Check if editing
-        Intent intent = getIntent();
-        if (intent.hasExtra("kelas")) {
-            isEditMode = true;
-            kelasToEdit = (Kelas) intent.getSerializableExtra("kelas");
-            setTitle("Edit Kelas");
-        } else {
-            setTitle("Tambah Kelas");
+        // Setup Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(kelasId == -1 ? "Tambah Kelas" : "Edit Kelas");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        // Initialize views
+        // Bind views
         editTextName = findViewById(R.id.editTextName);
-        editTextLevel = findViewById(R.id.editTextLevel);
+        spinnerLevel = findViewById(R.id.spinnerLevel);
         spinnerProgramStudy = findViewById(R.id.spinnerProgramStudy);
-        editTextDescription = findViewById(R.id.editTextDescription);
         editTextCapacity = findViewById(R.id.editTextCapacity);
-        buttonSave = findViewById(R.id.buttonSave);
+        editTextDescription = findViewById(R.id.editTextDescription);
+        buttonSimpan = findViewById(R.id.buttonSimpan);
+        buttonKembali = findViewById(R.id.buttonKembali);
 
-        // Setup spinner
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.program_filter_options, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerProgramStudy.setAdapter(adapter);
+        // Set spinner adapters
+        ArrayAdapter<CharSequence> levelAdapter = ArrayAdapter.createFromResource(this,
+                R.array.level_array, android.R.layout.simple_spinner_item);
+        levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLevel.setAdapter(levelAdapter);
 
-        // Setup progress dialog
+        ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(this,
+                R.array.program_study_array, android.R.layout.simple_spinner_item);
+        programAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerProgramStudy.setAdapter(programAdapter);
+
+        buttonSimpan.setOnClickListener(this);
+        buttonKembali.setOnClickListener(v -> finish());
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
 
-        // Set click listener
-        buttonSave.setOnClickListener(this);
-
-        // Populate fields if editing
-        if (isEditMode && kelasToEdit != null) {
-            populateFields();
-        }
-    }
-
-    private void populateFields() {
-        editTextName.setText(kelasToEdit.getName());
-        editTextLevel = findViewById(R.id.editTextLevel);
-        editTextLevel.setText(kelasToEdit.getLevel());
-
-        // Set spinner selection
-        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) spinnerProgramStudy.getAdapter();
-        if (adapter != null) {
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).equals(kelasToEdit.getProgramStudy())) {
-                    spinnerProgramStudy.setSelection(i);
-                    break;
-                }
+        // Check if editing
+        if (getIntent().hasExtra("kelas_id")) {
+            kelasId = getIntent().getIntExtra("kelas_id", -1);
+            editTextName.setText(getIntent().getStringExtra("kelas_name"));
+            String level = getIntent().getStringExtra("kelas_level");
+            if (level != null) {
+                int spinnerPosition = levelAdapter.getPosition(level);
+                spinnerLevel.setSelection(spinnerPosition);
             }
+            String program = getIntent().getStringExtra("kelas_program_study");
+            if (program != null) {
+                int spinnerPosition = programAdapter.getPosition(program);
+                spinnerProgramStudy.setSelection(spinnerPosition);
+            }
+            editTextCapacity.setText(String.valueOf(getIntent().getIntExtra("kelas_capacity", 0)));
+            editTextDescription.setText(getIntent().getStringExtra("kelas_description"));
         }
-
-        editTextDescription.setText(kelasToEdit.getDescription());
-        editTextCapacity.setText(String.valueOf(kelasToEdit.getCapacity()));
     }
 
     private void saveKelas() {
         String name = editTextName.getText().toString().trim();
-        String level = editTextLevel.getText().toString().trim();
-        String programStudy = spinnerProgramStudy.getSelectedItem().toString();
+        String level = spinnerLevel.getSelectedItem() != null ? spinnerLevel.getSelectedItem().toString() : "";
+        String programStudy = spinnerProgramStudy.getSelectedItem() != null ? spinnerProgramStudy.getSelectedItem().toString() : "";
+        String capacityStr = editTextCapacity.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        String capacity = editTextCapacity.getText().toString().trim();
 
-        // Validation
-        if (name.isEmpty() || programStudy.isEmpty()) {
-            Toast.makeText(this, "Nama dan program studi harus diisi", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || level.isEmpty() || programStudy.isEmpty() || capacityStr.isEmpty()) {
+            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        progressDialog.setMessage(isEditMode ? "Updating Kelas..." : "Adding Kelas...");
+        int capacity;
+        try {
+            capacity = Integer.parseInt(capacityStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Kapasitas harus berupa angka", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        progressDialog.setMessage("Saving kelas...");
         progressDialog.show();
 
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                isEditMode ? Constants.URL_UPDATE_KELAS : Constants.URL_ADD_KELAS,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressDialog.dismiss();
-                        Log.d(TAG, "Response: " + response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            Toast.makeText(getApplicationContext(),
-                                    jsonObject.getString("message"),
-                                    Toast.LENGTH_LONG).show();
+        String url = (kelasId == -1) ? Constants.URL_ADD_KELAS : Constants.URL_UPDATE_KELAS;
+        int method = Request.Method.POST;
 
-                            if (jsonObject.getString("error").equals("false")) {
-                                // Return the created/updated kelas
-                                Kelas savedKelas = new Kelas();
-                                savedKelas.setName(name);
-                                savedKelas.setLevel(level);
-                                savedKelas.setProgramStudy(programStudy);
-                                savedKelas.setDescription(description);
-                                if (isEditMode) {
-                                    savedKelas.setId(kelasToEdit.getId());
-                                }
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra("kelas", savedKelas);
-                                setResult(RESULT_OK, resultIntent);
-                                finish(); // Close activity on success
-                            }
-                        } catch (JSONException e) {
-                            Log.e(TAG, "JSON parse error", e);
-                            Toast.makeText(getApplicationContext(),
-                                    "Error parsing response", Toast.LENGTH_SHORT).show();
+        StringRequest stringRequest = new StringRequest(
+                method,
+                url,
+                response -> {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "SAVE_RESPONSE: " + response);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        String message = jsonObject.optString("message", "Unknown error");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                        if (jsonObject.getBoolean("success")) {
+                            finish();
                         }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSON parse error", e);
+                        Toast.makeText(getApplicationContext(), "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-                        Log.e(TAG, "Volley error", error);
-                        Toast.makeText(getApplicationContext(),
-                                "Error: " + (error.getMessage() != null ? error.getMessage() : "Unknown error"),
-                                Toast.LENGTH_LONG).show();
-                    }
+                error -> {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "Volley error", error);
+                    Toast.makeText(getApplicationContext(), "Error saving kelas", Toast.LENGTH_SHORT).show();
                 }
         ) {
+            @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
                 params.put("name", name);
                 params.put("level", level);
                 params.put("program_study", programStudy);
+                params.put("capacity", String.valueOf(capacity));
                 params.put("description", description);
-                params.put("capacity", capacity);
-
-                if (isEditMode && kelasToEdit != null) {
-                    params.put("id", kelasToEdit.getId());
+                if (kelasId != -1) {
+                    params.put("id", String.valueOf(kelasId));
                 }
-
-                Log.d(TAG, "Params: " + params.toString());
                 return params;
             }
         };
+
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.buttonSave) {
+        if (view.getId() == R.id.buttonSimpan) {
             saveKelas();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

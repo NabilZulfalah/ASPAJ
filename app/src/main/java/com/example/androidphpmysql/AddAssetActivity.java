@@ -74,7 +74,7 @@ public class AddAssetActivity extends AppCompatActivity implements View.OnClickL
 
         // Set spinner adapter
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.jurusan_array, android.R.layout.simple_spinner_item);
+                R.array.program_study_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerJurusanBarang.setAdapter(adapter);
 

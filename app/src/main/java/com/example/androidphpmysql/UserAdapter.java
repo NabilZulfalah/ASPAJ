@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,50 +12,46 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 
+    private Context mCtx;
+    private List<User> userList;
+    private OnUserActionListener mListener;
+
     public interface OnUserActionListener {
         void onEdit(User user);
         void onDelete(User user);
     }
 
-    private Context context;
-    private List<User> userList;
-    private OnUserActionListener listener;
-
-    public UserAdapter(Context context, List<User> userList, OnUserActionListener listener) {
-        this.context = context;
+    public UserAdapter(Context mCtx, List<User> userList, OnUserActionListener listener) {
+        this.mCtx = mCtx;
         this.userList = userList;
-        this.listener = listener;
-    }
-
-    public void updateData(List<User> newList) {
-        this.userList = newList;
-        notifyDataSetChanged();
+        this.mListener = listener;
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
+        LayoutInflater inflater = LayoutInflater.from(mCtx);
+        View view = inflater.inflate(R.layout.list_item_user, null);
         return new UserViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
-        holder.textViewName.setText(user.getName());
-        holder.textViewEmail.setText(user.getEmail());
-        holder.textViewRole.setText(user.getRole());
-        holder.textViewStatus.setText(user.getStatus());
+
+        holder.textViewUserName.setText(user.getName());
+        holder.textViewUserEmail.setText(user.getEmail());
+        holder.textViewUserRole.setText("Role: " + user.getRole());
 
         holder.buttonEdit.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onEdit(user);
+            if (mListener != null) {
+                mListener.onEdit(user);
             }
         });
 
         holder.buttonDelete.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onDelete(user);
+            if (mListener != null) {
+                mListener.onDelete(user);
             }
         });
     }
@@ -65,16 +61,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         return userList.size();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewName, textViewEmail, textViewRole, textViewStatus;
-        ImageButton buttonEdit, buttonDelete;
+    public void updateData(List<User> newUserList) {
+        this.userList = newUserList;
+        notifyDataSetChanged();
+    }
+
+    class UserViewHolder extends RecyclerView.ViewHolder {
+
+        TextView textViewUserName, textViewUserEmail, textViewUserRole;
+        Button buttonEdit, buttonDelete;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewName = itemView.findViewById(R.id.textview_name);
-            textViewEmail = itemView.findViewById(R.id.textview_email);
-            textViewRole = itemView.findViewById(R.id.textview_role);
-            textViewStatus = itemView.findViewById(R.id.textview_status);
+
+            textViewUserName = itemView.findViewById(R.id.textViewUserName);
+            textViewUserEmail = itemView.findViewById(R.id.textViewUserEmail);
+            textViewUserRole = itemView.findViewById(R.id.textViewUserRole);
             buttonEdit = itemView.findViewById(R.id.button_edit);
             buttonDelete = itemView.findViewById(R.id.button_delete);
         }

@@ -239,32 +239,21 @@ public class KelasListActivity extends AppCompatActivity implements KelasAdapter
                             Toast.makeText(KelasListActivity.this, "Error: " + response.getString("message"), Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        JSONArray kelasArray = response.getJSONArray("kelas");
+                        JSONArray kelasArray = response.getJSONArray("school_classes");
                         kelasList.clear();
                         for (int i = 0; i < kelasArray.length(); i++) {
                             JSONObject kelasObj = kelasArray.getJSONObject(i);
 
-                            // PERBAIKAN UTAMA DI SINI:
-                            // 1. Mengubah "programStudy" menjadi "program_study"
-                            // 2. Menambahkan "level" dan "capacity"
-                            // 3. Memastikan semua field yang dipanggil di PHP (getKelas) terambil.
+                            String id = String.valueOf(kelasObj.optInt("id", 0));
+                            String name = kelasObj.optString("name", "");
+                            String level = kelasObj.optString("level", "");
+                            String programStudy = kelasObj.optString("program_study", "");
+                            String capacity = kelasObj.optString("capacity", "");
+                            String description = kelasObj.optString("description", "");
+                            String createdAt = kelasObj.optString("created_at", "");
+                            String updatedAt = kelasObj.optString("updated_at", "");
 
-                            // Catatan: Asumsi kelasObj memiliki: id, name, level, program_study, capacity, description, createdAt, updatedAt
-
-                            // Anda mungkin perlu menyesuaikan konstruktor Kelas agar menerima 8 parameter baru:
-                            // Kelas(id, name, level, program_study, capacity, description, createdAt, updatedAt)
-                            // Jika kelas Anda belum memiliki level dan capacity, silakan tambahkan ke model Kelas.
-
-                            Kelas kelas = new Kelas(
-                                    kelasObj.getString("id"),
-                                    kelasObj.getString("name"),
-                                    kelasObj.getString("level"),         // <-- Tambah 'level'
-                                    kelasObj.getString("program_study"), // <-- PERUBAHAN: dari "programStudy" ke "program_study"
-                                    kelasObj.getString("capacity"),      // <-- Tambah 'capacity'
-                                    kelasObj.getString("description"),
-                                    kelasObj.getString("created_at"),    // <-- PERUBAHAN: dari "createdAt" ke "created_at" (jika PHP outputnya pakai underscore)
-                                    kelasObj.getString("updated_at")     // <-- PERUBAHAN: dari "updatedAt" ke "updated_at" (jika PHP outputnya pakai underscore)
-                            );
+                            Kelas kelas = new Kelas(id, name, level, programStudy, capacity, description, createdAt, updatedAt);
                             kelasList.add(kelas);
                         }
                         filterKelas();

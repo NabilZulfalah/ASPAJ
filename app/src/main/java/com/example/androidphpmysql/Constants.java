@@ -1,16 +1,16 @@
 package com.example.androidphpmysql;
 
     public class Constants {
-        private static final String ROOT_URL = "http://192.168.1.121/android/v1/";
+    private static final String ROOT_URL = "http://192.168.0.113/";
 
-        public static final String URL_REGISTER = ROOT_URL + "registerUser.php";
-        public static final String URL_LOGIN = ROOT_URL + "loginUser.php";
+        public static final String URL_REGISTER = ROOT_URL + "API_PHP/v1/registerUser.php";
+        public static final String URL_LOGIN = ROOT_URL + "API_PHP/v1/loginUser.php";
 
         // Asset CRUD URLs
-        public static final String URL_GET_ASSETS = ROOT_URL + "getAssetList.php";
-        public static final String URL_ADD_ASSET = ROOT_URL + "addAsset.php";
-        public static final String URL_UPDATE_ASSET = ROOT_URL + "updateAsset.php";
-        public static final String URL_DELETE_ASSET = ROOT_URL + "deleteAsset.php";
+        public static final String URL_GET_ASSETS = ROOT_URL + "API_PHP/v1/getCommodities.php";
+        public static final String URL_ADD_ASSET = ROOT_URL + "API_PHP/v1/addAsset.php";
+        public static final String URL_UPDATE_ASSET = ROOT_URL + "API_PHP/v1/updateAsset.php";
+        public static final String URL_DELETE_ASSET = ROOT_URL + "API_PHP/v1/deleteAsset.php";
 
         // User CRUD URLs
         public static final String URL_GET_USERS = ROOT_URL + "getUsers.php";
@@ -19,7 +19,7 @@ package com.example.androidphpmysql;
         public static final String URL_DELETE_USER = ROOT_URL + "deleteUser.php";
 
         // Kelas CRUD URLs
-        public static final String URL_GET_KELAS = ROOT_URL + "getKelas.php";
+        public static final String URL_GET_KELAS = ROOT_URL + "getSchoolClasses.php";
         public static final String URL_ADD_KELAS = ROOT_URL + "addKelas.php";
         public static final String URL_UPDATE_KELAS = ROOT_URL + "updateKelas.php";
         public static final String URL_DELETE_KELAS = ROOT_URL + "deleteKelas.php";

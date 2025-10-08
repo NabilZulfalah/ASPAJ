@@ -9,11 +9,7 @@
         <item>Teknik Instalasi Tenaga Listrik</item>
     </string-array>
 
-    <string-array name="role_filter_options">
-        <item>Semua Role</item>
-        <item>officers</item>
-        <item>students</item>
-    </string-array>
+
 
     <string-array name="program_filter_options">
         <item>Semua Program Studi</item>
