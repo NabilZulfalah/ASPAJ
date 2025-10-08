@@ -4,7 +4,7 @@ package com.example.androidphpmysql;
     private static final String ROOT_URL = "http://192.168.0.113/";
 
         public static final String URL_REGISTER = ROOT_URL + "API_PHP/v1/registerUser.php";
-        public static final String URL_LOGIN = ROOT_URL + "API_PHP/v1/loginUser.php";
+        public static final String URL_LOGIN = ROOT_URL + "API_PHP/v1/login.php";
 
         // Asset CRUD URLs
         public static final String URL_GET_ASSETS = ROOT_URL + "API_PHP/v1/getCommodities.php";
