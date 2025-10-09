@@ -235,11 +235,13 @@ public class KelasListActivity extends AppCompatActivity implements KelasAdapter
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        if (response.getBoolean("error")) {
-                            Toast.makeText(KelasListActivity.this, "Error: " + response.getString("message"), Toast.LENGTH_SHORT).show();
+                        boolean success = response.getBoolean("success");
+                        String message = response.getString("message");
+                        if (!success) {
+                            Toast.makeText(KelasListActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        JSONArray kelasArray = response.getJSONArray("school_classes");
+                        JSONArray kelasArray = response.getJSONArray("data");
                         kelasList.clear();
                         for (int i = 0; i < kelasArray.length(); i++) {
                             JSONObject kelasObj = kelasArray.getJSONObject(i);
@@ -305,13 +307,15 @@ public class KelasListActivity extends AppCompatActivity implements KelasAdapter
                 response -> {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
-                        if (!jsonResponse.getBoolean("error")) {
+                        boolean success = jsonResponse.getBoolean("success");
+                        String message = jsonResponse.getString("message");
+                        if (success) {
                             kelasList.remove(kelas);
                             filterKelas();
                             updatePagination();
                             Toast.makeText(KelasListActivity.this, "Kelas berhasil dihapus", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(KelasListActivity.this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(KelasListActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

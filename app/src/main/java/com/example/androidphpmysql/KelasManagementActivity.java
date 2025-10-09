@@ -65,8 +65,10 @@ public class KelasManagementActivity extends AppCompatActivity implements School
             public void onResponse(String response) {
                 try {
                     JSONObject obj = new JSONObject(response);
-                    if (!obj.getBoolean("error")) {
-                        JSONArray schoolClasses = obj.getJSONArray("school_classes");
+                    boolean success = obj.getBoolean("success");
+                    String message = obj.getString("message");
+                    if (success) {
+                        JSONArray schoolClasses = obj.getJSONArray("data");
 
                         for (int i = 0; i < schoolClasses.length(); i++) {
                             JSONObject schoolClassObject = schoolClasses.getJSONObject(i);
@@ -86,7 +88,7 @@ public class KelasManagementActivity extends AppCompatActivity implements School
                         adapter = new SchoolClassAdapter(KelasManagementActivity.this, schoolClassList, KelasManagementActivity.this);
                         recyclerView.setAdapter(adapter);
                     } else {
-                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -128,12 +130,15 @@ public class KelasManagementActivity extends AppCompatActivity implements School
     }
 
     private void deleteKelas(int kelasId) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_DELETE_KELAS,
+        String url = Constants.URL_DELETE_KELAS + "/" + kelasId;
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 response -> {
                     try {
                         JSONObject obj = new JSONObject(response);
-                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                        if (!obj.getBoolean("error")) {
+                        boolean success = obj.getBoolean("success");
+                        String message = obj.getString("message");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        if (success) {
                             loadSchoolClasses();
                         }
                     } catch (JSONException e) {
@@ -144,10 +149,18 @@ public class KelasManagementActivity extends AppCompatActivity implements School
                 error -> Toast.makeText(getApplicationContext(), "Network Error Occurred", Toast.LENGTH_SHORT).show()
         ) {
             @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                String token = SharedPrefManager.getInstance(getApplicationContext()).getToken();
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+            @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("id", String.valueOf(kelasId));
-                return params;
+                // No parameters needed for DELETE request with ID in URL
+                return null;
             }
         };
 

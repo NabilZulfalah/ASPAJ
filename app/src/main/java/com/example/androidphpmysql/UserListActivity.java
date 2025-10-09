@@ -125,11 +125,13 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            if (response.getBoolean("error")) {
-                                Toast.makeText(UserListActivity.this, "Error: " + response.getString("message"), Toast.LENGTH_SHORT).show();
+                            boolean success = response.getBoolean("success");
+                            String message = response.getString("message");
+                            if (!success) {
+                                Toast.makeText(UserListActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            JSONArray usersArray = response.getJSONArray("users");
+                            JSONArray usersArray = response.getJSONArray("data");
                             userList.clear();
                             for (int i = 0; i < usersArray.length(); i++) {
                                 JSONObject userObj = usersArray.getJSONObject(i);
@@ -138,7 +140,7 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                                         userObj.getString("name"),
                                         userObj.getString("email"),
                                         userObj.getString("role"),
-                                        userObj.getString("approval_status")
+                                        userObj.optString("approval_status", "")
                                 );
                                 userList.add(user);
                             }
@@ -198,11 +200,13 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            if (!jsonResponse.getBoolean("error")) {
+                            boolean success = jsonResponse.getBoolean("success");
+                            String message = jsonResponse.getString("message");
+                            if (success) {
                                 loadUsers();
                                 Toast.makeText(UserListActivity.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(UserListActivity.this, "Error: " + jsonResponse.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UserListActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

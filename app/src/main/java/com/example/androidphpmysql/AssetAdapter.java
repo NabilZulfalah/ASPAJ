@@ -106,8 +106,8 @@ public class AssetAdapter extends RecyclerView.Adapter<AssetAdapter.AssetViewHol
         progressDialog.show();
 
         StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                Constants.URL_DELETE_ASSET,
+                Request.Method.DELETE,
+                Constants.URL_DELETE_ASSET + "/" + assetId,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -134,12 +134,14 @@ public class AssetAdapter extends RecyclerView.Adapter<AssetAdapter.AssetViewHol
                     }
                 }
         ) {
-            @Nullable
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("id", String.valueOf(assetId));
-                return params;
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                String token = SharedPrefManager.getInstance(context).getToken();
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
             }
         };
 
