@@ -153,8 +153,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onResponse(String response) {
                 try {
                     JSONObject obj = new JSONObject(response);
-                    if (!obj.getBoolean("error")) {
-                        JSONArray assets = obj.getJSONArray("commodities");
+                    if (obj.getBoolean("success")) {
+                        JSONArray assets = obj.getJSONArray("data");
 
                         for (int i = 0; i < assets.length(); i++) {
                             JSONObject assetObject = assets.getJSONObject(i);
@@ -213,8 +213,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                 response = response.substring(jsonStart);
                             }
                             JSONObject obj = new JSONObject(response);
-                            if (!obj.getBoolean("error")) {
-                                JSONArray users = obj.getJSONArray("users");
+                            if (obj.getBoolean("success")) {
+                                JSONArray users = obj.getJSONArray("data");
 
                         for (int i = 0; i < users.length(); i++) {
                             JSONObject userObject = users.getJSONObject(i);
@@ -262,8 +262,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             public void onResponse(String response) {
                 try {
                     JSONObject obj = new JSONObject(response);
-                    if (!obj.getBoolean("error")) {
-                        JSONArray kelasArray = obj.getJSONArray("school_classes");
+                    if (obj.getBoolean("success")) {
+                        JSONArray kelasArray = obj.getJSONArray("data");
 
                         for (int i = 0; i < kelasArray.length(); i++) {
                             JSONObject kelasObject = kelasArray.getJSONObject(i);

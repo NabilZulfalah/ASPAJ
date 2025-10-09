@@ -51,8 +51,10 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                                 response = response.substring(jsonStart);
                             }
                             JSONObject obj = new JSONObject(response);
-                            if (!obj.getBoolean("error")) {
-                                JSONArray users = obj.getJSONArray("users");
+                            boolean success = obj.getBoolean("success");
+                            String message = obj.getString("message");
+                            if (success) {
+                                JSONArray users = obj.getJSONArray("data");
 
                                 for (int i = 0; i < users.length(); i++) {
                                     JSONObject userObject = users.getJSONObject(i);
@@ -71,7 +73,7 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                                 adapter = new UserAdapter(UserManagementActivity.this, userList, UserManagementActivity.this);
                                 recyclerView.setAdapter(adapter);
                             } else {
-                                Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -86,8 +88,7 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     @Override
@@ -112,12 +113,15 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
     }
 
     private void deleteUser(int userId) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.URL_DELETE_USER,
+        String url = Constants.URL_DELETE_USER + "/" + userId;
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 response -> {
                     try {
                         JSONObject obj = new JSONObject(response);
-                        Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
-                        if (!obj.getBoolean("error")) {
+                        boolean success = obj.getBoolean("success");
+                        String message = obj.getString("message");
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        if (success) {
                             loadUsers();
                         }
                     } catch (JSONException e) {
@@ -128,14 +132,21 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                 error -> Toast.makeText(getApplicationContext(), "Network Error Occurred", Toast.LENGTH_SHORT).show()
         ) {
             @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                String token = SharedPrefManager.getInstance(getApplicationContext()).getToken();
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+            @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("id", String.valueOf(userId));
-                return params;
+                // No parameters needed for DELETE request with ID in URL
+                return null;
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 }

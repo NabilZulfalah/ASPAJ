@@ -15,6 +15,7 @@ public class SharedPrefManager {
     private static final String KEY_NAME = "username";
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String KEY_USER_ID = "userid";
+    private static final String KEY_TOKEN = "token";
 
     private SharedPrefManager(Context context) {
         ctx = context;
@@ -66,6 +67,20 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
                 Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_USER_EMAIL, null);
+    }
+
+    public void saveToken(String token) {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_TOKEN, token);
+        editor.apply();
+    }
+
+    public String getToken() {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_TOKEN, null);
     }
 
 }

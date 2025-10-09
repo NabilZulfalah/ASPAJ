@@ -20,6 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,25 +62,46 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    /**
+     * Method untuk melakukan login user menggunakan API Laravel.
+     * Mengirim POST request ke /api/login dengan parameter email dan password.
+     * Parsing response JSON Laravel: {success: boolean, message: string, data: object}
+     */
     private void loginUser() {
+        // Ambil input email dan password dari EditText
         final String email = editTextIdentifier.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
 
+        // Tampilkan progress dialog
         progressDialog.show();
 
+        // Log untuk menandai mulai proses login
+        Log.d("LoginActivity", "Memulai login dengan email: " + email);
+
+        // Buat StringRequest untuk POST request ke endpoint login Laravel
         StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                Constants.URL_LOGIN,
+                Request.Method.POST, // Method HTTP POST
+                Constants.LOGIN_URL, // URL endpoint login dari Constants
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        // Sembunyikan progress dialog
                         progressDialog.dismiss();
+
+                        // Log response untuk debugging
+                        Log.d("LoginActivity", "Response login: " + response);
+
                         try {
+                            // Parsing response JSON Laravel
                             JSONObject obj = new JSONObject(response);
+                            boolean success = obj.getBoolean("success"); // Cek status login
+                            String message = obj.getString("message"); // Pesan dari server
 
-                            if (!obj.getBoolean("error")) {
-                                JSONObject userJson = obj.getJSONObject("user");
+                            if (success) {
+                                // Jika login berhasil, ambil data user dari response
+                                JSONObject userJson = obj.getJSONObject("data");
 
+                                // Simpan data user ke SharedPreferences menggunakan SharedPrefManager
                                 SharedPrefManager.getInstance(getApplicationContext())
                                         .userLogin(
                                                 userJson.getInt("id"),
@@ -87,27 +109,40 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 userJson.getString("email")
                                         );
 
-startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                // Save token to SharedPrefManager
+                                String token = obj.getString("token");
+                                SharedPrefManager.getInstance(getApplicationContext())
+                                        .saveToken(token);
+
+                                // Tampilkan pesan sukses di Toast
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                                // Log sukses login
+                                Log.d("LoginActivity", "Login berhasil: " + message);
+
+                                // Pindah ke ProfileActivity dan tutup LoginActivity
+                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                                 finish();
                             } else {
-                                Toast.makeText(
-                                        getApplicationContext(),
-                                        obj.getString("message"),
-                                        Toast.LENGTH_SHORT
-                                ).show();
+                                // Jika login gagal, tampilkan pesan error di Toast
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                                Log.e("LoginActivity", "Login gagal: " + message);
                             }
                         } catch (JSONException e) {
+                            // Tangani error parsing JSON
                             e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Parsing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("LoginActivity", "Error parsing JSON: " + e.getMessage());
                         }
                     }
-
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        // Sembunyikan progress dialog
                         progressDialog.dismiss();
 
+                        // Tentukan pesan error berdasarkan jenis error
                         String message;
                         if (error instanceof com.android.volley.TimeoutError) {
                             message = "Connection timed out. Check server or internet.";
@@ -119,22 +154,25 @@ startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                             message = "Unknown error occurred.";
                         }
 
+                        // Tampilkan pesan error di Toast
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        Log.e("LoginActivity", "Error response: " + message);
                     }
-
                 }
         ) {
             @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                // Siapkan parameter POST: email dan password
                 Map<String, String> params = new HashMap<>();
-                params.put("identifier", editTextIdentifier.getText().toString().trim());
-                params.put("password", editTextPassword.getText().toString().trim());
+                params.put("email", editTextIdentifier.getText().toString().trim()); // Parameter email
+                params.put("password", editTextPassword.getText().toString().trim()); // Parameter password
                 return params;
             }
         };
 
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+        // Tambahkan request ke RequestQueue menggunakan VolleySingleton
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
     @Override
@@ -142,5 +180,10 @@ startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
         if (view == buttonLogin) {
             loginUser();
         }
+    }
+
+    // Add method to save token in SharedPrefManager
+    private void saveToken(String token) {
+        SharedPrefManager.getInstance(this).saveToken(token);
     }
 }
