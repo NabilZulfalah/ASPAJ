@@ -55,11 +55,15 @@ public class PendingBorrowingsAdapter extends RecyclerView.Adapter<PendingBorrow
         holder.textReturnDate.setText("Kembali: " + borrowing.getReturnDate());
 
         holder.btnApprove.setOnClickListener(v -> {
-            if (listener != null) listener.onApproveClick(borrowing, position);
+            if (listener != null) {
+                listener.onApproveClick(borrowing, position);
+            }
         });
 
         holder.btnReject.setOnClickListener(v -> {
-            if (listener != null) listener.onRejectClick(borrowing, position);
+            if (listener != null) {
+                listener.onRejectClick(borrowing, position);
+            }
         });
     }
 
@@ -69,8 +73,17 @@ public class PendingBorrowingsAdapter extends RecyclerView.Adapter<PendingBorrow
     }
 
     public void removeItem(int position) {
-        borrowingList.remove(position);
-        notifyItemRemoved(position);
+        if (position >= 0 && position < borrowingList.size()) {
+            borrowingList.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void updateItem(int position, Borrowing borrowing) {
+        if (position >= 0 && position < borrowingList.size()) {
+            borrowingList.set(position, borrowing);
+            notifyItemChanged(position);
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -8,6 +8,12 @@
     android:background="#F5F9FF"
     tools:context=".activity_main_menu">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="item_stat_card.xml" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -108,7 +114,7 @@
                     android:paddingHorizontal="16dp">
 
                     <include layout="@layout/item_stat_card" />
-                    <include layout="@layout/item_stat_card" />
+                    <include layout="@layout/item_stat_card_peminjam" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -117,8 +123,8 @@
                     android:orientation="horizontal"
                     android:paddingHorizontal="16dp">
 
-                    <include layout="@layout/item_stat_card" />
-                    <include layout="@layout/item_stat_card" />
+                    <include layout="@layout/item_stat_card_menunggu" />
+                    <include layout="@layout/item_stat_card_asset" />
                 </LinearLayout>
 
                 <!-- Menu -->

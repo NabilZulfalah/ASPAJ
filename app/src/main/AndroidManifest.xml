@@ -59,7 +59,12 @@
         <activity
             android:name=".Peminjaman"
             android:exported="true"/>
-
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".pengembalianActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

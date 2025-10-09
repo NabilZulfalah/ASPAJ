@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +19,7 @@ import com.example.androidphpmysql.models.Borrowing;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements PendingBorrowingsAdapter.OnApproveRejectListener {
 
     private TextView textViewWelcome;
     private TextView textViewPeminjamAktif, textViewTotalAset, textViewMenungguPersetujuan, textViewBelumDikembalikan;
@@ -34,6 +35,13 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        initializeViews();
+        setupRecyclerView();
+        setupDatabase();
+        loadData();
+    }
+
+    private void initializeViews() {
         textViewWelcome = findViewById(R.id.textViewWelcome);
         textViewPeminjamAktif = findViewById(R.id.textViewPeminjamAktif);
         textViewTotalAset = findViewById(R.id.textViewTotalAset);
@@ -44,23 +52,39 @@ public class DashboardActivity extends AppCompatActivity {
         // Set welcome message with username
         String username = SharedPrefManager.getInstance(this).getUsername();
         textViewWelcome.setText("Selamat datang user " + username + " di peminjaman aset");
+    }
 
-        // Open or create database
-        database = openOrCreateDatabase("asetkejuruan.db", MODE_PRIVATE, null);
+    private void setupRecyclerView() {
+        pendingBorrowingsList = new ArrayList<>();
+        adapter = new PendingBorrowingsAdapter(this, pendingBorrowingsList);
+        adapter.setOnApproveRejectListener(this);
+        recyclerViewPending.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewPending.setAdapter(adapter);
+    }
 
-        // Cek apakah tabel ada
+    private void setupDatabase() {
+        try {
+            database = openOrCreateDatabase("asetkejuruan.db", MODE_PRIVATE, null);
+        } catch (Exception e) {
+            Log.e("DashboardActivity", "Error opening database", e);
+            Toast.makeText(this, "Error membuka database", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void loadData() {
+        if (database == null) {
+            Log.e("DashboardActivity", "Database is null");
+            return;
+        }
+
+        // Check if tables exist
         if (checkTableExists("borrowings") && checkTableExists("students") && checkTableExists("commodities")) {
             loadDashboardData();
             loadPendingBorrowings();
         } else {
             Log.e("DashboardActivity", "Salah satu tabel tidak ditemukan di database!");
+            Toast.makeText(this, "Tabel database tidak lengkap", Toast.LENGTH_LONG).show();
         }
-
-        // Setup RecyclerView dengan list kosong dulu
-        pendingBorrowingsList = new ArrayList<>();
-        adapter = new PendingBorrowingsAdapter(pendingBorrowingsList);
-        recyclerViewPending.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewPending.setAdapter(adapter);
     }
 
     private boolean checkTableExists(String tableName) {
@@ -80,6 +104,8 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void loadDashboardData() {
+        if (database == null) return;
+
         Cursor cursor;
 
         // Peminjam Aktif
@@ -124,27 +150,70 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void loadPendingBorrowings() {
+        if (database == null) return;
+
         pendingBorrowingsList.clear();
 
         Cursor cursor = database.rawQuery(
-                "SELECT b.id, s.name, b.borrow_date, b.return_date FROM borrowings b " +
+                "SELECT b.id, s.name, b.borrow_date, b.return_date, b.tujuan, s.kelas, b.status FROM borrowings b " +
                         "JOIN students s ON b.student_id = s.id WHERE b.status = 'pending'",
                 null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(0);
-                String studentName = cursor.getString(1);
-                String borrowDate = cursor.getString(2);
-                String returnDate = cursor.isNull(3) ? "-" : cursor.getString(3); // handle null date
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    int id = cursor.getInt(0);
+                    String studentName = cursor.getString(1);
+                    String borrowDate = cursor.getString(2);
+                    String returnDate = cursor.isNull(3) ? "-" : cursor.getString(3);
+                    String tujuan = cursor.getString(4);
+                    String kelas = cursor.getString(5);
+                    String status = cursor.getString(6);
 
-                Borrowing borrowing = new Borrowing(id, studentName, borrowDate, returnDate);
-                pendingBorrowingsList.add(borrowing);
-            } while (cursor.moveToNext());
+                    // Create Borrowing object with all required fields
+                    Borrowing borrowing = new Borrowing(id, studentName, tujuan, kelas, borrowDate, returnDate, status);
+                    pendingBorrowingsList.add(borrowing);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
         }
-        cursor.close();
 
-        adapter.notifyDataSetChanged(); // refresh RecyclerView
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onApproveClick(Borrowing borrowing, int position) {
+        // Implement approve logic here
+        updateBorrowingStatus(borrowing.getId(), "approved", position);
+        Toast.makeText(this, "Menyetujui peminjaman: " + borrowing.getStudentName(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRejectClick(Borrowing borrowing, int position) {
+        // Implement reject logic here
+        updateBorrowingStatus(borrowing.getId(), "rejected", position);
+        Toast.makeText(this, "Menolak peminjaman: " + borrowing.getStudentName(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateBorrowingStatus(int borrowingId, String newStatus, int position) {
+        if (database == null) return;
+
+        try {
+            database.execSQL(
+                    "UPDATE borrowings SET status = ? WHERE id = ?",
+                    new String[]{newStatus, String.valueOf(borrowingId)}
+            );
+
+            // Remove from list
+            adapter.removeItem(position);
+
+            // Refresh dashboard data
+            loadDashboardData();
+
+        } catch (SQLException e) {
+            Log.e("DashboardActivity", "Error updating borrowing status", e);
+            Toast.makeText(this, "Error mengupdate status peminjaman", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

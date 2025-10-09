@@ -2,35 +2,97 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
+    android:orientation="vertical"
+    android:padding="16dp"
     android:background="?android:attr/selectableItemBackground">
 
-    <TextView
-        android:id="@+id/textViewStudentName"
-        android:layout_width="0dp"
-        android:layout_weight="3"
+    <!-- Info Siswa -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Student Name"
-        android:textSize="16sp"
-        android:textColor="#000000" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textViewBorrowDate"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="wrap_content"
-        android:text="Borrow Date"
-        android:textSize="16sp"
-        android:textColor="#000000" />
+        <TextView
+            android:id="@+id/textStudentName"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Student Name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
 
+        <TextView
+            android:id="@+id/textKelas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kelas"
+            android:textSize="14sp"
+            android:textColor="#666666" />
+    </LinearLayout>
+
+    <!-- Tujuan -->
     <TextView
-        android:id="@+id/textViewReturnDate"
-        android:layout_width="0dp"
-        android:layout_weight="2"
+        android:id="@+id/textTujuan"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Return Date"
-        android:textSize="16sp"
-        android:textColor="#000000" />
+        android:text="Tujuan: "
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"
+        android:textColor="#444444" />
+
+    <!-- Tanggal -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/textBorrowDate"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Pinjam: "
+            android:textSize="14sp"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/textReturnDate"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Kembali: "
+            android:textSize="14sp"
+            android:textColor="#666666" />
+    </LinearLayout>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp">
+
+        <Button
+            android:id="@+id/btnApprove"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Setuju"
+            android:layout_marginEnd="4dp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/btnReject"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Tolak"
+            android:layout_marginStart="4dp"
+            android:backgroundTint="#F44336"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
 
 </LinearLayout>
