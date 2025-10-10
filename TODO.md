@@ -1,8 +1,8 @@
-# TODO: Fix photo display in borrowing status and detail pages
+# TODO: Implement Return Borrowing Functionality
 
-- [x] Fix field name mismatch: Android expecting "photo_url" but API returning "photo"
-- [x] Add GET /student/borrowings/{id} route for individual borrowing details
-- [x] Update StudentController to return "photo" field with full URL
-- [x] Update Android code to use "photo" field and handle full URLs
-- [x] Fix double slash in photo URLs by using ltrim($photo, '/') in API controllers
-- [x] Test photo loading in borrowing status and detail activities
+## Steps to Complete:
+- [x] Step 1: Check and update BorrowingItem model fillable fields for return fields (returned_quantity, condition, notes, return_date).
+- [x] Step 2: Implement returnBorrowing method in PeminjamanController.php with validation, DB transaction for updating items and stock.
+- [x] Step 3: Run migration for return fields if not already applied. (Attempted, but failed due to permissions; user should run 'php artisan migrate' in Laravel directory manually.)
+- [ ] Step 4: Test the /api/borrowings/{id}/return endpoint with sample data.
+- [ ] Step 5: Update Android ReturnFormActivity to call the correct endpoint if needed.
