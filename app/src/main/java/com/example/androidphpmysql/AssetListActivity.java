@@ -109,6 +109,15 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
         loadAssets();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            cart.clear();
+            updateSummary();
+        }
+    }
+
     /**
      * Method untuk memuat daftar aset dari API Laravel menggunakan Volley.
      * Menggunakan JsonObjectRequest untuk mendapatkan response JSON dari endpoint /api/assets.
@@ -267,53 +276,35 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
             }
         }
         builder.setMessage("Barang yang dipinjam:\n" + items.toString() + "\nApakah Anda yakin?");
-        builder.setPositiveButton("Ya", (dialog, which) -> submitBorrowing());
+        builder.setPositiveButton("Ya", (dialog, which) -> {
+            // Build JSONArray for cart
+            JSONArray itemsArray = new JSONArray();
+            StringBuilder selectedText = new StringBuilder("Selected Items:\n");
+            try {
+                for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
+                    JSONObject item = new JSONObject();
+                    item.put("asset_id", entry.getKey());
+                    item.put("quantity", entry.getValue());
+                    itemsArray.put(item);
+                    for (Asset asset : assetList) {
+                        if (asset.getId() == entry.getKey()) {
+                            selectedText.append(asset.getNamaBarang()).append(" x").append(entry.getValue()).append("\n");
+                            break;
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+            Intent intent = new Intent(AssetListActivity.this, BorrowConfirmActivity.class);
+            intent.putExtra("cart", itemsArray.toString());
+            intent.putExtra("selected_items_text", selectedText.toString());
+            startActivityForResult(intent, 1);
+        });
         builder.setNegativeButton("Tidak", null);
         builder.show();
     }
 
-    private void submitBorrowing() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            JSONArray items = new JSONArray();
-            for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
-                JSONObject item = new JSONObject();
-                item.put("asset_id", entry.getKey());
-                item.put("quantity", entry.getValue());
-                items.put(item);
-            }
-            jsonObject.put("items", items);
-            jsonObject.put("tujuan", "Peminjaman untuk kegiatan");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.STORE_BORROWING_URL, jsonObject,
-            response -> {
-                try {
-                    if (response.getBoolean("success")) {
-                        Toast.makeText(this, "Peminjaman berhasil diajukan", Toast.LENGTH_SHORT).show();
-                        cart.clear();
-                        updateSummary();
-                    } else {
-                        Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            },
-            error -> Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()
-        ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                String token = SharedPrefManager.getInstance(AssetListActivity.this).getToken();
-                if (token != null) {
-                    headers.put("Authorization", "Bearer " + token);
-                }
-                return headers;
-            }
-        };
-        VolleySingleton.getInstance(this).addToRequestQueue(request);
-    }
 }

@@ -47,6 +47,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/borrowings', [PeminjamanController::class, 'index']);
 Route::get('/borrowings/pending', [PeminjamanController::class, 'getPending']);
 Route::post('/borrowings/update-status', [PeminjamanController::class, 'updateStatus']);
+Route::post('/borrowings/{id}/return', [PeminjamanController::class, 'returnDevice']);
 
 // School class routes
 Route::get('/school-classes', [KelasController::class, 'index']);
@@ -57,7 +58,7 @@ Route::delete('/school-classes/{id}', [KelasController::class, 'destroy']);
 Route::middleware('auth:sanctum')->group(function () {
     // Student routes
     Route::get('/student/dashboard-stats', [StudentController::class, 'dashboardStats']);
-    Route::get('/student/active-borrowings', [StudentController::class, 'activeBorrowings']);
+    Route.get('/student/active-borrowings', [StudentController::class, 'activeBorrowings']);
     Route::get('/student/recent-requests', [StudentController::class, 'recentRequests']);
     Route::get('/student/borrowing-history', [StudentController::class, 'borrowingHistory']);
 

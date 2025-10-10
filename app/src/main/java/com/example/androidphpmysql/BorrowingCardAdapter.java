@@ -1,5 +1,6 @@
 package com.example.androidphpmysql;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdapter.ViewHolder> {
@@ -72,6 +75,24 @@ public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdap
                 holder.status.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray));
             }
 
+            // Check if borrowing has approved or borrowed items for return button
+            boolean hasReturnableItems = false;
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                String itemStatus = item.getString("status");
+                if ("approved".equals(itemStatus) || "borrowed".equals(itemStatus)) {
+                    hasReturnableItems = true;
+                    break;
+                }
+            }
+
+            if (hasReturnableItems) {
+                holder.returnButton.setVisibility(View.VISIBLE);
+                holder.returnButton.setOnClickListener(v -> showReturnItemSelection(borrowing));
+            } else {
+                holder.returnButton.setVisibility(View.GONE);
+            }
+
             holder.detailButton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, BorrowingDetailActivity.class);
                 intent.putExtra("borrowing_id", borrowing.getId());
@@ -95,10 +116,49 @@ public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdap
         return borrowingList.size();
     }
 
+    private void showReturnItemSelection(Borrowing borrowing) {
+        try {
+            JSONArray items = borrowing.getItems();
+            List<String> approvedItems = new ArrayList<>();
+            List<Integer> itemIds = new ArrayList<>();
+
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                String itemStatus = item.getString("status");
+                if ("approved".equals(itemStatus) || "borrowed".equals(itemStatus)) {
+                    String itemName = item.getJSONObject("commodity").getString("name");
+                    int quantity = item.getInt("quantity");
+                    String statusText = "approved".equals(itemStatus) ? "Approved" : "Borrowed";
+                    approvedItems.add(itemName + " (" + quantity + " unit) - " + statusText);
+                    itemIds.add(item.getInt("id"));
+                }
+            }
+
+            if (approvedItems.isEmpty()) {
+                Toast.makeText(context, "Tidak ada barang yang dapat dikembalikan", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Pilih Barang untuk Dikembalikan");
+            builder.setItems(approvedItems.toArray(new String[0]), (dialog, which) -> {
+                Intent intent = new Intent(context, ReturnFormActivity.class);
+                intent.putExtra("borrowing_id", borrowing.getId());
+                intent.putExtra("item_id", itemIds.get(which));
+                context.startActivity(intent);
+            });
+            builder.show();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Error loading items", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView assetImage;
         TextView assetName, tujuan, borrowDate, returnDate, status;
-        Button detailButton;
+        Button detailButton, returnButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -109,6 +169,7 @@ public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdap
             returnDate = itemView.findViewById(R.id.returnDate);
             status = itemView.findViewById(R.id.status);
             detailButton = itemView.findViewById(R.id.detailButton);
+            returnButton = itemView.findViewById(R.id.returnButton);
         }
     }
 }

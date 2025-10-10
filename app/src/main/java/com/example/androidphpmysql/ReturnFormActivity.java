@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,12 +18,17 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.example.androidphpmysql.Constants;
 import com.example.androidphpmysql.SharedPrefManager;
 import com.example.androidphpmysql.VolleySingleton;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +42,7 @@ public class ReturnFormActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private int borrowingId;
+    private int itemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +57,9 @@ public class ReturnFormActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
 
-        // Get borrowing ID from intent
+        // Get borrowing ID and item ID from intent
         borrowingId = getIntent().getIntExtra("borrowing_id", -1);
+        itemId = getIntent().getIntExtra("item_id", -1);
 
         // Set up spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -94,15 +100,20 @@ public class ReturnFormActivity extends AppCompatActivity {
     }
 
     private void submitReturn() {
-        if (borrowingId == -1) {
-            Toast.makeText(this, "Invalid borrowing ID", Toast.LENGTH_SHORT).show();
+        if (borrowingId == -1 || itemId == -1) {
+            Toast.makeText(this, "Invalid borrowing or item ID", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        String condition = spinnerCondition.getSelectedItem().toString();
+        String description = ""; // Optional description
 
         progressDialog.setMessage("Submitting return...");
         progressDialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constants.POST_UPDATE_BORROWING_STATUS_URL,
+        String url = Constants.POST_RETURN_BORROWING_URL.replace("{id}", String.valueOf(borrowingId));
+
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, url,
                 response -> {
                     progressDialog.dismiss();
                     Toast.makeText(ReturnFormActivity.this, "Return submitted successfully", Toast.LENGTH_SHORT).show();
@@ -112,11 +123,25 @@ public class ReturnFormActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     Toast.makeText(ReturnFormActivity.this, "Error submitting return: " + error.getMessage(), Toast.LENGTH_SHORT).show();
                 }) {
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("borrowing_id", String.valueOf(borrowingId));
-                params.put("status", "returned");
+                params.put("items[0][id]", String.valueOf(itemId));
+                params.put("items[0][condition]", condition);
+                params.put("items[0][description]", description);
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData() {
+                Map<String, DataPart> params = new HashMap<>();
+                if (selectedImage != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] imageBytes = baos.toByteArray();
+                    params.put("items[0][photo]", new DataPart("return_photo.jpg", imageBytes, "image/jpeg"));
+                }
                 return params;
             }
 
@@ -128,6 +153,129 @@ public class ReturnFormActivity extends AppCompatActivity {
             }
         };
 
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(multipartRequest);
+    }
+
+    // Custom MultipartRequest class for file uploads
+    public static class MultipartRequest extends Request<String> {
+
+        private final Response.Listener<String> mListener;
+        private final Map<String, String> mParams;
+        private final Map<String, DataPart> mByteData;
+        private final Map<String, String> mHeaders;
+
+        public MultipartRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+            super(method, url, errorListener);
+            mListener = listener;
+            mParams = new HashMap<>();
+            mByteData = new HashMap<>();
+            mHeaders = new HashMap<>();
+        }
+
+        @Override
+        protected Map<String, String> getParams() {
+            return mParams;
+        }
+
+        protected Map<String, DataPart> getByteData() {
+            return mByteData;
+        }
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            return mHeaders;
+        }
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            try {
+                String jsonString = new String(response.data, "UTF-8");
+                return Response.success(jsonString, getCacheEntry());
+            } catch (Exception e) {
+                return Response.error(new VolleyError(e));
+            }
+        }
+
+        @Override
+        protected void deliverResponse(String response) {
+            mListener.onResponse(response);
+        }
+
+        @Override
+        public String getBodyContentType() {
+            return "multipart/form-data; boundary=" + BOUNDARY;
+        }
+
+        @Override
+        public byte[] getBody() throws AuthFailureError {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            try {
+                // Add text parameters
+                for (Map.Entry<String, String> entry : mParams.entrySet()) {
+                    buildTextPart(bos, entry.getKey(), entry.getValue());
+                }
+
+                // Add file parameters
+                for (Map.Entry<String, DataPart> entry : mByteData.entrySet()) {
+                    buildDataPart(bos, entry.getValue(), entry.getKey());
+                }
+
+                // Add closing boundary
+                bos.write(("--" + BOUNDARY + "--\r\n").getBytes());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bos.toByteArray();
+        }
+
+        private void buildTextPart(ByteArrayOutputStream bos, String key, String value) throws IOException {
+            bos.write(("--" + BOUNDARY + "\r\n").getBytes());
+            bos.write(("Content-Disposition: form-data; name=\"" + key + "\"\r\n").getBytes());
+            bos.write(("Content-Type: text/plain\r\n\r\n").getBytes());
+            bos.write((value + "\r\n").getBytes());
+        }
+
+        private void buildDataPart(ByteArrayOutputStream bos, DataPart dataPart, String inputName) throws IOException {
+            bos.write(("--" + BOUNDARY + "\r\n").getBytes());
+            bos.write(("Content-Disposition: form-data; name=\"" + inputName + "\"; filename=\"" + dataPart.getFileName() + "\"\r\n").getBytes());
+            bos.write(("Content-Type: " + dataPart.getType() + "\r\n\r\n").getBytes());
+            bos.write(dataPart.getContent());
+            bos.write(("\r\n").getBytes());
+        }
+
+        private static final String BOUNDARY = "apiclient-" + System.currentTimeMillis();
+
+        public static class DataPart {
+            private String fileName;
+            private byte[] content;
+            private String type;
+
+            public DataPart() {
+            }
+
+            public DataPart(String name, byte[] data) {
+                fileName = name;
+                content = data;
+            }
+
+            public DataPart(String name, byte[] data, String mimeType) {
+                fileName = name;
+                content = data;
+                type = mimeType;
+            }
+
+            public String getFileName() {
+                return fileName;
+            }
+
+            public byte[] getContent() {
+                return content;
+            }
+
+            public String getType() {
+                return type;
+            }
+        }
     }
 }

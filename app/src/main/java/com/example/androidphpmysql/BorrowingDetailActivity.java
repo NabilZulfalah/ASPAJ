@@ -55,20 +55,27 @@ public class BorrowingDetailActivity extends AppCompatActivity {
         returnButton = findViewById(R.id.returnButton);
 
         recyclerViewItems.setLayoutManager(new LinearLayoutManager(this));
-        borrowingItemAdapter = new BorrowingItemAdapter(this, itemList);
+        borrowingItemAdapter = new BorrowingItemAdapter(this, itemList, borrowingId);
         recyclerViewItems.setAdapter(borrowingItemAdapter);
 
         loadBorrowingDetails();
     }
 
     private void loadBorrowingDetails() {
-        String url = Constants.BASE_URL + "student/borrowings/" + borrowingId;
+        String url = Constants.BASE_URL + "borrowings/" + borrowingId;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONObject data = response.getJSONObject("data");
+                            // Check if response has "data" key (single object) or is the data directly
+                            JSONObject data;
+                            if (response.has("data")) {
+                                data = response.getJSONObject("data");
+                            } else {
+                                data = response;
+                            }
+
                             detailId.setText("#" + data.getInt("id"));
                             detailBorrowDate.setText("Tanggal Peminjaman: " + data.getString("borrow_date"));
                             detailReturnDate.setText("Tanggal Kembali: " + (data.isNull("return_date") ? "-" : data.getString("return_date")));
@@ -82,6 +89,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
                                 JSONObject commodity = itemObj.getJSONObject("commodity");
                                 String photoUrl = commodity.optString("photo", null);
                                 BorrowingItem item = new BorrowingItem(
+                                        itemObj.getInt("id"),
                                         commodity.getString("name"),
                                         commodity.getString("code"),
                                         itemObj.getInt("quantity"),
@@ -92,19 +100,42 @@ public class BorrowingDetailActivity extends AppCompatActivity {
                             }
                             borrowingItemAdapter.notifyDataSetChanged();
 
-                            if ("approved".equals(borrowingStatus)) {
+                            // Show return button if borrowing has approved or borrowed items
+                            boolean hasReturnableItems = false;
+                            for (BorrowingItem item : itemList) {
+                                if ("approved".equals(item.getStatus()) || "borrowed".equals(item.getStatus())) {
+                                    hasReturnableItems = true;
+                                    break;
+                                }
+                            }
+
+                            if (hasReturnableItems) {
                                 returnButton.setVisibility(View.VISIBLE);
                                 returnButton.setOnClickListener(v -> {
-                                    Intent intent = new Intent(BorrowingDetailActivity.this, ReturnFormActivity.class);
-                                    intent.putExtra("borrowing_id", borrowingId);
-                                    startActivity(intent);
+                                    // Find the first returnable item
+                                    int returnableItemId = -1;
+                                    for (BorrowingItem item : itemList) {
+                                        if ("approved".equals(item.getStatus()) || "borrowed".equals(item.getStatus())) {
+                                            returnableItemId = item.getId();
+                                            break;
+                                        }
+                                    }
+
+                                    if (returnableItemId != -1) {
+                                        Intent intent = new Intent(BorrowingDetailActivity.this, ReturnFormActivity.class);
+                                        intent.putExtra("borrowing_id", borrowingId);
+                                        intent.putExtra("item_id", returnableItemId);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(BorrowingDetailActivity.this, "No returnable items found.", Toast.LENGTH_SHORT).show();
+                                    }
                                 });
                             } else {
                                 returnButton.setVisibility(View.GONE);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(BorrowingDetailActivity.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BorrowingDetailActivity.this, "Error parsing data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 },
@@ -126,13 +157,15 @@ public class BorrowingDetailActivity extends AppCompatActivity {
 
     // Inner class for item model
     public static class BorrowingItem {
+        private int id;
         private String name;
         private String code;
         private int quantity;
         private String status;
         private String photoUrl;
 
-        public BorrowingItem(String name, String code, int quantity, String status, String photoUrl) {
+        public BorrowingItem(int id, String name, String code, int quantity, String status, String photoUrl) {
+            this.id = id;
             this.name = name;
             this.code = code;
             this.quantity = quantity;
@@ -140,6 +173,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
             this.photoUrl = photoUrl;
         }
 
+        public int getId() { return id; }
         public String getName() { return name; }
         public String getCode() { return code; }
         public int getQuantity() { return quantity; }

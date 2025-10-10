@@ -33,6 +33,7 @@ public class Constants {
     public static final String STORE_BORROWING_URL = BASE_URL + "borrowings"; // POST: Membuat peminjaman baru
     public static final String GET_PENDING_BORROWINGS_URL = BASE_URL + "borrowings/pending"; // GET: Mendapatkan daftar peminjaman yang pending
     public static final String POST_UPDATE_BORROWING_STATUS_URL = BASE_URL + "borrowings/update-status"; // POST: Memperbarui status peminjaman
+    public static final String POST_RETURN_BORROWING_URL = BASE_URL + "borrowings/{id}/return"; // POST: Mengembalikan item peminjaman
 
     // Endpoint untuk mengambil data kelas sekolah
     public static final String GET_SCHOOL_CLASSES_URL = BASE_URL + "school-classes"; // GET: Mendapatkan daftar kelas sekolah
