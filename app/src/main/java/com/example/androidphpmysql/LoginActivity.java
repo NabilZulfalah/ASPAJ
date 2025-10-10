@@ -42,7 +42,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
-            startActivity(new Intent(this, ProfileActivity.class));
+            String role = SharedPrefManager.getInstance(this).getUserRole();
+            if ("students".equals(role)) {
+                startActivity(new Intent(this, StudentDashboardActivity.class));
+            } else {
+                startActivity(new Intent(this, ProfileActivity.class));
+            }
             return;
         }
 
@@ -106,7 +111,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .userLogin(
                                                 userJson.getInt("id"),
                                                 userJson.getString("name"),
-                                                userJson.getString("email")
+                                                userJson.getString("email"),
+                                                userJson.getString("role")
                                         );
 
                                 // Save token to SharedPrefManager
@@ -120,8 +126,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 // Log sukses login
                                 Log.d("LoginActivity", "Login berhasil: " + message);
 
-                                // Pindah ke ProfileActivity dan tutup LoginActivity
-                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                // Pindah ke activity berdasarkan role
+                                String role = userJson.getString("role");
+                                Intent intent;
+                                if ("students".equals(role)) {
+                                    intent = new Intent(getApplicationContext(), StudentDashboardActivity.class);
+                                } else {
+                                    intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                                }
+                                startActivity(intent);
                                 finish();
                             } else {
                                 // Jika login gagal, tampilkan pesan error di Toast

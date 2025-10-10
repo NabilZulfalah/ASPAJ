@@ -33,7 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, AssetAdapter.QuantityChangeListener {
 
     private TextView textViewUsername, textViewEmail;
     private Button buttonAssetList, buttonUserManagement, buttonKelasManagement;
@@ -176,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             assetList.add(asset);
                         }
 
-                        adapter = new AssetAdapter(ProfileActivity.this, assetList);
+                        adapter = new AssetAdapter(ProfileActivity.this, assetList, ProfileActivity.this);
                         recyclerView.setAdapter(adapter);
                     } else {
                         Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -315,5 +315,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onQuantityChange(int assetId, int quantity) {
+        // Profile activity does not handle quantity changes
     }
 }

@@ -46,6 +46,33 @@
             android:name=".AddKelasActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".StudentDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AssetBorrowActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".SelectJurusanActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".BorrowingStatusActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".BorrowingDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".UserListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".KelasListActivity"
+            android:exported="false" />
 
         <activity
             android:name=".LoginActivity"

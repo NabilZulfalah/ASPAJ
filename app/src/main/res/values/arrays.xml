@@ -19,10 +19,16 @@
         <item>3</item>
         <item>4</item>
     </string-array>
-    <string-array name="program_study_array">
+    <string-array name="jurusan_array">
+        <item>All</item>
         <item>Teknik Informatika</item>
         <item>Sistem Informasi</item>
         <item>Teknik Elektro</item>
         <item>Teknik Mesin</item>
+    </string-array>
+    <string-array name="condition_array">
+        <item>Good</item>
+        <item>Damaged</item>
+        <item>Broken</item>
     </string-array>
 </resources>

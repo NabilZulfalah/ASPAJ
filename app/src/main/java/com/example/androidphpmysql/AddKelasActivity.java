@@ -68,7 +68,7 @@ public class AddKelasActivity extends AppCompatActivity implements View.OnClickL
         spinnerLevel.setAdapter(levelAdapter);
 
         ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(this,
-                R.array.program_study_array, android.R.layout.simple_spinner_item);
+                R.array.jurusan_array, android.R.layout.simple_spinner_item);
         programAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerProgramStudy.setAdapter(programAdapter);
 

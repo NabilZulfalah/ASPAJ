@@ -1,16 +1,5 @@
 <resources>
     <string name="app_name">AndroidPHPMySQL</string>
-    <string-array name="jurusan_array">
-        <item>Rekayasa Perangkat Lunak</item>
-        <item>Teknik Otomasi Industri</item>
-        <item>Desain Komunikasi Visual</item>
-        <item>Teknik Audio Video</item>
-        <item>Teknik Komputer Jaringan</item>
-        <item>Teknik Instalasi Tenaga Listrik</item>
-    </string-array>
-
-
-
     <string-array name="program_filter_options">
         <item>Semua Program Studi</item>
         <item>Rekayasa Perangkat Lunak</item>
@@ -36,4 +25,7 @@
 
     <!-- Spinner Prompts -->
     <string name="spinner_prompt_program">Semua Program Studi</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

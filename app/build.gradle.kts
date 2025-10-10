@@ -78,4 +78,7 @@ dependencies {
 
     // ⚠️ Alternatif lebih ringan untuk Android (jika error OutOfMemory)
     // implementation("com.github.SUPERCILEX.poi-android:poi:3.17")
+
+    // Image loading library
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }

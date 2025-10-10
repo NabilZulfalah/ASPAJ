@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#f8f9fa">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pilih Jurusan"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"
+        android:textColor="#333" />
+
+    <GridLayout
+        android:id="@+id/gridJurusan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="4"
+        android:layout_marginBottom="16dp">
+
+        <!-- Lihat Semua Barang -->
+        <Button
+            android:id="@+id/btnSemua"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Lihat Semua Barang"
+            android:textSize="14sp"
+            android:textColor="#fff"
+            android:background="@drawable/jurusan_button_bg"
+            android:layout_margin="8dp" />
+
+        <!-- Rekayasa Perangkat Lunak -->
+        <Button
+            android:id="@+id/btnRekayasaPerangkatLunak"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Rekayasa Perangkat Lunak"
+            android:textSize="12sp"
+            android:textColor="#fff"
+            android:background="#28a745"
+            android:layout_margin="8dp" />
+
+        <!-- Desain Komunikasi Visual -->
+        <Button
+            android:id="@+id/btnDesainKomunikasiVisual"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Desain Komunikasi Visual"
+            android:textSize="12sp"
+            android:textColor="#fff"
+            android:background="#6f42c1"
+            android:layout_margin="8dp" />
+
+        <!-- Teknik Otomasi Industri -->
+        <Button
+            android:id="@+id/btnTeknikOtomasiIndustri"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Teknik Otomasi Industri"
+            android:textSize="12sp"
+            android:textColor="#fff"
+            android:background="#6c757d"
+            android:layout_margin="8dp" />
+
+        <!-- Teknik Instalasi Tenaga Listrik -->
+        <Button
+            android:id="@+id/btnTeknikInstalasiTenagaListrik"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Teknik Instalasi Tenaga Listrik"
+            android:textSize="12sp"
+            android:textColor="#fff"
+            android:background="#0d6efd"
+            android:layout_margin="8dp" />
+
+        <!-- Teknik Audio Video -->
+        <Button
+            android:id="@+id/btnTeknikAudioVideo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Teknik Audio Video"
+            android:textSize="12sp"
+            android:textColor="#fff"
+            android:background="#ffc107"
+            android:layout_margin="8dp" />
+
+        <!-- Teknik Komputer Jaringan -->
+        <Button
+            android:id="@+id/btnTeknikKomputerJaringan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:text="Teknik Komputer Jaringan"
+            android:textSize="12sp"
+            android:textColor="#fff"
+            android:background="#dc3545"
+            android:layout_margin="8dp" />
+
+    </GridLayout>
+
+</LinearLayout>

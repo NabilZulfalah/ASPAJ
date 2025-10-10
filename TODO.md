@@ -1,13 +1,8 @@
-# TODO: Update Android Project to Laravel API with Volley
+# TODO: Fix photo display in borrowing status and detail pages
 
-## Tasks to Complete
-
-- [x] Create VolleySingleton.java: Implement singleton pattern for global RequestQueue with detailed comments explaining the concept and usage.
-- [x] Update Constants.java: Change base URL to Laravel API, update all endpoint URLs, add detailed comments for each constant.
-- [x] Update AssetListActivity.java: Replace StringRequest with JsonArrayRequest for GET /api/assets, parse Laravel JSON response, display data in Logcat or RecyclerView, handle errors, add detailed comments.
-- [x] Update LoginActivity.java: Update StringRequest to POST /api/login, send email/password params, parse Laravel JSON response, show in Toast/Logcat, handle errors, add comments.
-- [ ] Verify Volley dependency in build.gradle.kts and test the updated activities.
-
-## Progress Tracking
-- Started: [Date/Time]
-- Completed: [Date/Time]
+- [x] Fix field name mismatch: Android expecting "photo_url" but API returning "photo"
+- [x] Add GET /student/borrowings/{id} route for individual borrowing details
+- [x] Update StudentController to return "photo" field with full URL
+- [x] Update Android code to use "photo" field and handle full URLs
+- [x] Fix double slash in photo URLs by using ltrim($photo, '/') in API controllers
+- [x] Test photo loading in borrowing status and detail activities
