@@ -292,7 +292,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
                 holder.btnReturnItem.setOnClickListener(v -> {
                     Intent intent = new Intent(holder.itemView.getContext(), ReturnFormActivity.class);
                     intent.putExtra("borrowing_id", borrowingId);
-                    intent.putExtra("item_id", String.valueOf(item.getItemId()));
+                    intent.putExtra("item_id", item.getItemId());
                     holder.itemView.getContext().startActivity(intent);
                 });
             } else {

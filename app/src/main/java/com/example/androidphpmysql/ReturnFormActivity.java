@@ -41,7 +41,7 @@ public class ReturnFormActivity extends AppCompatActivity {
     private Bitmap selectedImage;
     private ProgressDialog progressDialog;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private int borrowingId;
+    private String borrowingId;
     private int itemId;
 
     @Override
@@ -58,7 +58,7 @@ public class ReturnFormActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
 
         // Get borrowing ID and item ID from intent
-        borrowingId = getIntent().getIntExtra("borrowing_id", -1);
+        borrowingId = getIntent().getStringExtra("borrowing_id");
         itemId = getIntent().getIntExtra("item_id", -1);
 
         // Set up spinner
@@ -100,7 +100,7 @@ public class ReturnFormActivity extends AppCompatActivity {
     }
 
     private void submitReturn() {
-        if (borrowingId == -1 || itemId == -1) {
+        if (borrowingId == null || itemId == -1) {
             Toast.makeText(this, "Invalid borrowing or item ID", Toast.LENGTH_SHORT).show();
             return;
         }

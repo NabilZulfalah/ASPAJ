@@ -81,4 +81,7 @@ dependencies {
 
     // Image loading library
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Image cropping library
+    implementation("com.github.CanHub:Android-Image-Cropper:4.3.1")
 }

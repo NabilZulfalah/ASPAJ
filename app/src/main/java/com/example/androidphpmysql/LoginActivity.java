@@ -120,6 +120,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 SharedPrefManager.getInstance(getApplicationContext())
                                         .saveToken(token);
 
+                                // Save user class if student
+                                String userClass = "";
+                                try {
+                                    if (userJson.has("student") && !userJson.isNull("student")) {
+                                        JSONObject student = userJson.getJSONObject("student");
+                                        if (student.has("school_class") && !student.isNull("school_class")) {
+                                            JSONObject schoolClass = student.getJSONObject("school_class");
+                                            userClass = schoolClass.optString("name", "");
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                SharedPrefManager.getInstance(getApplicationContext()).saveUserClass(userClass);
+
                                 // Tampilkan pesan sukses di Toast
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
@@ -192,6 +207,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view == buttonLogin) {
             loginUser();
+        } else if (view.getId() == R.id.textViewForgotPassword) {
+            startActivity(new Intent(this, ForgotPasswordActivity.class));
         }
     }
 
