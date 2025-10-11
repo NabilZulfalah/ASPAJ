@@ -93,7 +93,15 @@ public class BorrowConfirmActivity extends AppCompatActivity {
         }
 
         try {
-            JSONArray itemsArray = new JSONArray(cartJson);
+            JSONArray originalItems = new JSONArray(cartJson);
+            JSONArray itemsArray = new JSONArray();
+            for (int i = 0; i < originalItems.length(); i++) {
+                JSONObject item = originalItems.getJSONObject(i);
+                JSONObject newItem = new JSONObject();
+                newItem.put("asset_id", item.getInt("asset_id"));
+                newItem.put("quantity", item.getInt("quantity"));
+                itemsArray.put(newItem);
+            }
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("items", itemsArray);
             jsonObject.put("tujuan", tujuan);

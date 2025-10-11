@@ -6,7 +6,7 @@ package com.example.androidphpmysql;
  */
 public class Constants {
     // Base URL API Laravel
-    public static final String BASE_URL = "http://192.168.0.113:8000/api/";
+    public static final String BASE_URL = "http://192.168.0.117:8000/api/";
 
 
     // Endpoint untuk mengambil, menambah, mengubah, dan menghapus data aset

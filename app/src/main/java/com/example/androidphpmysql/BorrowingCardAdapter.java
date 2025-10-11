@@ -86,11 +86,12 @@ public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdap
                 }
             }
 
-            if (hasReturnableItems) {
+            // Hide return button if borrowing status is returned or no returnable items
+            if ("returned".equals(borrowing.getStatus()) || !hasReturnableItems) {
+                holder.returnButton.setVisibility(View.GONE);
+            } else {
                 holder.returnButton.setVisibility(View.VISIBLE);
                 holder.returnButton.setOnClickListener(v -> showReturnItemSelection(borrowing));
-            } else {
-                holder.returnButton.setVisibility(View.GONE);
             }
 
             holder.detailButton.setOnClickListener(v -> {

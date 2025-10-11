@@ -55,7 +55,7 @@ public class BorrowingStatusActivity extends AppCompatActivity {
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject obj = dataArray.getJSONObject(i);
                                 Borrowing borrowing = new Borrowing(
-                                        obj.getInt("id"),
+                                        obj.getString("id"),
                                         obj.getString("status"),
                                         obj.getString("borrow_date"),
                                         obj.getString("return_date"),

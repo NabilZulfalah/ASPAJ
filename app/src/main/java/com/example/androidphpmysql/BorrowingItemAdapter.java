@@ -19,10 +19,10 @@ import java.util.List;
 public class BorrowingItemAdapter extends RecyclerView.Adapter<BorrowingItemAdapter.ViewHolder> {
 
     private Context context;
-    private List<BorrowingDetailActivity.BorrowingItem> itemList;
+    private List<BorrowingItem> itemList;
     private int borrowingId;
 
-    public BorrowingItemAdapter(Context context, List<BorrowingDetailActivity.BorrowingItem> itemList, int borrowingId) {
+    public BorrowingItemAdapter(Context context, List<BorrowingItem> itemList, int borrowingId) {
         this.context = context;
         this.itemList = itemList;
         this.borrowingId = borrowingId;
@@ -31,45 +31,57 @@ public class BorrowingItemAdapter extends RecyclerView.Adapter<BorrowingItemAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_borrowing_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_borrowed_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        BorrowingDetailActivity.BorrowingItem item = itemList.get(position);
+        BorrowingItem item = itemList.get(position);
 
-        holder.itemName.setText(item.getName());
-        holder.itemCode.setText("Kode: " + item.getCode());
-        holder.itemQuantity.setText("Qty: " + item.getQuantity());
-        holder.itemStatus.setText(item.getStatus().toUpperCase());
+        holder.tvCode.setText(item.getCode());
+        holder.tvName.setText(item.getName());
+        holder.tvQuantity.setText("Qty " + item.getQuantity());
+        holder.tvStatus.setText(item.getStatus().toUpperCase());
 
         // Load photo if available
         if (item.getPhotoUrl() != null && !item.getPhotoUrl().isEmpty()) {
             Glide.with(context).load(item.getPhotoUrl()).into(holder.itemImage);
         } else {
-            holder.itemImage.setImageResource(android.R.drawable.ic_menu_gallery);
+            holder.itemImage.setImageResource(R.drawable.ic_asset_placeholder);
         }
 
         // Set status color
-        if ("borrowed".equals(item.getStatus())) {
-            holder.itemStatus.setBackgroundColor(context.getResources().getColor(android.R.color.holo_blue_light));
-            holder.pickupNote.setVisibility(View.VISIBLE);
-            holder.returnButton.setVisibility(View.VISIBLE);
-            holder.returnButton.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ReturnFormActivity.class);
-                intent.putExtra("borrowing_id", borrowingId);
-                intent.putExtra("item_id", item.getId());
-                context.startActivity(intent);
-            });
-        } else if ("returned".equals(item.getStatus())) {
-            holder.itemStatus.setBackgroundColor(context.getResources().getColor(android.R.color.holo_green_light));
-            holder.pickupNote.setVisibility(View.GONE);
-            holder.returnButton.setVisibility(View.GONE);
+        int statusColor = context.getResources().getColor(android.R.color.darker_gray);
+        switch (item.getStatus().toLowerCase()) {
+            case "returned":
+                statusColor = context.getResources().getColor(android.R.color.holo_green_dark);
+                break;
+            case "rejected":
+                statusColor = context.getResources().getColor(android.R.color.holo_red_dark);
+                break;
+            case "approved":
+                statusColor = context.getResources().getColor(android.R.color.holo_blue_dark);
+                break;
+            case "borrowed":
+                statusColor = context.getResources().getColor(android.R.color.holo_orange_dark);
+                break;
+        }
+        holder.tvStatus.setBackgroundColor(statusColor);
+        holder.tvStatus.setTextColor(context.getResources().getColor(android.R.color.white));
+
+        if (item.getStockInfo() != null && !item.getStockInfo().isEmpty()) {
+            holder.tvStockInfo.setVisibility(View.VISIBLE);
+            holder.tvStockInfo.setText(item.getStockInfo());
         } else {
-            holder.itemStatus.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray));
-            holder.pickupNote.setVisibility(View.GONE);
-            holder.returnButton.setVisibility(View.GONE);
+            holder.tvStockInfo.setVisibility(View.GONE);
+        }
+
+        // For borrowed status, show return button if needed
+        if ("borrowed".equals(item.getStatus())) {
+            // If you want to add return button logic here, but for detail view, perhaps not
+            // holder.returnButton.setVisibility(View.VISIBLE);
+            // etc.
         }
     }
 
@@ -80,18 +92,16 @@ public class BorrowingItemAdapter extends RecyclerView.Adapter<BorrowingItemAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
-        TextView itemName, itemCode, itemQuantity, itemStatus, pickupNote;
-        Button returnButton;
+        TextView tvCode, tvName, tvStatus, tvQuantity, tvStockInfo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemImage = itemView.findViewById(R.id.itemImage);
-            itemName = itemView.findViewById(R.id.itemName);
-            itemCode = itemView.findViewById(R.id.itemCode);
-            itemQuantity = itemView.findViewById(R.id.itemQuantity);
-            itemStatus = itemView.findViewById(R.id.itemStatus);
-            pickupNote = itemView.findViewById(R.id.pickupNote);
-            returnButton = itemView.findViewById(R.id.returnButton);
+            itemImage = itemView.findViewById(R.id.itemImage); // Add ImageView to layout if needed
+            tvCode = itemView.findViewById(R.id.tvCode);
+            tvName = itemView.findViewById(R.id.tvName);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
+            tvQuantity = itemView.findViewById(R.id.tvQuantity);
+            tvStockInfo = itemView.findViewById(R.id.tvStockInfo);
         }
     }
 }

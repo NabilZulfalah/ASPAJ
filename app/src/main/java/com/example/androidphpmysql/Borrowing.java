@@ -3,14 +3,14 @@ package com.example.androidphpmysql;
 import org.json.JSONArray;
 
 public class Borrowing {
-    private int id;
+    private String id;
     private String status;
     private String borrowDate;
     private String returnDate;
     private String tujuan;
     private JSONArray items;
 
-    public Borrowing(int id, String status, String borrowDate, String returnDate, String tujuan, JSONArray items) {
+    public Borrowing(String id, String status, String borrowDate, String returnDate, String tujuan, JSONArray items) {
         this.id = id;
         this.status = status;
         this.borrowDate = borrowDate;
@@ -19,7 +19,7 @@ public class Borrowing {
         this.items = items;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

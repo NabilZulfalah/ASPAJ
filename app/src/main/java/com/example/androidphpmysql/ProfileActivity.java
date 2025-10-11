@@ -224,8 +224,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             String email = userObject.optString("email", "");
                             String role = userObject.optString("role", "");
                             String approvalStatus = userObject.optString("approval_status", "");
+                            String jurusan = userObject.optString("jurusan", "");
 
-                            User user = new User(id, name, email, role, approvalStatus);
+                            User user = new User(id, name, email, role, approvalStatus, jurusan);
 
                             userList.add(user);
                         }

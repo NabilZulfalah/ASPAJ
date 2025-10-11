@@ -127,9 +127,9 @@ public class ReturnFormActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("items[0][id]", String.valueOf(itemId));
-                params.put("items[0][condition]", condition);
-                params.put("items[0][description]", description);
+                params.put("item_id", String.valueOf(itemId));
+                params.put("condition", condition);
+                params.put("description", description);
                 return params;
             }
 
@@ -140,7 +140,7 @@ public class ReturnFormActivity extends AppCompatActivity {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageBytes = baos.toByteArray();
-                    params.put("items[0][photo]", new DataPart("return_photo.jpg", imageBytes, "image/jpeg"));
+                    params.put("photo", new DataPart("return_photo.jpg", imageBytes, "image/jpeg"));
                 }
                 return params;
             }
@@ -149,6 +149,7 @@ public class ReturnFormActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + SharedPrefManager.getInstance(ReturnFormActivity.this).getToken());
+                headers.put("Accept", "application/json");
                 return headers;
             }
         };
@@ -211,12 +212,12 @@ public class ReturnFormActivity extends AppCompatActivity {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             try {
                 // Add text parameters
-                for (Map.Entry<String, String> entry : mParams.entrySet()) {
+                for (Map.Entry<String, String> entry : getParams().entrySet()) {
                     buildTextPart(bos, entry.getKey(), entry.getValue());
                 }
 
                 // Add file parameters
-                for (Map.Entry<String, DataPart> entry : mByteData.entrySet()) {
+                for (Map.Entry<String, DataPart> entry : getByteData().entrySet()) {
                     buildDataPart(bos, entry.getValue(), entry.getKey());
                 }
 

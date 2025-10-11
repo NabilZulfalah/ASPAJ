@@ -8,13 +8,15 @@ public class User implements Serializable {
     private String email;
     private String role;
     private String approvalStatus;
+    private String jurusan;
 
-    public User(int id, String name, String email, String role, String approvalStatus) {
+    public User(int id, String name, String email, String role, String approvalStatus, String jurusan) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.approvalStatus = approvalStatus;
+        this.jurusan = jurusan;
     }
 
     public int getId() {
@@ -35,5 +37,9 @@ public class User implements Serializable {
 
     public String getApprovalStatus() {
         return approvalStatus;
+    }
+
+    public String getJurusan() {
+        return jurusan;
     }
 }

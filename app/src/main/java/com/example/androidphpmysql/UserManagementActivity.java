@@ -64,8 +64,9 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                                     String email = userObject.optString("email", "");
                                     String role = userObject.optString("role", "");
                                     String approvalStatus = userObject.optString("approval_status", "");
+                                    String jurusan = userObject.optString("jurusan", "");
 
-                                    User user = new User(id, name, email, role, approvalStatus);
+                                    User user = new User(id, name, email, role, approvalStatus, jurusan);
 
                                     userList.add(user);
                                 }
@@ -99,6 +100,7 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
         intent.putExtra("user_email", user.getEmail());
         intent.putExtra("user_role", user.getRole());
         intent.putExtra("user_approval_status", user.getApprovalStatus());
+        intent.putExtra("user_jurusan", user.getJurusan());
         startActivity(intent);
     }
 

@@ -96,7 +96,8 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
         spinnerJurusan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedJurusan = parent.getItemAtPosition(position).toString();
+                String selected = parent.getItemAtPosition(position).toString();
+                selectedJurusan = "Semua Program Studi".equals(selected) ? "all" : selected;
                 loadAssets();
             }
 

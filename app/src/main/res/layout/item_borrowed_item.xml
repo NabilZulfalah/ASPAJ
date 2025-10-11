@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <!-- Code -->
+        <TextView
+            android:id="@+id/tvCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AC001"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingEnd="8dp" />
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="AC Cooler"
+            android:textSize="14sp"
+            android:paddingEnd="8dp" />
+
+        <!-- Name (implied, but shown as image placeholder or text) -->
+        <ImageView
+            android:id="@+id/itemImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_asset_placeholder"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Status Badge -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/status_badge_background"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:text="RETURNED"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Quantity -->
+        <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qty 1"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Stock Info (optional) -->
+        <TextView
+            android:id="@+id/tvStockInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Stok ambil barang untuk kelas 2"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Note for approved items -->
+    <TextView
+        android:id="@+id/tvNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Note here"
+        android:textSize="12sp"
+        android:textColor="#FF0000"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp" />
+
+    <!-- Return button for approved items -->
+    <Button
+        android:id="@+id/btnReturnItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kembalikan"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp" />
+
+</androidx.cardview.widget.CardView>

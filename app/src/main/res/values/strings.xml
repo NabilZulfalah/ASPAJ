@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">AndroidPHPMySQL</string>
-    <string-array name="program_filter_options">
+
+    <string-array name="jurusan_array">
         <item>Semua Program Studi</item>
         <item>Rekayasa Perangkat Lunak</item>
         <item>Teknik Otomasi Industri</item>
@@ -10,9 +11,22 @@
         <item>Teknik Instalasi Tenaga Listrik</item>
     </string-array>
 
-    <string-array name="status_options">
+    <string-array name="approval_array">
         <item>Approved</item>
         <item>Unverified</item>
+    </string-array>
+
+    <string-array name="role_filter_options">
+        <item>Semua Role</item>
+        <item>students</item>
+        <item>admin</item>
+        <item>lecturer</item>
+    </string-array>
+
+    <string-array name="role_array">
+        <item>students</item>
+        <item>admin</item>
+        <item>lecturer</item>
     </string-array>
 
     <!-- Excel Import Strings -->

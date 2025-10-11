@@ -77,7 +77,7 @@ public class KelasListActivity extends AppCompatActivity implements KelasAdapter
         recyclerViewKelas.setAdapter(kelasAdapter);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.program_filter_options, android.R.layout.simple_spinner_item);
+                R.array.jurusan_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerProgramFilter.setAdapter(adapter);
         spinnerProgramFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

@@ -1,41 +1,34 @@
-# TODO: Implement Item-Level Return Functionality
+# TODO: Add Laravel Logs to API Controllers
 
-## Problem
-Currently, the return process only allows returning the entire borrowing, but users need to return individual items with condition and photo proof.
+## Overview
+Add Laravel logging to all public methods in API controllers for debugging purposes. This includes importing the Log facade and adding Log::info() statements at the start and end of each method, plus Log::error() for exceptions and errors.
 
-## Solution
-Implement item-level return functionality where users can select specific approved items to return, fill condition and upload photo.
+## Controllers to Update
+- PeminjamanController.php (6 methods: index, getPending, show, updateStatus, store, returnBorrowing)
+- StudentController.php (5 methods: dashboardStats, activeBorrowings, recentRequests, borrowingHistory, showBorrowing)
+- AuthController.php (1 method: login)
+- KelasController.php (4 methods: index, store, update, destroy)
+- UserController.php (4 methods: index, store, update, destroy)
+- AsetController.php (5 methods: index, store, update, destroy, commodities)
 
-## Steps to Complete
+## Steps
+1. [x] Add `use Illuminate\Support\Facades\Log;` to PeminjamanController.php
+2. [x] Add logging to all methods in PeminjamanController.php
+3. [x] Add `use Illuminate\Support\Facades\Log;` to StudentController.php
+4. [x] Add logging to all methods in StudentController.php
+5. [x] Add `use Illuminate\Support\Facades\Log;` to AuthController.php
+6. [x] Add logging to login method in AuthController.php
+7. [x] Add `use Illuminate\Support\Facades\Log;` to KelasController.php
+8. [x] Add logging to all methods in KelasController.php
+9. [x] Add `use Illuminate\Support\Facades\Log;` to UserController.php
+10. [x] Add logging to all methods in UserController.php
+11. [x] Add `use Illuminate\Support\Facades\Log;` to AsetController.php
+12. [x] Add logging to all methods in AsetController.php
+13. [x] Add Log::error() for exceptions and error cases in PeminjamanController (returnBorrowing method updated with error logs for status not approved, unauthorized, validation errors, and exceptions)
+14. [x] Fix validation error "The items field is required" in returnBorrowing by changing Android app to send single item parameters (item_id, condition, description, photo) instead of nested array, and updated controller validation and logic accordingly.
+15. [x] Test logging by making API calls and checking Laravel log files (logging confirmed working, validation error fixed by increasing photo max size to 10000 KB)
 
-1. **Update BorrowingCardAdapter.java**
-   - [x] Add "Kembalikan" button if borrowing has borrowed items
-   - [x] On click, show dialog to select which borrowed items to return
-   - [x] Navigate to ReturnFormActivity with selected items
-
-2. **Update BorrowingItemAdapter.java**
-   - [x] For borrowed items, show pickup note and "Kembalikan" button
-   - [x] On click, navigate to ReturnFormActivity for that specific item
-   - [x] Updated BorrowingDetailActivity to pass borrowingId and item id
-
-3. **Update ReturnFormActivity.java**
-   - [x] Modify to handle multiple items or single item
-   - [x] Send condition and photo for each item
-   - [x] Use correct API endpoint for item-level returns
-   - [x] Changed from base64 to multipart file upload
-
-4. **Update Constants.java**
-   - [x] Add endpoint for item-level returns
-
-5. **Update PeminjamanController.php**
-   - [x] Ensure returnBorrowing method is accessible via API route
-
-6. **Test the functionality**
-   - [x] Build successful - app compiles without errors
-   - [x] Fixed "Kembalikan" button visibility on status page for approved/borrowed items
-   - [x] Fixed parsing error in BorrowingDetailActivity by switching to general API endpoint
-   - [x] Added missing 'id' field to items in StudentController API responses
-   - [ ] Run app, check status page shows "Kembalikan" for approved borrowings
-   - [ ] Click "Kembalikan" button - should show item selection dialog without "Error loading items"
-   - [ ] Select items to return, fill form, submit
-   - [ ] Verify items are marked as returned with condition and photo
+## Notes
+- Log messages: 'ControllerName::methodName started' at beginning, 'ControllerName::methodName ended' before each return
+- Log errors: 'ControllerName::methodName error: message' in catch blocks or error returns
+- Ensure logs help debug issues like 400 errors in borrowing/return submissions

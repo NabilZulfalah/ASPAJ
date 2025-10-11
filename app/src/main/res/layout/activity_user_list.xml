@@ -38,6 +38,13 @@
             android:layout_marginStart="8dp"
             android:entries="@array/role_filter_options" />
 
+        <Spinner
+            android:id="@+id/spinner_jurusan_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:entries="@array/jurusan_array" />
+
         <Button
             android:id="@+id/button_search"
             android:layout_width="wrap_content"
