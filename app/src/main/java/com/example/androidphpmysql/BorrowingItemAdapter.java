@@ -77,11 +77,17 @@ public class BorrowingItemAdapter extends RecyclerView.Adapter<BorrowingItemAdap
             holder.tvStockInfo.setVisibility(View.GONE);
         }
 
-        // For borrowed status, show return button if needed
+        // For borrowed status, show return button
         if ("borrowed".equals(item.getStatus())) {
-            // If you want to add return button logic here, but for detail view, perhaps not
-            // holder.returnButton.setVisibility(View.VISIBLE);
-            // etc.
+            holder.btnReturnItem.setVisibility(View.VISIBLE);
+            holder.btnReturnItem.setOnClickListener(v -> {
+                Intent intent = new Intent(context, ReturnFormActivity.class);
+                intent.putExtra("borrowing_id", String.valueOf(borrowingId));
+                intent.putExtra("item_id", String.valueOf(item.getId()));
+                ((android.app.Activity) context).startActivityForResult(intent, 1); // Request code 1 for return
+            });
+        } else {
+            holder.btnReturnItem.setVisibility(View.GONE);
         }
     }
 
@@ -93,6 +99,7 @@ public class BorrowingItemAdapter extends RecyclerView.Adapter<BorrowingItemAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView itemImage;
         TextView tvCode, tvName, tvStatus, tvQuantity, tvStockInfo;
+        Button btnReturnItem;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,6 +109,7 @@ public class BorrowingItemAdapter extends RecyclerView.Adapter<BorrowingItemAdap
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
             tvStockInfo = itemView.findViewById(R.id.tvStockInfo);
+            btnReturnItem = itemView.findViewById(R.id.btnReturnItem);
         }
     }
 }

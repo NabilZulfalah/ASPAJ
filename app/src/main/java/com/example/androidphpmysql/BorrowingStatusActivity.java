@@ -1,5 +1,6 @@
 package com.example.androidphpmysql;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -45,7 +46,21 @@ public class BorrowingStatusActivity extends AppCompatActivity {
     }
 
     private void loadBorrowings() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.STUDENT_BORROWINGS, null,
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            // Optionally, redirect to login
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        String userRole = SharedPrefManager.getInstance(this).getUserRole();
+        String url = "student".equals(userRole) ? Constants.STUDENT_BORROWINGS : Constants.GET_BORROWINGS_URL;
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -55,7 +70,7 @@ public class BorrowingStatusActivity extends AppCompatActivity {
                             for (int i = 0; i < dataArray.length(); i++) {
                                 JSONObject obj = dataArray.getJSONObject(i);
                                 Borrowing borrowing = new Borrowing(
-                                        obj.getString("id"),
+                                        Integer.parseInt(obj.getString("id")),
                                         obj.getString("status"),
                                         obj.getString("borrow_date"),
                                         obj.getString("return_date"),
@@ -82,7 +97,7 @@ public class BorrowingStatusActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + SharedPrefManager.getInstance(BorrowingStatusActivity.this).getToken());
+                headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };
@@ -93,7 +108,9 @@ public class BorrowingStatusActivity extends AppCompatActivity {
         if (borrowingList.isEmpty()) {
             recyclerViewBorrowings.setVisibility(View.GONE);
             emptyStateText.setVisibility(View.VISIBLE);
-            emptyStateText.setText("Belum ada riwayat peminjaman");
+            String userRole = SharedPrefManager.getInstance(this).getUserRole();
+            String text = "student".equals(userRole) ? "Belum ada riwayat peminjaman" : "Belum ada peminjaman";
+            emptyStateText.setText(text);
         } else {
             recyclerViewBorrowings.setVisibility(View.VISIBLE);
             emptyStateText.setVisibility(View.GONE);

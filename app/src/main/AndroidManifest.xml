@@ -51,6 +51,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".AssetBorrowActivity"
             android:exported="false" />
 
@@ -92,6 +96,14 @@
             android:exported="false"/>
         <activity
             android:name=".ReturnFormActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AdminBorrowingManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ImageViewerActivity"
             android:exported="false" />
 
     </application>

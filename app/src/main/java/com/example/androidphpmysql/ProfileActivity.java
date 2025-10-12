@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,9 +23,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 
@@ -198,6 +201,20 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(networkResponse.data, HttpHeaderParser.parseCharset(networkResponse.headers, "utf-8"));
+                                JSONObject data = new JSONObject(responseBody);
+                                if (data.has("message")) {
+                                    String errorMessage = data.getString("message");
+                                    Log.e("ProfileActivity", "Laravel Error: " + errorMessage, error);
+                                }
+                            } catch (Exception e) {
+                                Log.e("ProfileActivity", "Error parsing error response", e);
+                            }
+                        }
+                        Log.e("ProfileActivity", "Volley error", error);
                         Toast.makeText(getApplicationContext(), "Error loading profile", Toast.LENGTH_SHORT).show();
                         // Fallback
                         userId = SharedPrefManager.getInstance(ProfileActivity.this).getUserId();
@@ -293,7 +310,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     try {
                         JSONObject obj = response;
                         if (obj.getBoolean("success")) {
-                            Toast.makeText(ProfileActivity.this, "Profile photo updated successfully", Toast.LENGTH_SHORT).show();
+                            Toast toast = Toast.makeText(ProfileActivity.this, "Profile photo updated successfully", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                            toast.show();
                             loadUserProfile(); // Reload to update UI
                         } else {
                             Toast.makeText(ProfileActivity.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -309,6 +328,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     if (error.networkResponse != null) {
                         Log.e("ProfileActivity", "Status code: " + error.networkResponse.statusCode);
                         Log.e("ProfileActivity", "Response data: " + new String(error.networkResponse.data));
+                        try {
+                            String responseBody = new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers, "utf-8"));
+                            JSONObject data = new JSONObject(responseBody);
+                            if (data.has("message")) {
+                                String errorMessage = data.getString("message");
+                                Log.e("ProfileActivity", "Laravel Error: " + errorMessage, error);
+                            }
+                        } catch (Exception e) {
+                            Log.e("ProfileActivity", "Error parsing error response", e);
+                        }
                     }
                     String errorMsg = error.getMessage() != null ? error.getMessage() : "Unknown error";
                     Toast.makeText(ProfileActivity.this, "Error updating profile photo: " + errorMsg, Toast.LENGTH_SHORT).show();

@@ -96,14 +96,14 @@ public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdap
 
             holder.detailButton.setOnClickListener(v -> {
                 Intent intent = new Intent(context, BorrowingDetailActivity.class);
-                intent.putExtra("borrowing_id", borrowing.getId());
+                intent.putExtra("borrowing_id", String.valueOf(borrowing.getId()));
                 context.startActivity(intent);
             });
 
             // Card click for detail
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, BorrowingDetailActivity.class);
-                intent.putExtra("borrowing_id", borrowing.getId());
+                intent.putExtra("borrowing_id", String.valueOf(borrowing.getId()));
                 context.startActivity(intent);
             });
 
@@ -144,8 +144,8 @@ public class BorrowingCardAdapter extends RecyclerView.Adapter<BorrowingCardAdap
             builder.setTitle("Pilih Barang untuk Dikembalikan");
             builder.setItems(approvedItems.toArray(new String[0]), (dialog, which) -> {
                 Intent intent = new Intent(context, ReturnFormActivity.class);
-                intent.putExtra("borrowing_id", borrowing.getId());
-                intent.putExtra("item_id", itemIds.get(which));
+                intent.putExtra("borrowing_id", String.valueOf(borrowing.getId()));
+                intent.putExtra("item_id", String.valueOf(itemIds.get(which)));
                 context.startActivity(intent);
             });
             builder.show();

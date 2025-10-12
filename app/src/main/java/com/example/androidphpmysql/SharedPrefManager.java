@@ -127,4 +127,15 @@ public class SharedPrefManager {
         return sharedPreferences.getString(KEY_USER_CLASS, null);
     }
 
+    public User getUser() {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        int id = sharedPreferences.getInt(KEY_USER_ID, 0);
+        String name = sharedPreferences.getString(KEY_NAME, null);
+        String email = sharedPreferences.getString(KEY_USER_EMAIL, null);
+        String role = sharedPreferences.getString(KEY_USER_ROLE, null);
+        String jurusan = sharedPreferences.getString(KEY_JURUSAN, null);
+        return new User(id, name, email, role, null, jurusan);
+    }
+
 }

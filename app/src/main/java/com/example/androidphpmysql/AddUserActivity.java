@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,9 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.DefaultRetryPolicy;
 
@@ -134,13 +138,17 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         String message = jsonObject.optString("message", "Unknown error");
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                         if (jsonObject.getBoolean("success")) {
+                            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                            toast.show();
                             User user = new User(userId != -1 ? userId : 0, name, email, role, approvalStatus, jurusan);
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("user", user);
                             setResult(RESULT_OK, resultIntent);
                             finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "JSON parse error", e);
@@ -149,8 +157,22 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 },
                 error -> {
                     progressDialog.dismiss();
+                    String errorMessage = "Error saving user";
+                    NetworkResponse networkResponse = error.networkResponse;
+                    if (networkResponse != null && networkResponse.data != null) {
+                        try {
+                            String responseBody = new String(networkResponse.data, HttpHeaderParser.parseCharset(networkResponse.headers, "utf-8"));
+                            JSONObject data = new JSONObject(responseBody);
+                            if (data.has("message")) {
+                                errorMessage = data.getString("message");
+                                Log.e(TAG, "Laravel Error: " + errorMessage, error);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing error response", e);
+                        }
+                    }
                     Log.e(TAG, "Volley error", error);
-                    Toast.makeText(getApplicationContext(), "Error saving user", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Nullable

@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -229,7 +230,9 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                             String message = jsonResponse.getString("message");
                             if (success) {
                                 loadUsers();
-                                Toast.makeText(UserListActivity.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                                Toast toast = Toast.makeText(UserListActivity.this, "User deleted successfully", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                                toast.show();
                             } else {
                                 Toast.makeText(UserListActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                             }

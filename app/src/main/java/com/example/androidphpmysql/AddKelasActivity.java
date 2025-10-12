@@ -17,9 +17,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.DefaultRetryPolicy;
 
@@ -143,8 +146,22 @@ public class AddKelasActivity extends AppCompatActivity implements View.OnClickL
                 },
                 error -> {
                     progressDialog.dismiss();
+                    String errorMessage = "Error saving kelas";
+                    NetworkResponse networkResponse = error.networkResponse;
+                    if (networkResponse != null && networkResponse.data != null) {
+                        try {
+                            String responseBody = new String(networkResponse.data, HttpHeaderParser.parseCharset(networkResponse.headers, "utf-8"));
+                            JSONObject data = new JSONObject(responseBody);
+                            if (data.has("message")) {
+                                errorMessage = data.getString("message");
+                                Log.e(TAG, "Laravel Error: " + errorMessage, error);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing error response", e);
+                        }
+                    }
                     Log.e(TAG, "Volley error", error);
-                    Toast.makeText(getApplicationContext(), "Error saving kelas", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Nullable

@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String role = SharedPrefManager.getInstance(this).getUserRole();
             if ("students".equals(role)) {
                 startActivity(new Intent(this, StudentDashboardActivity.class));
+            } else if ("admin".equals(role)) {
+                startActivity(new Intent(this, AdminDashboardActivity.class));
             } else {
                 startActivity(new Intent(this, ProfileActivity.class));
             }
@@ -146,6 +148,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Intent intent;
                                 if ("students".equals(role)) {
                                     intent = new Intent(getApplicationContext(), StudentDashboardActivity.class);
+                                } else if ("admin".equals(role)) {
+                                    intent = new Intent(getApplicationContext(), AdminDashboardActivity.class);
                                 } else {
                                     intent = new Intent(getApplicationContext(), ProfileActivity.class);
                                 }

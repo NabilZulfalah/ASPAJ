@@ -1,4 +1,4 @@
-package com.example.androidphpmysql;
+/*  */package com.example.androidphpmysql;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -6,9 +6,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
@@ -17,32 +17,41 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.androidphpmysql.Constants;
 import com.example.androidphpmysql.SharedPrefManager;
 import com.example.androidphpmysql.VolleySingleton;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ReturnFormActivity extends AppCompatActivity {
 
     private Spinner spinnerCondition;
-    private ImageView imageViewPhoto;
-    private Button buttonUploadPhoto, buttonSubmitReturn;
-    private Bitmap selectedImage;
+    private RecyclerView recyclerViewReturnItems;
+    private Button buttonSubmitReturn;
     private ProgressDialog progressDialog;
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
-    private String borrowingId;
+    private int borrowingId;
     private int itemId;
+    private List<BorrowingDetailActivity.BorrowedItem> returnItems;
+    private ReturnItemAdapter returnItemAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,16 +59,17 @@ public class ReturnFormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_return_form);
 
         spinnerCondition = findViewById(R.id.spinnerCondition);
-        imageViewPhoto = findViewById(R.id.imageViewPhoto);
-        buttonUploadPhoto = findViewById(R.id.buttonUploadPhoto);
+        recyclerViewReturnItems = findViewById(R.id.recyclerViewReturnItems);
         buttonSubmitReturn = findViewById(R.id.buttonSubmitReturn);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
 
         // Get borrowing ID and item ID from intent
-        borrowingId = getIntent().getStringExtra("borrowing_id");
-        itemId = getIntent().getIntExtra("item_id", -1);
+        String borrowingIdStr = getIntent().getStringExtra("borrowing_id");
+        borrowingId = borrowingIdStr != null ? Integer.parseInt(borrowingIdStr) : -1;
+        String itemIdStr = getIntent().getStringExtra("item_id");
+        itemId = itemIdStr != null ? Integer.parseInt(itemIdStr) : -1;
 
         // Set up spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -67,41 +77,120 @@ public class ReturnFormActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCondition.setAdapter(adapter);
 
-        // Setup image picker launcher
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            Intent data = result.getData();
-                            Uri imageUri = data.getData();
-                            try {
-                                selectedImage = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                                imageViewPhoto.setImageBitmap(selectedImage);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(ReturnFormActivity.this, "Failed to load image", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
+        // Initialize return items list
+        returnItems = new ArrayList<>();
 
-        buttonUploadPhoto.setOnClickListener(v -> openImagePicker());
+        // Set up RecyclerView
+        returnItemAdapter = new ReturnItemAdapter(this, returnItems);
+        recyclerViewReturnItems.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewReturnItems.setAdapter(returnItemAdapter);
 
         buttonSubmitReturn.setOnClickListener(v -> submitReturn());
+
+        // Fetch borrowing details to populate return items
+        fetchBorrowingDetailsForReturn();
     }
 
-    private void openImagePicker() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        imagePickerLauncher.launch(Intent.createChooser(intent, "Select Picture"));
+    private void fetchBorrowingDetailsForReturn() {
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token == null || token.isEmpty()) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        String url;
+        try {
+            String encodedId = URLEncoder.encode(String.valueOf(borrowingId), "UTF-8");
+            url = Constants.BASE_URL + "borrowings/" + encodedId;
+        } catch (Exception e) {
+            Toast.makeText(this, "Error encoding borrowing ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject jsonObject) {
+                        try {
+                            if (jsonObject.getBoolean("success")) {
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                JSONArray itemsArray = data.getJSONArray("items");
+                                returnItems.clear();
+                                for (int i = 0; i < itemsArray.length(); i++) {
+                                    JSONObject item = itemsArray.getJSONObject(i);
+                                    JSONObject commodity = item.getJSONObject("commodity");
+                                    String status = item.getString("status");
+                                    if ("approved".equals(status) && item.getInt("id") == itemId) {
+                                        BorrowingDetailActivity.BorrowedItem borrowedItem = new BorrowingDetailActivity.BorrowedItem(
+                                                item.getInt("id"),
+                                                commodity.getString("code"),
+                                                commodity.getString("name"),
+                                                status,
+                                                item.getInt("quantity"),
+                                                item.optString("stock_info", ""),
+                                                ""
+                                        );
+                                        returnItems.add(borrowedItem);
+                                        break; // Only add the specific item
+                                    }
+                                }
+                                returnItemAdapter.notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(ReturnFormActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ReturnFormActivity.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String errorMessage = "Unknown error";
+                if (error.networkResponse != null) {
+                    int statusCode = error.networkResponse.statusCode;
+                    switch (statusCode) {
+                        case 401:
+                            errorMessage = "Unauthorized: Please login again.";
+                            break;
+                        case 403:
+                            errorMessage = "Forbidden: You don't have permission.";
+                            break;
+                        case 404:
+                            errorMessage = "Borrowing not found.";
+                            break;
+                        case 500:
+                            errorMessage = "Server error: Please try again later.";
+                            break;
+                        default:
+                            errorMessage = "Error " + statusCode + ": " + (error.getMessage() != null ? error.getMessage() : "Unknown");
+                            break;
+                    }
+                } else {
+                    if (error.getMessage() != null) {
+                        errorMessage = error.getMessage();
+                    }
+                }
+                Toast.makeText(ReturnFormActivity.this, "Error fetching data: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public java.util.Map<String, String> getHeaders() {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
+
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     private void submitReturn() {
-        if (borrowingId == null || itemId == -1) {
-            Toast.makeText(this, "Invalid borrowing or item ID", Toast.LENGTH_SHORT).show();
+        if (borrowingId == -1) {
+            Toast.makeText(this, "Invalid borrowing ID", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -111,36 +200,70 @@ public class ReturnFormActivity extends AppCompatActivity {
         progressDialog.setMessage("Submitting return...");
         progressDialog.show();
 
-        String url = Constants.POST_RETURN_BORROWING_URL.replace("{id}", String.valueOf(borrowingId));
+        String url = Constants.BASE_URL + "borrowings/" + borrowingId + "/items/" + itemId + "/return";
 
         MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, url,
                 response -> {
                     progressDialog.dismiss();
-                    Toast.makeText(ReturnFormActivity.this, "Return submitted successfully", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(ReturnFormActivity.this, "Barang berhasil dikembalikan", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                    toast.show();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("returned_item_id", itemId);
+                    setResult(RESULT_OK, resultIntent);
                     finish();
                 },
                 error -> {
                     progressDialog.dismiss();
-                    Toast.makeText(ReturnFormActivity.this, "Error submitting return: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    String errorMessage = "Error submitting return";
+                    if (error.networkResponse != null) {
+                        int statusCode = error.networkResponse.statusCode;
+                        switch (statusCode) {
+                            case 400:
+                                errorMessage += ": Bad request";
+                                break;
+                            case 401:
+                                errorMessage += ": Unauthorized";
+                                break;
+                            case 403:
+                                errorMessage += ": Forbidden";
+                                break;
+                            case 404:
+                                errorMessage += ": Not found";
+                                break;
+                            case 500:
+                                errorMessage += ": Server error";
+                                break;
+                            default:
+                                errorMessage += ": " + statusCode;
+                                break;
+                        }
+                    } else if (error.getMessage() != null) {
+                        errorMessage += ": " + error.getMessage();
+                    } else {
+                        errorMessage += ": Unknown error";
+                    }
+                    Toast.makeText(ReturnFormActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                 }) {
 
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
+                params.put("return_condition", condition);
                 params.put("item_id", String.valueOf(itemId));
-                params.put("condition", condition);
-                params.put("description", description);
                 return params;
             }
 
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
-                if (selectedImage != null) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    selectedImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] imageBytes = baos.toByteArray();
-                    params.put("photo", new DataPart("return_photo.jpg", imageBytes, "image/jpeg"));
+                for (BorrowingDetailActivity.BorrowedItem item : returnItems) {
+                    if (item.getReturnPhoto() != null) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        item.getReturnPhoto().compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] imageBytes = baos.toByteArray();
+                        params.put("return_photo_" + item.getItemId(), new DataPart("return_photo_" + item.getItemId() + ".jpg", imageBytes, "image/jpeg"));
+                    }
                 }
                 return params;
             }

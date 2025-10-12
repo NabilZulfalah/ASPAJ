@@ -92,20 +92,28 @@ public class BorrowConfirmActivity extends AppCompatActivity {
             return;
         }
 
+        // Get current date for borrow_date
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        String borrowDate = year + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", day);
+
         try {
             JSONArray originalItems = new JSONArray(cartJson);
             JSONArray itemsArray = new JSONArray();
             for (int i = 0; i < originalItems.length(); i++) {
                 JSONObject item = originalItems.getJSONObject(i);
                 JSONObject newItem = new JSONObject();
-                newItem.put("asset_id", item.getInt("asset_id"));
+                newItem.put("commodity_id", item.getInt("asset_id"));
                 newItem.put("quantity", item.getInt("quantity"));
                 itemsArray.put(newItem);
             }
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("items", itemsArray);
-            jsonObject.put("tujuan", tujuan);
+            jsonObject.put("borrow_date", borrowDate);
             jsonObject.put("return_date", returnDate);
+            jsonObject.put("tujuan", tujuan);
+            jsonObject.put("items", itemsArray);
 
             String url = Constants.BASE_URL + "borrowings";
 

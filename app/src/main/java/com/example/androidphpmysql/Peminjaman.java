@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.view.Gravity;
 import android.widget.Toast;
 
 public class Peminjaman extends AppCompatActivity {
@@ -190,7 +191,9 @@ public class Peminjaman extends AppCompatActivity {
                     try {
                         org.json.JSONObject jsonResponse = new org.json.JSONObject(response);
                         String message = jsonResponse.getString("message");
-                        Toast.makeText(Peminjaman.this, message, Toast.LENGTH_SHORT).show();
+                        Toast toast = Toast.makeText(Peminjaman.this, message, Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                        toast.show();
                     } catch (Exception e) {
                         Toast.makeText(Peminjaman.this, "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
