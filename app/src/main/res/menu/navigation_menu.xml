@@ -3,11 +3,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_dashboard"
-            android:icon="@android:drawable/ic_menu_today"
+            android:icon="@drawable/ic_menu"
             android:title="Dashboard" />
         <item
             android:id="@+id/nav_borrow_assets"
-            android:icon="@android:drawable/ic_menu_add"
+            android:icon="@drawable/ic_plus"
             android:title="Borrow Assets" />
         <item
             android:id="@+id/nav_my_borrowings"
@@ -15,11 +15,11 @@
             android:title="My Borrowings" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@android:drawable/ic_menu_myplaces"
+            android:icon="@drawable/ic_user"
             android:title="Profile" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            android:icon="@drawable/ic_logout"
             android:title="Logout" />
     </group>
 </menu>

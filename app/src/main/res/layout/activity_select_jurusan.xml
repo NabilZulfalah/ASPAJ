@@ -1,120 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#f8f9fa">
+    android:background="#F8F9FB">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pilih Jurusan"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"
-        android:layout_gravity="center"
-        android:textColor="#333" />
-
-    <GridLayout
-        android:id="@+id/gridJurusan"
+    <!-- Header biru -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="4"
-        android:layout_marginBottom="16dp">
+        android:layout_height="120dp"
+        android:gravity="center"
+        android:background="#1976D2"
+        android:elevation="4dp">
 
-        <!-- Lihat Semua Barang -->
-        <Button
-            android:id="@+id/btnSemua"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Lihat Semua Barang"
-            android:textSize="14sp"
-            android:textColor="#fff"
-            android:background="@drawable/jurusan_button_bg"
-            android:layout_margin="8dp" />
+            android:text="Pilih Jurusan"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-        <!-- Rekayasa Perangkat Lunak -->
-        <Button
-            android:id="@+id/btnRekayasaPerangkatLunak"
-            android:layout_width="0dp"
+    <!-- Konten -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <GridLayout
+            android:id="@+id/gridJurusan"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Rekayasa Perangkat Lunak"
-            android:textSize="12sp"
-            android:textColor="#fff"
-            android:background="#28a745"
-            android:layout_margin="8dp" />
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-        <!-- Desain Komunikasi Visual -->
-        <Button
-            android:id="@+id/btnDesainKomunikasiVisual"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Desain Komunikasi Visual"
-            android:textSize="12sp"
-            android:textColor="#fff"
-            android:background="#6f42c1"
-            android:layout_margin="8dp" />
+            <!-- Tombol 1: Lihat Semua -->
+            <LinearLayout
+                android:id="@+id/btnSemua"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-        <!-- Teknik Otomasi Industri -->
-        <Button
-            android:id="@+id/btnTeknikOtomasiIndustri"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Teknik Otomasi Industri"
-            android:textSize="12sp"
-            android:textColor="#fff"
-            android:background="#6c757d"
-            android:layout_margin="8dp" />
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_all_inclusive"
+                    android:tint="#1976D2" />
 
-        <!-- Teknik Instalasi Tenaga Listrik -->
-        <Button
-            android:id="@+id/btnTeknikInstalasiTenagaListrik"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Teknik Instalasi Tenaga Listrik"
-            android:textSize="12sp"
-            android:textColor="#fff"
-            android:background="#0d6efd"
-            android:layout_margin="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lihat Semua Barang"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
 
-        <!-- Teknik Audio Video -->
-        <Button
-            android:id="@+id/btnTeknikAudioVideo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Teknik Audio Video"
-            android:textSize="12sp"
-            android:textColor="#fff"
-            android:background="#ffc107"
-            android:layout_margin="8dp" />
+            <!-- Tombol 2: RPL -->
+            <LinearLayout
+                android:id="@+id/btnRekayasaPerangkatLunak"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-        <!-- Teknik Komputer Jaringan -->
-        <Button
-            android:id="@+id/btnTeknikKomputerJaringan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:text="Teknik Komputer Jaringan"
-            android:textSize="12sp"
-            android:textColor="#fff"
-            android:background="#dc3545"
-            android:layout_margin="8dp" />
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_laptop"
+                    android:tint="#1976D2" />
 
-    </GridLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rekayasa Perangkat Lunak"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
 
+            <!-- Tombol 3: DKV -->
+            <LinearLayout
+                android:id="@+id/btnDesainKomunikasiVisual"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_palette"
+                    android:tint="#1976D2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Desain Komunikasi Visual"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- Tombol 4: TOI -->
+            <LinearLayout
+                android:id="@+id/btnTeknikOtomasiIndustri"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_gear"
+                    android:tint="#1976D2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teknik Otomasi Industri"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- Tombol 5: TITL -->
+            <LinearLayout
+                android:id="@+id/btnTeknikInstalasiTenagaListrik"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_bolt"
+                    android:tint="#1976D2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teknik Instalasi Tenaga Listrik"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- Tombol 6: TAV -->
+            <LinearLayout
+                android:id="@+id/btnTeknikAudioVideo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_chip"
+                    android:tint="#1976D2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teknik Audio Video"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- Tombol 7: TKJ -->
+            <LinearLayout
+                android:id="@+id/btnTeknikKomputerJaringan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_columnWeight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_card_jurusan"
+                android:padding="16dp"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_wifi"
+                    android:tint="#1976D2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teknik Komputer Jaringan"
+                    android:textColor="#212121"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+        </GridLayout>
+    </ScrollView>
 </LinearLayout>
