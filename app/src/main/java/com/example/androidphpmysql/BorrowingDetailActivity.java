@@ -38,7 +38,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
     private BorrowedItemAdapter borrowedItemAdapter;
 
     private static final String BASE_URL = Constants.BASE_URL;
-    private String borrowingId;
+    private int borrowingId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +46,9 @@ public class BorrowingDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_borrowing_detail);
 
         // Get borrowing ID from intent
-        borrowingId = getIntent().getStringExtra("borrowing_id");
-        if (borrowingId == null) {
+        String borrowingIdStr = getIntent().getStringExtra("borrowing_id");
+        borrowingId = borrowingIdStr != null ? Integer.parseInt(borrowingIdStr) : -1;
+        if (borrowingId == -1) {
             Toast.makeText(this, "No borrowing ID provided", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -80,9 +81,27 @@ public class BorrowingDetailActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         borrowedItemsList = new ArrayList<>();
-        borrowedItemAdapter = new BorrowedItemAdapter(borrowedItemsList, borrowingId);
+        borrowedItemAdapter = new BorrowedItemAdapter(borrowedItemsList, String.valueOf(borrowingId));
         rvBorrowedItems.setLayoutManager(new LinearLayoutManager(this));
         rvBorrowedItems.setAdapter(borrowedItemAdapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
+            int returnedItemId = data.getIntExtra("returned_item_id", -1);
+            if (returnedItemId != -1) {
+                // Find the item by ID and update its status
+                for (int i = 0; i < borrowedItemsList.size(); i++) {
+                    if (borrowedItemsList.get(i).getItemId() == returnedItemId) {
+                        borrowedItemsList.get(i).setStatus("returned");
+                        borrowedItemAdapter.notifyItemChanged(i);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void fetchBorrowingDetails() {
@@ -97,7 +116,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
 
         String url;
         try {
-            String encodedId = URLEncoder.encode(borrowingId, "UTF-8");
+            String encodedId = URLEncoder.encode(String.valueOf(borrowingId), "UTF-8");
             url = BASE_URL + "borrowings/" + encodedId;
             android.util.Log.d("BorrowingDetail", "URL: " + url);
         } catch (Exception e) {
@@ -212,6 +231,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
         private int quantity;
         private String stockInfo;
         private String note;
+        private android.graphics.Bitmap returnPhoto;
 
         public BorrowedItem(int itemId, String code, String name, String status, int quantity, String stockInfo, String note) {
             this.itemId = itemId;
@@ -221,6 +241,7 @@ public class BorrowingDetailActivity extends AppCompatActivity {
             this.quantity = quantity;
             this.stockInfo = stockInfo;
             this.note = note;
+            this.returnPhoto = null;
         }
 
         // Getters
@@ -231,6 +252,9 @@ public class BorrowingDetailActivity extends AppCompatActivity {
         public int getQuantity() { return quantity; }
         public String getStockInfo() { return stockInfo; }
         public String getNote() { return note; }
+        public android.graphics.Bitmap getReturnPhoto() { return returnPhoto; }
+        public void setReturnPhoto(android.graphics.Bitmap returnPhoto) { this.returnPhoto = returnPhoto; }
+        public void setStatus(String status) { this.status = status; }
     }
 
     // Adapter for borrowed items
@@ -287,13 +311,14 @@ public class BorrowingDetailActivity extends AppCompatActivity {
                 holder.tvNote.setVisibility(View.GONE);
             }
 
-            if ("approved".equals(item.getStatus().toLowerCase())) {
+            // Show return button only if item is approved or borrowed
+            if ("approved".equals(item.getStatus().toLowerCase()) || "borrowed".equals(item.getStatus().toLowerCase())) {
                 holder.btnReturnItem.setVisibility(View.VISIBLE);
                 holder.btnReturnItem.setOnClickListener(v -> {
                     Intent intent = new Intent(holder.itemView.getContext(), ReturnFormActivity.class);
                     intent.putExtra("borrowing_id", borrowingId);
                     intent.putExtra("item_id", String.valueOf(item.getItemId()));
-                    holder.itemView.getContext().startActivity(intent);
+                    ((android.app.Activity) holder.itemView.getContext()).startActivityForResult(intent, 1);
                 });
             } else {
                 holder.btnReturnItem.setVisibility(View.GONE);

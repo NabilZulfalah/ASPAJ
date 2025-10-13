@@ -14,9 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
@@ -106,6 +108,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         progressDialog.dismiss();
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && networkResponse.data != null) {
+                            try {
+                                String responseBody = new String(networkResponse.data, HttpHeaderParser.parseCharset(networkResponse.headers, "utf-8"));
+                                JSONObject data = new JSONObject(responseBody);
+                                if (data.has("message")) {
+                                    String errorMessage = data.getString("message");
+                                    Log.e(TAG, "Laravel Error: " + errorMessage, error);
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error parsing error response", e);
+                            }
+                        }
                         Log.e(TAG, "Volley error", error);
                         if (error.getMessage() != null) {
                             Toast.makeText(getApplicationContext(),

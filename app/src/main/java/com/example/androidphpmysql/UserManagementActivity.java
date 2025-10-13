@@ -2,6 +2,7 @@ package com.example.androidphpmysql;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -122,9 +123,13 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                         JSONObject obj = new JSONObject(response);
                         boolean success = obj.getBoolean("success");
                         String message = obj.getString("message");
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         if (success) {
+                            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                            toast.show();
                             loadUsers();
+                        } else {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

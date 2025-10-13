@@ -69,6 +69,6 @@
         android:text="Kembalikan Barang"
         android:backgroundTint="#FFC107"
         android:textColor="#000"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </LinearLayout>
