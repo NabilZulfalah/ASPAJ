@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/itemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nama Barang"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/itemCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kode: 90"
+        android:textSize="14sp"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:id="@+id/itemStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="APPROVED"
+        android:textColor="#28a745"
+        android:textStyle="bold"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:id="@+id/itemLokasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lokasi: Ruang Gambar"
+        android:textSize="14sp"
+        android:layout_marginBottom="2dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/itemInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Silakan ambil barang di Ruang Gambar segera."
+        android:textSize="13sp"
+        android:background="#d4edda"
+        android:textColor="#155724"
+        android:padding="6dp"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/itemQty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Qty: 3"
+        android:textColor="#007bff"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
+
+    <Button
+        android:id="@+id/itemReturnBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kembalikan Barang"
+        android:backgroundTint="#FFC107"
+        android:textColor="#000"
+        android:visibility="visible" />
+
+</LinearLayout>

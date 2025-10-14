@@ -42,7 +42,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
-            startActivity(new Intent(this, ProfileActivity.class));
+            String role = SharedPrefManager.getInstance(this).getUserRole();
+            if ("students".equals(role)) {
+                startActivity(new Intent(this, StudentDashboardActivity.class));
+            } else if ("admin".equals(role)) {
+                startActivity(new Intent(this, AdminDashboardActivity.class));
+            } else {
+                startActivity(new Intent(this, ProfileActivity.class));
+            }
             return;
         }
 
@@ -106,7 +113,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         .userLogin(
                                                 userJson.getInt("id"),
                                                 userJson.getString("name"),
-                                                userJson.getString("email")
+                                                userJson.getString("email"),
+                                                userJson.getString("role")
                                         );
 
                                 // Save token to SharedPrefManager
@@ -114,14 +122,38 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 SharedPrefManager.getInstance(getApplicationContext())
                                         .saveToken(token);
 
+                                // Save user class if student
+                                String userClass = "";
+                                try {
+                                    if (userJson.has("student") && !userJson.isNull("student")) {
+                                        JSONObject student = userJson.getJSONObject("student");
+                                        if (student.has("school_class") && !student.isNull("school_class")) {
+                                            JSONObject schoolClass = student.getJSONObject("school_class");
+                                            userClass = schoolClass.optString("name", "");
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                SharedPrefManager.getInstance(getApplicationContext()).saveUserClass(userClass);
+
                                 // Tampilkan pesan sukses di Toast
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                                 // Log sukses login
                                 Log.d("LoginActivity", "Login berhasil: " + message);
 
-                                // Pindah ke ProfileActivity dan tutup LoginActivity
-                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                // Pindah ke activity berdasarkan role
+                                String role = userJson.getString("role");
+                                Intent intent;
+                                if ("students".equals(role)) {
+                                    intent = new Intent(getApplicationContext(), StudentDashboardActivity.class);
+                                } else if ("admin".equals(role)) {
+                                    intent = new Intent(getApplicationContext(), AdminDashboardActivity.class);
+                                } else {
+                                    intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                                }
+                                startActivity(intent);
                                 finish();
                             } else {
                                 // Jika login gagal, tampilkan pesan error di Toast
@@ -179,6 +211,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         if (view == buttonLogin) {
             loginUser();
+        } else if (view.getId() == R.id.textViewForgotPassword) {
+            startActivity(new Intent(this, ForgotPasswordActivity.class));
         }
     }
 

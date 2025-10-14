@@ -1,28 +1,13 @@
 <resources>
-    <string-array name="role_filter_options">
-        <item>Semua Role</item>
-        <item>admin</item>
-        <item>student</item>
-    </string-array>
-    <string-array name="role_array">
-        <item>admin</item>
-        <item>student</item>
-    </string-array>
-    <string-array name="approval_array">
-        <item>approved</item>
-        <item>pending</item>
-        <item>rejected</item>
-    </string-array>
     <string-array name="level_array">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
     </string-array>
-    <string-array name="program_study_array">
-        <item>Teknik Informatika</item>
-        <item>Sistem Informasi</item>
-        <item>Teknik Elektro</item>
-        <item>Teknik Mesin</item>
+    <string-array name="condition_array">
+        <item>Good</item>
+        <item>Damaged</item>
+        <item>Broken</item>
     </string-array>
 </resources>

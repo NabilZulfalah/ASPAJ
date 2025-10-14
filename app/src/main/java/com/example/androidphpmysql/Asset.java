@@ -12,6 +12,7 @@ public class Asset {
     private String sumber;
     private String tahun;
     private String deskripsi;
+    private String photoUrl;
 
     public Asset() {
     }
@@ -118,6 +119,14 @@ public class Asset {
 
     public void setDeskripsi(String deskripsi) {
         this.deskripsi = deskripsi;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     // For backward compatibility with list display

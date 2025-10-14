@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
 
     private Button buttonAddUser, buttonSearch, buttonPrevious, buttonNext;
     private EditText editTextSearch;
-    private Spinner spinnerRoleFilter;
+    private Spinner spinnerRoleFilter, spinnerJurusanFilter;
     private RecyclerView recyclerViewUsers;
     private UserAdapter userAdapter;
     private List<User> userList = new ArrayList<>();
@@ -53,6 +54,7 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
     private int totalPages = 0;
 
     private String selectedRoleFilter = "Semua Role";
+    private String selectedJurusanFilter = "Semua Program Studi";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
         buttonSearch = findViewById(R.id.button_search);
         editTextSearch = findViewById(R.id.edittext_search);
         spinnerRoleFilter = findViewById(R.id.spinner_role_filter);
+        spinnerJurusanFilter = findViewById(R.id.spinner_jurusan_filter);
         recyclerViewUsers = findViewById(R.id.recyclerview_users);
         buttonPrevious = findViewById(R.id.button_previous);
         buttonNext = findViewById(R.id.button_next);
@@ -88,6 +91,25 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 selectedRoleFilter = "Semua Role";
+                filterUsers();
+            }
+        });
+
+        // Setup jurusan filter spinner
+        ArrayAdapter<CharSequence> jurusanAdapter = ArrayAdapter.createFromResource(this,
+                R.array.jurusan_array, android.R.layout.simple_spinner_item);
+        jurusanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerJurusanFilter.setAdapter(jurusanAdapter);
+        spinnerJurusanFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedJurusanFilter = parent.getItemAtPosition(position).toString();
+                filterUsers();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedJurusanFilter = "Semua Program Studi";
                 filterUsers();
             }
         });
@@ -140,7 +162,8 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                                         userObj.getString("name"),
                                         userObj.getString("email"),
                                         userObj.getString("role"),
-                                        userObj.optString("approval_status", "")
+                                        userObj.optString("approval_status", ""),
+                                        userObj.optString("jurusan", "")
                                 );
                                 userList.add(user);
                             }
@@ -175,7 +198,10 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
             boolean matchesRole = selectedRoleFilter.equals("Semua Role") ||
                     user.getRole().equalsIgnoreCase(selectedRoleFilter);
 
-            if (matchesSearch && matchesRole) {
+            boolean matchesJurusan = selectedJurusanFilter.equals("Semua Program Studi") ||
+                    user.getJurusan().equalsIgnoreCase(selectedJurusanFilter);
+
+            if (matchesSearch && matchesRole && matchesJurusan) {
                 filteredUserList.add(user);
             }
         }
@@ -204,7 +230,9 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
                             String message = jsonResponse.getString("message");
                             if (success) {
                                 loadUsers();
-                                Toast.makeText(UserListActivity.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                                Toast toast = Toast.makeText(UserListActivity.this, "User deleted successfully", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                                toast.show();
                             } else {
                                 Toast.makeText(UserListActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                             }

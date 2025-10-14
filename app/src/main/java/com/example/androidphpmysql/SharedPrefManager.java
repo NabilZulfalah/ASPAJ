@@ -15,7 +15,10 @@ public class SharedPrefManager {
     private static final String KEY_NAME = "username";
     private static final String KEY_USER_EMAIL = "useremail";
     private static final String KEY_USER_ID = "userid";
+    private static final String KEY_USER_ROLE = "userrole";
     private static final String KEY_TOKEN = "token";
+    private static final String KEY_JURUSAN = "jurusan";
+    private static final String KEY_USER_CLASS = "userclass";
 
     private SharedPrefManager(Context context) {
         ctx = context;
@@ -28,7 +31,7 @@ public class SharedPrefManager {
         return instance;
     }
 
-    public boolean userLogin(int id, String username, String email){
+    public boolean userLogin(int id, String username, String email, String role){
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -36,6 +39,7 @@ public class SharedPrefManager {
         editor.putInt(KEY_USER_ID, id);
         editor.putString(KEY_USER_EMAIL, email);
         editor.putString(KEY_NAME, username);
+        editor.putString(KEY_USER_ROLE, role);
         editor.putBoolean("loggedin", true);
 
         editor.apply();
@@ -81,6 +85,57 @@ public class SharedPrefManager {
         SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
                 Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_TOKEN, null);
+    }
+
+    public String getUserRole(){
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_USER_ROLE, null);
+    }
+
+    public int getUserId(){
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(KEY_USER_ID, 0);
+    }
+
+    public void saveJurusan(String jurusan) {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_JURUSAN, jurusan);
+        editor.apply();
+    }
+
+    public String getJurusan(){
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_JURUSAN, null);
+    }
+
+    public void saveUserClass(String userClass) {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KEY_USER_CLASS, userClass);
+        editor.apply();
+    }
+
+    public String getUserClass(){
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getString(KEY_USER_CLASS, null);
+    }
+
+    public User getUser() {
+        SharedPreferences sharedPreferences = ctx.getSharedPreferences(SHARED_PREF_NAME,
+                Context.MODE_PRIVATE);
+        int id = sharedPreferences.getInt(KEY_USER_ID, 0);
+        String name = sharedPreferences.getString(KEY_NAME, null);
+        String email = sharedPreferences.getString(KEY_USER_EMAIL, null);
+        String role = sharedPreferences.getString(KEY_USER_ROLE, null);
+        String jurusan = sharedPreferences.getString(KEY_JURUSAN, null);
+        return new User(id, name, email, role, null, jurusan);
     }
 
 }

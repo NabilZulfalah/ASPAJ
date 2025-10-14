@@ -46,6 +46,42 @@
             android:name=".AddKelasActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".StudentDashboardActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".AdminDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AssetBorrowActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".BorrowConfirmActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".SelectJurusanActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".BorrowingStatusActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".BorrowingDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".UserListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".KelasListActivity"
+            android:exported="false" />
 
         <activity
             android:name=".LoginActivity"
@@ -59,6 +95,17 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"/>
+        <activity
+            android:name=".ReturnFormActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AdminBorrowingManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ImageViewerActivity"
+            android:exported="false" />
 
     </application>
 

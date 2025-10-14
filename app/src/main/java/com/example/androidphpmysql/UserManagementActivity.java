@@ -2,6 +2,7 @@ package com.example.androidphpmysql;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,8 +65,9 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                                     String email = userObject.optString("email", "");
                                     String role = userObject.optString("role", "");
                                     String approvalStatus = userObject.optString("approval_status", "");
+                                    String jurusan = userObject.optString("jurusan", "");
 
-                                    User user = new User(id, name, email, role, approvalStatus);
+                                    User user = new User(id, name, email, role, approvalStatus, jurusan);
 
                                     userList.add(user);
                                 }
@@ -99,6 +101,7 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
         intent.putExtra("user_email", user.getEmail());
         intent.putExtra("user_role", user.getRole());
         intent.putExtra("user_approval_status", user.getApprovalStatus());
+        intent.putExtra("user_jurusan", user.getJurusan());
         startActivity(intent);
     }
 
@@ -120,9 +123,13 @@ public class UserManagementActivity extends AppCompatActivity implements UserAda
                         JSONObject obj = new JSONObject(response);
                         boolean success = obj.getBoolean("success");
                         String message = obj.getString("message");
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         if (success) {
+                            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                            toast.show();
                             loadUsers();
+                        } else {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

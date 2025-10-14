@@ -1,76 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
+    android:background="#F8F9FA"
     tools:context=".MainActivity">
 
+    <!-- Gelombang Atas -->
+    <ImageView
+        android:id="@+id/headerWave"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/top_wave" />
+
+    <!-- Logo Sekolah -->
+    <ImageView
+        android:id="@+id/schoolLogo"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/logo_smk4"
+        android:contentDescription="Logo Sekolah"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <!-- Judul -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buat Akun Baru"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#111111"
+        android:layout_marginTop="160dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Subjudul -->
+    <TextView
+        android:id="@+id/subtitleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Isi data berikut untuk mendaftar"
+        android:textSize="14sp"
+        android:textColor="#777777"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Form Registrasi -->
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/subtitleText"
+        android:layout_margin="24dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/form_background"
+        android:padding="24dp"
+        android:elevation="6dp">
 
-        <TextView
-            android:text="username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+        <!-- Username -->
         <EditText
             android:id="@+id/editTextUsername"
-            android:hint="Enter username"
+            android:hint="Username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:background="@null"
+            android:paddingVertical="12dp"
+            android:textColorHint="#888888"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:text="password"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="1dp"
+            android:background="#DDDDDD" />
 
+        <!-- Password -->
         <EditText
             android:id="@+id/editTextUserPassword"
-            android:hint="Enter password"
+            android:hint="Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:background="@null"
+            android:paddingVertical="12dp"
+            android:textColorHint="#888888"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:text="email"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="1dp"
+            android:background="#DDDDDD" />
 
+        <!-- Email -->
         <EditText
             android:id="@+id/editTextEmail"
-            android:hint="Enter email"
+            android:hint="Email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:background="@null"
+            android:paddingVertical="12dp"
+            android:textColorHint="#888888"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD" />
+
+        <!-- Tombol Register -->
         <Button
-            android:text="Register"
             android:id="@+id/buttonRegister"
+            android:text="Daftar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rounded_button" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sudah punya akun?"
+            android:textColor="#777777"
+            android:textSize="14sp" />
 
+        <TextView
+            android:id="@+id/textViewLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Login di sini"
+            android:textColor="#2196F3"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="16dp"
-        android:text="Already registered?\nClick here to login"
-        android:textAlignment="center"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textColor="#2196F3"
-        android:clickable="true"
-        android:focusable="true" />
+    <!-- Link Login -->
+
+
+    <!-- Gelombang Bawah -->
+    <ImageView
+        android:id="@+id/footerWave"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/bottom_wave" />
 
 </RelativeLayout>

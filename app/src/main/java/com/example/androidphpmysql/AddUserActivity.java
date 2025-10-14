@@ -1,8 +1,10 @@
 package com.example.androidphpmysql;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,9 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.DefaultRetryPolicy;
 
@@ -34,7 +39,7 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
     private static final String TAG = "AddUserActivity";
 
     private EditText editTextName, editTextEmail;
-    private Spinner spinnerRole, spinnerApprovalStatus;
+    private Spinner spinnerRole, spinnerApprovalStatus, spinnerJurusan;
     private Button buttonSimpan, buttonKembali;
     private ProgressDialog progressDialog;
     private int userId = -1; // -1 for new user, otherwise edit mode
@@ -57,6 +62,7 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
         editTextEmail = findViewById(R.id.editTextEmail);
         spinnerRole = findViewById(R.id.spinnerRole);
         spinnerApprovalStatus = findViewById(R.id.spinnerApprovalStatus);
+        spinnerJurusan = findViewById(R.id.spinnerJurusan);
         buttonSimpan = findViewById(R.id.buttonSimpan);
         buttonKembali = findViewById(R.id.buttonKembali);
 
@@ -70,6 +76,11 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 R.array.approval_array, android.R.layout.simple_spinner_item);
         approvalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerApprovalStatus.setAdapter(approvalAdapter);
+
+        ArrayAdapter<CharSequence> jurusanAdapter = ArrayAdapter.createFromResource(this,
+                R.array.jurusan_array, android.R.layout.simple_spinner_item);
+        jurusanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerJurusan.setAdapter(jurusanAdapter);
 
         buttonSimpan.setOnClickListener(this);
         buttonKembali.setOnClickListener(v -> finish());
@@ -92,6 +103,11 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 int spinnerPosition = approvalAdapter.getPosition(approval);
                 spinnerApprovalStatus.setSelection(spinnerPosition);
             }
+            String jurusan = getIntent().getStringExtra("user_jurusan");
+            if (jurusan != null) {
+                int spinnerPosition = jurusanAdapter.getPosition(jurusan);
+                spinnerJurusan.setSelection(spinnerPosition);
+            }
         }
     }
 
@@ -100,9 +116,10 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
         String email = editTextEmail.getText().toString().trim();
         String role = spinnerRole.getSelectedItem() != null ? spinnerRole.getSelectedItem().toString() : "";
         String approvalStatus = spinnerApprovalStatus.getSelectedItem() != null ? spinnerApprovalStatus.getSelectedItem().toString() : "";
+        String jurusan = spinnerJurusan.getSelectedItem() != null ? spinnerJurusan.getSelectedItem().toString() : "";
 
-        if (name.isEmpty() || email.isEmpty() || role.isEmpty() || approvalStatus.isEmpty()) {
-            Toast.makeText(this, "Semua field harus diisi", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || email.isEmpty() || role.isEmpty() || approvalStatus.isEmpty() || jurusan.isEmpty() || jurusan.equals("Semua Program Studi")) {
+            Toast.makeText(this, "Semua field harus diisi dengan benar", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -121,9 +138,17 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         String message = jsonObject.optString("message", "Unknown error");
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                         if (jsonObject.getBoolean("success")) {
+                            Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP | Gravity.RIGHT, 0, 0);
+                            toast.show();
+                            User user = new User(userId != -1 ? userId : 0, name, email, role, approvalStatus, jurusan);
+                            Intent resultIntent = new Intent();
+                            resultIntent.putExtra("user", user);
+                            setResult(RESULT_OK, resultIntent);
                             finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "JSON parse error", e);
@@ -132,8 +157,22 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 },
                 error -> {
                     progressDialog.dismiss();
+                    String errorMessage = "Error saving user";
+                    NetworkResponse networkResponse = error.networkResponse;
+                    if (networkResponse != null && networkResponse.data != null) {
+                        try {
+                            String responseBody = new String(networkResponse.data, HttpHeaderParser.parseCharset(networkResponse.headers, "utf-8"));
+                            JSONObject data = new JSONObject(responseBody);
+                            if (data.has("message")) {
+                                errorMessage = data.getString("message");
+                                Log.e(TAG, "Laravel Error: " + errorMessage, error);
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing error response", e);
+                        }
+                    }
                     Log.e(TAG, "Volley error", error);
-                    Toast.makeText(getApplicationContext(), "Error saving user", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
         ) {
             @Nullable
@@ -144,6 +183,7 @@ public class AddUserActivity extends AppCompatActivity implements View.OnClickLi
                 params.put("email", email);
                 params.put("role", role);
                 params.put("approval_status", approvalStatus);
+                params.put("jurusan", jurusan);
                 if (userId != -1) {
                     params.put("id", String.valueOf(userId));
                 }

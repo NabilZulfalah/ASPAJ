@@ -1,76 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#F9FAFB">
 
-    <LinearLayout
-        android:id="@+id/main"
+    <!-- Judul -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Form Pengembalian Aset"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1E1E1E"
+        android:gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Card Form -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:elevation="2dp"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:layout_marginBottom="20dp"
+        android:clipToOutline="true"
+        android:backgroundTint="#FFFFFF">
 
-        <!-- Nama siswa -->
-        <AutoCompleteTextView
-            android:id="@+id/etNama"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewReturnItems"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <!-- Kondisi Barang -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nama Siswa"
-            android:completionThreshold="1"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Spinner kelas -->
-        <Spinner
-            android:id="@+id/spinnerKelas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Spinner kondisi -->
-        <Spinner
-            android:id="@+id/spinnerKondisi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Image Preview -->
-        <ImageView
-            android:id="@+id/imgPreview"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:background="#E0E0E0"
-            android:contentDescription="Preview Foto"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Pick Photo Button -->
-        <Button
-            android:id="@+id/btnPickPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pilih Foto"
+            android:text="Kondisi Barang"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp" />
 
-        <!-- Submit Button -->
-        <Button
-            android:id="@+id/btnSubmit"
+        <Spinner
+            android:id="@+id/spinnerCondition"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Progress Bar -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone" />
-
+            android:background="@drawable/edittext_background" />
     </LinearLayout>
-</ScrollView>
+
+    <!-- Tombol Kirim -->
+    <Button
+        android:id="@+id/buttonSubmitReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kirim Pengembalian"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:backgroundTint="#2196F3"
+        android:padding="14dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/rounded_button" />
+
+</LinearLayout>

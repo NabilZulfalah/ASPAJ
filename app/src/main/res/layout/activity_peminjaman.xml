@@ -1,141 +1,172 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <LinearLayout
-        android:id="@+id/main"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="24dp"
+        android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Pilih Kelas -->
+        <!-- Header -->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pilih Kelas:"
-            android:textSize="16sp"
+            android:text="Form Peminjaman Barang"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <Spinner
-            android:id="@+id/spinnerKelas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="#1976D2"
+            android:layout_marginBottom="24dp" />
 
-        <!-- Ketik Nama Siswa -->
-        <TextView
+        <!-- Card putih -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ketik Nama Siswa:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <AutoCompleteTextView
-            android:id="@+id/etNamaSiswa"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ketik nama siswa"
-            android:inputType="textPersonName"
-            android:layout_marginBottom="16dp"/>
+            android:elevation="4dp"
+            android:layout_marginBottom="24dp"
+            android:clipToOutline="true"
+            android:backgroundTint="@android:color/white">
 
-        <!-- Nama Lengkap (auto terisi) -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nama Lengkap:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etNama"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nama Lengkap"
-            android:enabled="false"
-            android:layout_marginBottom="16dp"/>
+            <!-- Pilih Kelas -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pilih Kelas"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <Spinner
+                android:id="@+id/spinnerKelas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Tanggal Pinjam -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tanggal Pinjam:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etTanggalPinjam"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tanggal Pinjam"
-            android:enabled="false"
-            android:layout_marginBottom="16dp"/>
+            <!-- Nama Siswa -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ketik Nama Siswa"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <AutoCompleteTextView
+                android:id="@+id/etNamaSiswa"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ketik nama siswa"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Tanggal Kembali -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tanggal Kembali:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etTanggalKembali"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tanggal Kembali"
-            android:layout_marginBottom="16dp"/>
+            <!-- Nama Lengkap -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nama Lengkap"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etNama"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Lengkap"
+                android:enabled="false"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Tujuan -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tujuan Peminjaman:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etTujuan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tujuan Peminjaman"
-            android:layout_marginBottom="16dp"/>
+            <!-- Tanggal Pinjam -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tanggal Pinjam"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etTanggalPinjam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tanggal Pinjam"
+                android:enabled="false"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Barang -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Barang:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <Spinner
-            android:id="@+id/spinnerBarang"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"/>
+            <!-- Tanggal Kembali -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tanggal Kembali"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etTanggalKembali"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tanggal Kembali"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Jumlah -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Jumlah:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"/>
-        <EditText
-            android:id="@+id/etJumlah"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Jumlah"
-            android:layout_marginBottom="16dp"/>
+            <!-- Tujuan -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tujuan Peminjaman"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etTujuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tujuan Peminjaman"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Submit -->
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Buat Pengajuan"/>
+            <!-- Barang -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Barang"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <Spinner
+                android:id="@+id/spinnerBarang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Jumlah -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jumlah"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="4dp"/>
+            <EditText
+                android:id="@+id/etJumlah"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Jumlah"
+                android:layout_marginBottom="16dp"/>
+            <Button
+                android:id="@+id/btnSubmit"
+                android:text="BUAT PENGAJUAN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:layout_marginTop="24dp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_button"/>
+        </LinearLayout>
+
+        <!-- Tombol Submit -->
+
     </LinearLayout>
 </ScrollView>

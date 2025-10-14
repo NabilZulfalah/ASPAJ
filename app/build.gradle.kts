@@ -78,4 +78,10 @@ dependencies {
 
     // ⚠️ Alternatif lebih ringan untuk Android (jika error OutOfMemory)
     // implementation("com.github.SUPERCILEX.poi-android:poi:3.17")
+
+    // Image loading library
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Image cropping library
+    implementation("com.github.CanHub:Android-Image-Cropper:4.3.1")
 }

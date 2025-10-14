@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/ic_menu"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_borrow_assets"
+            android:icon="@drawable/ic_plus"
+            android:title="Borrow Assets" />
+        <item
+            android:id="@+id/nav_my_borrowings"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="My Borrowings" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_user"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout" />
+    </group>
+</menu>
