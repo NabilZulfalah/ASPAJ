@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,85 +17,114 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.androidphpmysql.SharedPrefManager;
-import com.example.androidphpmysql.VolleySingleton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class StudentDashboardActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * Dashboard utama untuk siswa.
+ * Menampilkan statistik aset, peminjaman aktif, dan riwayat.
+ */
+public class StudentDashboardActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TextView textViewClock;
-    private TextView textViewActiveBorrowings;
-    private TextView textViewTotalAssets;
-    private Handler handler = new Handler();
-    private Runnable runnable;
-
-    private RecyclerView recyclerViewActiveBorrowings;
-    private RecyclerView recyclerViewRecentRequests;
-    private RecyclerView recyclerViewBorrowingHistory;
-
+    // ===============================
+    // 🔹 View Components
+    // ===============================
+    private TextView textViewClock, textViewActiveBorrowings, textViewTotalAssets;
+    private RecyclerView recyclerViewActiveBorrowings, recyclerViewRecentRequests, recyclerViewBorrowingHistory;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+
+    // ===============================
+    // 🔹 Clock
+    // ===============================
+    private Handler handler;
+    private Runnable clockRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_dashboard);
 
+        // === Toolbar & Drawer ===
+        setupDrawer();
+
+        // === View Binding ===
+        bindViews();
+
+        // === RecyclerView setup ===
+        setupRecyclerViews();
+
+        // === Start Clock ===
+        startClock();
+
+        // === Load Dashboard Data ===
+        loadDashboardData();
+    }
+
+    // ===============================
+    // 🔹 Drawer Setup
+    // ===============================
+    private void setupDrawer() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+    }
 
+    // ===============================
+    // 🔹 View Binding
+    // ===============================
+    private void bindViews() {
         textViewClock = findViewById(R.id.textViewClock);
         textViewActiveBorrowings = findViewById(R.id.textViewActiveBorrowings);
         textViewTotalAssets = findViewById(R.id.textViewTotalAssets);
+
         recyclerViewActiveBorrowings = findViewById(R.id.recyclerViewActiveBorrowings);
         recyclerViewRecentRequests = findViewById(R.id.recyclerViewRecentRequests);
         recyclerViewBorrowingHistory = findViewById(R.id.recyclerViewBorrowingHistory);
+    }
 
-        // Set up RecyclerViews
+    // ===============================
+    // 🔹 RecyclerView Setup
+    // ===============================
+    private void setupRecyclerViews() {
         recyclerViewActiveBorrowings.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewRecentRequests.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBorrowingHistory.setLayoutManager(new LinearLayoutManager(this));
-
-        // Start clock
-        startClock();
-
-        // Load data (placeholder for now)
-        loadDashboardData();
     }
 
+    // ===============================
+    // 🔹 Navigation Drawer Actions
+    // ===============================
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_dashboard) {
-            // Already on dashboard
+            // Stay on dashboard
         } else if (id == R.id.nav_borrow_assets) {
             startActivity(new Intent(this, SelectJurusanActivity.class));
         } else if (id == R.id.nav_my_borrowings) {
@@ -103,9 +133,12 @@ public class StudentDashboardActivity extends AppCompatActivity implements Navig
             startActivity(new Intent(this, ProfileActivity.class));
         } else if (id == R.id.nav_logout) {
             SharedPrefManager.getInstance(this).logout();
-            startActivity(new Intent(this, LoginActivity.class));
+            Intent logoutIntent = new Intent(this, LoginActivity.class);
+            logoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(logoutIntent);
             finish();
         }
+
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -120,8 +153,12 @@ public class StudentDashboardActivity extends AppCompatActivity implements Navig
         }
     }
 
+    // ===============================
+    // 🔹 Real-Time Clock
+    // ===============================
     private void startClock() {
-        runnable = new Runnable() {
+        handler = new Handler();
+        clockRunnable = new Runnable() {
             @Override
             public void run() {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
@@ -129,9 +166,12 @@ public class StudentDashboardActivity extends AppCompatActivity implements Navig
                 handler.postDelayed(this, 1000);
             }
         };
-        handler.post(runnable);
+        handler.post(clockRunnable);
     }
 
+    // ===============================
+    // 🔹 Load Dashboard Data
+    // ===============================
     private void loadDashboardData() {
         loadDashboardStats();
         loadActiveBorrowings();
@@ -139,117 +179,111 @@ public class StudentDashboardActivity extends AppCompatActivity implements Navig
         loadBorrowingHistory();
     }
 
+    // -------------------------------
+    // Dashboard Stats
+    // -------------------------------
     private void loadDashboardStats() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.STUDENT_DASHBOARD_STATS, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            int activeBorrowings = response.getInt("active_borrowings");
-                            int totalAssets = response.getInt("total_assets");
-                            textViewActiveBorrowings.setText(String.valueOf(activeBorrowings));
-                            textViewTotalAssets.setText(String.valueOf(totalAssets));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                Constants.STUDENT_DASHBOARD_STATS,
+                null,
+                response -> {
+                    int activeBorrowings = response.optInt("active_borrowings", 0);
+                    int totalAssets = response.optInt("total_assets", 0);
+
+                    textViewActiveBorrowings.setText(String.valueOf(activeBorrowings));
+                    textViewTotalAssets.setText(String.valueOf(totalAssets));
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                    }
-                }) {
+                error -> Toast.makeText(this, "Gagal memuat statistik dashboard", Toast.LENGTH_SHORT).show()
+        ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + SharedPrefManager.getInstance(StudentDashboardActivity.this).getToken());
-                return headers;
+                return getAuthHeaders();
             }
         };
+
         VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
+    // -------------------------------
+    // Active Borrowings
+    // -------------------------------
     private void loadActiveBorrowings() {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, Constants.STUDENT_ACTIVE_BORROWINGS, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // Parse and set adapter
-                        // recyclerViewActiveBorrowings.setAdapter(new StudentBorrowingAdapter(response));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                    }
-                }) {
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                Constants.STUDENT_ACTIVE_BORROWINGS,
+                null,
+                response -> handleBorrowingResponse(response, "active"),
+                error -> Toast.makeText(this, "Gagal memuat peminjaman aktif", Toast.LENGTH_SHORT).show()
+        ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + SharedPrefManager.getInstance(StudentDashboardActivity.this).getToken());
-                return headers;
+                return getAuthHeaders();
             }
         };
         VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
+    // -------------------------------
+    // Recent Requests
+    // -------------------------------
     private void loadRecentRequests() {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, Constants.STUDENT_RECENT_REQUESTS, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // Parse and set adapter
-                        // recyclerViewRecentRequests.setAdapter(new StudentBorrowingAdapter(response));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                    }
-                }) {
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                Constants.STUDENT_RECENT_REQUESTS,
+                null,
+                response -> handleBorrowingResponse(response, "recent"),
+                error -> Toast.makeText(this, "Gagal memuat permintaan terbaru", Toast.LENGTH_SHORT).show()
+        ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + SharedPrefManager.getInstance(StudentDashboardActivity.this).getToken());
-                return headers;
+                return getAuthHeaders();
             }
         };
         VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
+    // -------------------------------
+    // Borrowing History
+    // -------------------------------
     private void loadBorrowingHistory() {
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, Constants.STUDENT_BORROWING_HISTORY, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // Parse and set adapter
-                        // recyclerViewBorrowingHistory.setAdapter(new StudentBorrowingAdapter(response));
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                    }
-                }) {
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                Constants.STUDENT_BORROWING_HISTORY,
+                null,
+                response -> handleBorrowingResponse(response, "history"),
+                error -> Toast.makeText(this, "Gagal memuat riwayat peminjaman", Toast.LENGTH_SHORT).show()
+        ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + SharedPrefManager.getInstance(StudentDashboardActivity.this).getToken());
-                return headers;
+                return getAuthHeaders();
             }
         };
         VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    // ===============================
+    // 🔹 Helper Methods
+    // ===============================
+    private Map<String, String> getAuthHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        String token = SharedPrefManager.getInstance(this).getToken();
+        if (token != null) {
+            headers.put("Authorization", "Bearer " + token);
+        }
+        return headers;
+    }
+
+    private void handleBorrowingResponse(JSONArray response, String type) {
+        // TODO: Nanti isi adapter sesuai jenis data
+        // recyclerViewActiveBorrowings.setAdapter(...)
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (handler != null && runnable != null) {
-            handler.removeCallbacks(runnable);
+        if (handler != null && clockRunnable != null) {
+            handler.removeCallbacks(clockRunnable);
         }
     }
 }

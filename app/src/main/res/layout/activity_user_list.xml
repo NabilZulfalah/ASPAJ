@@ -3,23 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F9FAFB">
 
+    <!-- Tombol Tambah User -->
     <Button
         android:id="@+id/button_add_user"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button_green"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
         android:text="+ Tambah User"
-        android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp" />
+        android:textColor="@android:color/white" />
 
+    <!-- Baris pencarian dan filter -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:gravity="center_vertical">
 
         <EditText
             android:id="@+id/edittext_search"
@@ -27,8 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Cari nama / email..."
-            android:padding="8dp"
-            android:background="@android:drawable/edit_text"
+            android:padding="10dp"
+            android:background="@drawable/spinner_background"
             android:inputType="text" />
 
         <Spinner
@@ -36,30 +41,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:entries="@array/role_filter_options" />
+            android:background="@drawable/spinner_background" />
 
         <Spinner
             android:id="@+id/spinner_jurusan_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:entries="@array/jurusan_array" />
+            android:background="@drawable/spinner_background" />
 
         <Button
             android:id="@+id/button_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cari"
-            android:layout_marginStart="8dp" />
+            android:textColor="@android:color/white"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/rounded_button" />
     </LinearLayout>
 
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_users"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Pagination UI -->
+    <!-- Pagination -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,6 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Previous"
+            android:background="@drawable/rounded_button"
+            android:textColor="@android:color/white"
             android:enabled="false" />
 
         <TextView
@@ -88,6 +98,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next"
+            android:background="@drawable/rounded_button"
+            android:textColor="@android:color/white"
             android:enabled="false" />
 
     </LinearLayout>

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,7 +23,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "all");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -37,7 +35,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "Rekayasa Perangkat Lunak");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -50,7 +47,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "Desain Komunikasi Visual");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -63,7 +59,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "Teknik Otomasi Industri");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -76,7 +71,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "Teknik Instalasi Tenaga Listrik");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -89,7 +83,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "Teknik Audio Video");
                 startActivity(intent);
-                finish();
             }
         });
 
@@ -102,7 +95,6 @@ public class SelectJurusanActivity extends AppCompatActivity {
                 Intent intent = new Intent(SelectJurusanActivity.this, AssetListActivity.class);
                 intent.putExtra("jurusan", "Teknik Komputer Jaringan");
                 startActivity(intent);
-                finish();
             }
         });
     }
