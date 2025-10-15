@@ -199,11 +199,13 @@ public class AdminBorrowingManagementActivity extends AppCompatActivity implemen
                                 student.setName(studentObj.getString("name"));
 
                                 // School class
-                                JSONObject classObj = studentObj.getJSONObject("school_class");
-                                SchoolClass schoolClass = new SchoolClass();
-                                schoolClass.setId(classObj.getInt("id"));
-                                schoolClass.setName(classObj.getString("name"));
-                                student.setSchoolClass(schoolClass);
+                                if (studentObj.has("school_class") && !studentObj.isNull("school_class")) {
+                                    JSONObject classObj = studentObj.getJSONObject("school_class");
+                                    SchoolClass schoolClass = new SchoolClass();
+                                    schoolClass.setId(classObj.getInt("id"));
+                                    schoolClass.setName(classObj.getString("name"));
+                                    student.setSchoolClass(schoolClass);
+                                }
 
                                 // User
                                 if (studentObj.has("user")) {
@@ -237,13 +239,19 @@ public class AdminBorrowingManagementActivity extends AppCompatActivity implemen
                                     commodity.setJurusan(commodityObj.optString("jurusan", ""));
 
                                     if (itemObj.has("photo_path")) {
-                                        item.setPhotoUrl(Constants.BASE_URL + "storage/" + itemObj.getString("photo_path"));
+                                        item.setPhotoUrl(Constants.STORAGE_BASE + itemObj.getString("photo_path"));
                                     }
 
                                     item.setCommodity(commodity);
                                     items.add(item);
                                 }
                                 borrowing.setItems(items);
+
+                                // Return photos
+                                if (obj.has("return_photos") && !obj.isNull("return_photos")) {
+                                    JSONArray returnPhotosArray = obj.getJSONArray("return_photos");
+                                    borrowing.setReturnPhoto(returnPhotosArray);
+                                }
 
                                 borrowingList.add(borrowing);
                             }
@@ -302,6 +310,25 @@ public class AdminBorrowingManagementActivity extends AppCompatActivity implemen
         Intent intent = new Intent(this, ImageViewerActivity.class);
         intent.putExtra("image_url", photoUrl);
         startActivity(intent);
+    }
+
+    @Override
+    public void onViewReturnPhotos(Borrowing borrowing) {
+        JSONArray returnPhotos = borrowing.getReturnPhoto();
+        if (returnPhotos != null && returnPhotos.length() > 0) {
+            // For multiple photos, you might want to create a gallery or show the first one
+            try {
+                String firstPhotoUrl = returnPhotos.getString(0);
+                Intent intent = new Intent(this, ImageViewerActivity.class);
+                intent.putExtra("image_url", Constants.STORAGE_BASE + firstPhotoUrl);
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error loading return photos", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "No return photos available", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showItemSelectionDialog(Borrowing borrowing, String action) {

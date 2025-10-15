@@ -12,6 +12,8 @@ public class Borrowing {
     private JSONArray items;
     private Student student;
     private List<BorrowingItem> itemsList;
+    private JSONArray returnPhoto;
+    private JSONArray returnPhotos;
 
     public Borrowing() {
     }
@@ -83,5 +85,21 @@ public class Borrowing {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public JSONArray getReturnPhoto() {
+        return returnPhoto;
+    }
+
+    public void setReturnPhoto(JSONArray returnPhoto) {
+        this.returnPhoto = returnPhoto;
+    }
+
+    public JSONArray getReturnPhotos() {
+        return returnPhotos;
+    }
+
+    public void setReturnPhotos(JSONArray returnPhotos) {
+        this.returnPhotos = returnPhotos;
     }
 }

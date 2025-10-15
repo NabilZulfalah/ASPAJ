@@ -129,6 +129,7 @@ public class ReturnFormActivity extends AppCompatActivity {
                                                 status,
                                                 item.getInt("quantity"),
                                                 item.optString("stock_info", ""),
+                                                "",
                                                 ""
                                         );
                                         returnItems.add(borrowedItem);
