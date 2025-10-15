@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,89 +14,109 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Foto Barang -->
         <ImageView
             android:id="@+id/imageViewPhoto"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="#E0E0E0"
             android:visibility="gone" />
 
+        <!-- Informasi Barang -->
         <TextView
             android:id="@+id/textViewName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nama Barang"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
 
         <TextView
             android:id="@+id/textViewKodeBarang"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kode: " />
+            android:text="Kode: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewJumlahStok"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Stok: " />
+            android:text="Stok: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewLokasiBarang"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lokasi: " />
+            android:text="Lokasi: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewCategory"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jurusan: " />
+            android:text="Jurusan: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewMerk"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Merk: " />
+            android:text="Merk: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewSumber"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sumber: " />
+            android:text="Sumber: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewTahun"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tahun: " />
+            android:text="Tahun: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Deskripsi: " />
+            android:text="Deskripsi: "
+            android:textColor="#424242" />
 
         <TextView
             android:id="@+id/textViewValue"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Harga: " />
+            android:text="Harga: "
+            android:textColor="#424242"
+            android:layout_marginBottom="12dp" />
 
-        <!-- Quantity Selector for Borrowing -->
+        <!-- Pemilih Jumlah Barang -->
         <LinearLayout
             android:id="@+id/quantitySelector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="8dp"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/buttonDecrease"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="-"
+                android:textStyle="bold"
+                android:backgroundTint="#1976D2"
+                android:textColor="@android:color/white"
                 android:minWidth="48dp"
                 android:minHeight="48dp" />
 
@@ -107,40 +128,54 @@
                 android:inputType="number"
                 android:text="0"
                 android:gravity="center"
-                android:minWidth="60dp"
-                android:maxLength="3" />
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:background="@android:color/transparent"
+                android:layout_marginHorizontal="8dp" />
 
             <Button
                 android:id="@+id/buttonIncrease"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+"
+                android:textStyle="bold"
+                android:backgroundTint="#1976D2"
+                android:textColor="@android:color/white"
                 android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:layout_marginStart="8dp" />
+                android:minHeight="48dp" />
 
         </LinearLayout>
 
+        <!-- Tombol Edit & Delete -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="12dp">
 
             <Button
                 android:id="@+id/buttonEdit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Edit" />
+                android:text="EDIT"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_button_green"
+                android:elevation="3dp"
+                android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/buttonDelete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="Delete"
-                android:layout_marginStart="8dp" />
+                android:background="@drawable/rounded_button_red"
+                android:elevation="3dp"
+                android:text="HAPUS"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

@@ -86,6 +86,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             intent = new Intent(this, StudentDashboardActivity.class);
         } else if ("admin".equals(role)) {
             intent = new Intent(this, AdminDashboardActivity.class);
+        } else if ("officers".equals(role)) {
+            intent = new Intent(this, OfficerDashboardActivity.class);
         } else {
             intent = new Intent(this, ProfileActivity.class);
         }
@@ -240,6 +242,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             intent = new Intent(getApplicationContext(), StudentDashboardActivity.class);
         } else if ("admin".equals(role)) {
             intent = new Intent(getApplicationContext(), AdminDashboardActivity.class);
+        } else if ("officers".equals(role)) {
+            intent = new Intent(getApplicationContext(), OfficerDashboardActivity.class);
         } else {
             intent = new Intent(getApplicationContext(), ProfileActivity.class);
         }

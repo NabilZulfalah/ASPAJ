@@ -1,58 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#F5F5F5"
+    tools:context=".AssetBorrowActivity">
 
-    <Spinner
-        android:id="@+id/spinnerJurusan"
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:entries="@array/jurusan_array" />
+        android:layout_height="36dp"
+        android:background="#2196F3"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:title="Peminjaman Aset"
+        android:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <EditText
-        android:id="@+id/editTextSearch"
+    <!-- Scrollable Card Form -->
+    <ScrollView
+        android:layout_below="@id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Search assets"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-    <Button
-        android:id="@+id/buttonSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Search"
-        android:layout_marginBottom="16dp" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="@android:color/white"
+            android:padding="16dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewAssets"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="629dp"
+                android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/editTextTujuan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Alasan Peminjaman"
-        android:layout_marginBottom="8dp" />
+                <!-- Judul -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:text="Form Peminjaman Aset"
+                    android:textColor="#1565C0"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/editTextReturnDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tanggal Pengembalian"
-        android:focusable="false"
-        android:clickable="true"
-        android:layout_marginBottom="16dp" />
+                <!-- Jurusan -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Pilih Program Studi"
+                    android:textColor="#000000"
+                    android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/buttonSubmitBorrow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Konfirmasi Peminjaman"
-        android:layout_marginTop="16dp" />
+                <Spinner
+                    android:id="@+id/spinnerJurusan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:entries="@array/jurusan_array" />
 
-</LinearLayout>
+                <!-- Search -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="@android:color/transparent"
+                    android:hint="Cari Aset"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="#2196F3"
+                    app:boxStrokeWidth="2dp">
+
+                    <EditText
+                        android:id="@+id/editTextSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Search assets"
+                        android:inputType="text"
+                        android:textColor="#000000" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/buttonSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/rounded_button"
+                    android:text="Cari"
+                    android:textColor="@android:color/white" />
+
+                <!-- Daftar Aset -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewAssets"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Alasan Peminjaman -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Alasan Peminjaman"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="#2196F3"
+                    app:boxStrokeWidth="2dp">
+
+                    <EditText
+                        android:id="@+id/editTextTujuan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Alasan peminjaman"
+                        android:inputType="text"
+                        android:textColor="#000000" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Tanggal Pengembalian -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Tanggal Pengembalian"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="#2196F3"
+                    app:boxStrokeWidth="2dp">
+
+                    <EditText
+                        android:id="@+id/editTextReturnDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:hint="Tanggal peminjaman"
+                        android:inputType="none"
+                        android:textColor="#000000" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Tombol Submit -->
+                <Button
+                    android:id="@+id/buttonSubmitBorrow"
+                    android:layout_width="match_parent"
+                    android:layout_height="37dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rounded_button"
+                    android:text="Konfirmasi Peminjaman"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
+
+</RelativeLayout>

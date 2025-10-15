@@ -65,7 +65,7 @@
             android:textStyle="bold"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:background="#2196F3"
+            android:background="@drawable/rounded_button"
             android:textColor="@android:color/white"
             android:layout_marginStart="8dp" />
 

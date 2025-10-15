@@ -3,56 +3,75 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:background="#FFFFFF"
-    android:layout_marginBottom="8dp">
+    android:padding="16dp"
+    android:background="#F8FAFC"
+    android:elevation="3dp"
+    android:layout_margin="8dp"
+    android:clipToOutline="true"
+    android:layout_gravity="center_horizontal">
 
     <TextView
         android:id="@+id/itemName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nama Barang"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:layout_marginBottom="4dp" />
+        android:textColor="#0F172A"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
 
-    <TextView
-        android:id="@+id/itemCode"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kode: 90"
-        android:textSize="14sp"
-        android:layout_marginBottom="2dp" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="8dp">
 
-    <TextView
-        android:id="@+id/itemQty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Qty: 3"
-        android:textColor="#007bff"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
+        <TextView
+            android:id="@+id/itemCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kode: 90"
+            android:textSize="14sp"
+            android:textColor="#334155"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:id="@+id/itemQty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qty: 3"
+            android:textColor="#0D9488"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Foto Kondisi Barang"
         android:textSize="16sp"
+        android:textColor="#1E293B"
+        android:textStyle="bold"
+        android:gravity="center"
         android:layout_marginBottom="8dp" />
 
     <ImageView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="180dp"
+        android:layout_marginBottom="12dp"
         android:scaleType="centerCrop"
-        android:background="@android:color/darker_gray"
-        android:layout_marginBottom="8dp" />
+        android:background="#E2E8F0"
+        android:adjustViewBounds="true" />
 
     <Button
         android:id="@+id/buttonUploadPhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Upload Foto"
-        android:layout_marginBottom="8dp" />
+        android:background="@drawable/rounded_button"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
 
 </LinearLayout>
