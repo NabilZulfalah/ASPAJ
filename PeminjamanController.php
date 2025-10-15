@@ -152,7 +152,7 @@ class PeminjamanController extends Controller
         try {
             // Check item availability
             foreach ($request->items as $item) {
-                $commodity = Commodity::find($item['commodity_id']);
+                $commodity = Commodity::find($item['asset_id']);
                 if ($commodity->quantity < $item['quantity']) {
                     DB::rollBack();
                     return response()->json([
@@ -175,12 +175,12 @@ class PeminjamanController extends Controller
             foreach ($request->items as $item) {
                 BorrowingItem::create([
                     'borrowing_id' => $borrowing->id,
-                    'commodity_id' => $item['commodity_id'],
+                    'commodity_id' => $item['asset_id'],
                     'quantity' => $item['quantity'],
                 ]);
 
                 // Update commodity quantity
-                $commodity = Commodity::find($item['commodity_id']);
+                $commodity = Commodity::find($item['asset_id']);
                 $commodity->quantity -= $item['quantity'];
                 $commodity->save();
             }

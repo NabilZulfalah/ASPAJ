@@ -105,7 +105,7 @@ public class BorrowConfirmActivity extends AppCompatActivity {
             for (int i = 0; i < originalItems.length(); i++) {
                 JSONObject item = originalItems.getJSONObject(i);
                 JSONObject newItem = new JSONObject();
-                newItem.put("asset_id", item.getInt("asset_id"));
+                newItem.put("commodity_id", item.getInt("asset_id"));
                 newItem.put("quantity", item.getInt("quantity"));
                 itemsArray.put(newItem);
             }

@@ -140,9 +140,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                 originalClass = className;
                                 SharedPrefManager.getInstance(ProfileActivity.this).saveUserClass(className);
                                 avatarUrl = user.optString("profile_picture", "");
-                                if (!avatarUrl.isEmpty()) {
-                                    avatarUrl = Constants.STORAGE_BASE + avatarUrl;
-                                }
 
                                 // Update left panel
                                 textViewName.setText(originalName);
@@ -157,7 +154,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                                 // Load profile photo
                                 Glide.with(ProfileActivity.this)
-                                        .load(avatarUrl.isEmpty() ? R.drawable.ic_asset_placeholder : avatarUrl)
+                                        .load(avatarUrl.isEmpty() ? R.drawable.ic_asset_placeholder : Constants.STORAGE_BASE + avatarUrl)
                                         .placeholder(R.drawable.ic_asset_placeholder)
                                         .circleCrop()
                                         .into(imageViewProfilePhoto);
@@ -183,11 +180,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                                 textViewRoleRight.setText("Role: " + originalRole);
                                 textViewClassRight.setText("Kelas: " + originalClass);
 
-                                Glide.with(ProfileActivity.this)
-                                        .load(R.drawable.ic_asset_placeholder)
-                                        .placeholder(R.drawable.ic_asset_placeholder)
-                                        .circleCrop()
-                                        .into(imageViewProfilePhoto);
+                        if (!isFinishing() && !isDestroyed()) {
+                            Glide.with(ProfileActivity.this)
+                                    .load(R.drawable.ic_asset_placeholder)
+                                    .placeholder(R.drawable.ic_asset_placeholder)
+                                    .circleCrop()
+                                    .into(imageViewProfilePhoto);
+                        }
 
                                 selectedImageUri = null;
 
@@ -234,11 +233,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         textViewRoleRight.setText("Role: " + originalRole);
                         textViewClassRight.setText("Kelas: " + originalClass);
 
-                        Glide.with(ProfileActivity.this)
-                                .load(R.drawable.ic_asset_placeholder)
-                                .placeholder(R.drawable.ic_asset_placeholder)
-                                .circleCrop()
-                                .into(imageViewProfilePhoto);
+                        if (!isFinishing() && !isDestroyed()) {
+                            Glide.with(ProfileActivity.this)
+                                    .load(R.drawable.ic_asset_placeholder)
+                                    .placeholder(R.drawable.ic_asset_placeholder)
+                                    .circleCrop()
+                                    .into(imageViewProfilePhoto);
+                        }
 
                         selectedImageUri = null;
                     }
