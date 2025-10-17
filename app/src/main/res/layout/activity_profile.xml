@@ -88,7 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#4CAF50"
+            android:background="@drawable/rounded_button_green"
             android:text="Ubah Password"
             android:textColor="@android:color/white" />
 
@@ -97,7 +97,7 @@
             android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#F44336"
+            android:background="@drawable/rounded_button_red"
             android:text="Logout"
             android:textColor="@android:color/white" />
 
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:text="Simpan Perubahan"
                     android:textColor="@android:color/white"
-                    android:backgroundTint="#4CAF50" />
+                    android:background="@drawable/rounded_button_green" />
 
             </LinearLayout>
 
