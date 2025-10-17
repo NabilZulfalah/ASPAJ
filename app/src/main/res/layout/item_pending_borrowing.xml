@@ -165,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:text="Reject"
                 android:textColor="#FFFFFF"
-                android:background="#F44336"
+                android:background="@drawable/rounded_button_red"
                 android:layout_marginEnd="8dp"
                 android:padding="8dp"
                 android:minWidth="80dp" />
@@ -176,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:text="Approve"
                 android:textColor="#FFFFFF"
-                android:background="#4CAF50"
+                android:background="@drawable/rounded_button_green"
                 android:padding="8dp"
                 android:minWidth="80dp" />
         </LinearLayout>

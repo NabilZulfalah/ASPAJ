@@ -24,6 +24,7 @@ public interface OnBorrowingActionListener {
     void onReject(Borrowing borrowing);
     void onReturn(Borrowing borrowing);
     void onViewPhoto(String photoUrl);
+    void onViewReturnPhotos(Borrowing borrowing);
 }
 
     public AdminBorrowingAdapter(Context context, List<Borrowing> borrowingList, OnBorrowingActionListener listener) {
@@ -45,7 +46,8 @@ public interface OnBorrowingActionListener {
 
         // Student info
         holder.textStudentName.setText(borrowing.getStudent().getName());
-        holder.textStudentClass.setText(borrowing.getStudent().getSchoolClass().getName());
+        String className = borrowing.getStudent().getSchoolClass() != null ? borrowing.getStudent().getSchoolClass().getName() : "Tidak ada kelas";
+        holder.textStudentClass.setText(className);
 
         // Load student image if available
         if (borrowing.getStudent().getUser() != null && borrowing.getStudent().getUser().getProfilePhoto() != null) {
@@ -99,15 +101,19 @@ public interface OnBorrowingActionListener {
 
         holder.buttonReturn.setOnClickListener(v -> listener.onReturn(borrowing));
 
+        holder.buttonViewReturnPhoto.setOnClickListener(v -> listener.onViewReturnPhotos(borrowing));
+
         // Show/hide buttons based on status
         boolean hasPendingItems = borrowing.getItemsList().stream().anyMatch(item -> "pending".equals(item.getStatus()));
         String borrowingStatus = borrowing.getStatus();
         boolean hasApprovedItems = borrowing.getItemsList().stream().anyMatch(item -> "approved".equals(item.getStatus()));
         boolean canReturn = hasApprovedItems && ("approved".equals(borrowingStatus) || "partially_approved".equals(borrowingStatus) || "partially_returned".equals(borrowingStatus));
+        boolean hasReturnPhotos = borrowing.getReturnPhoto() != null && borrowing.getReturnPhoto().length() > 0 && ("returned".equals(borrowingStatus) || "partially_returned".equals(borrowingStatus));
 
         holder.buttonApprove.setVisibility(hasPendingItems ? View.VISIBLE : View.GONE);
         holder.buttonReject.setVisibility(hasPendingItems ? View.VISIBLE : View.GONE);
         holder.buttonReturn.setVisibility(canReturn ? View.VISIBLE : View.GONE);
+        holder.buttonViewReturnPhoto.setVisibility(hasReturnPhotos ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -129,7 +135,7 @@ public interface OnBorrowingActionListener {
         ImageView imageStudent;
         TextView textStudentName, textStudentClass, textStatus, textPurpose, textBorrowDate, textReturnDate;
         LinearLayout layoutItems;
-        Button buttonApprove, buttonReject, buttonReturn;
+        Button buttonApprove, buttonReject, buttonReturn, buttonViewReturnPhoto;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -144,6 +150,7 @@ public interface OnBorrowingActionListener {
             buttonApprove = itemView.findViewById(R.id.buttonApprove);
             buttonReject = itemView.findViewById(R.id.buttonReject);
             buttonReturn = itemView.findViewById(R.id.buttonReturn);
+            buttonViewReturnPhoto = itemView.findViewById(R.id.buttonViewReturnPhoto);
         }
     }
 }

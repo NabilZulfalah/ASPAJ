@@ -48,29 +48,82 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asset_list);
 
+        // Initialize views
+        initializeViews();
+
+        // Setup toolbar dengan pengecekan null
+        setupToolbar();
+
+        // Setup RecyclerView
+        setupRecyclerView();
+
+        // Setup role-based UI
+        setupRoleBasedUI();
+
+        // Setup listeners
+        setupListeners();
+
+        // Load data
+        assetList = new ArrayList<>();
+        loadAssets();
+    }
+
+    private void initializeViews() {
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Daftar Aset");
-
         recyclerView = findViewById(R.id.recyclerViewAssets);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         buttonAddAsset = findViewById(R.id.buttonAddAsset);
         editTextSearch = findViewById(R.id.editTextSearch);
         spinnerJurusan = findViewById(R.id.spinnerJurusan);
         textViewSummary = findViewById(R.id.textViewSummary);
         buttonSubmitBorrowing = findViewById(R.id.buttonSubmitBorrowing);
+    }
 
+    private void setupToolbar() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Daftar Aset");
+                // Optional: tambahkan back button
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            } else {
+                // Fallback: set title langsung di toolbar
+                toolbar.setTitle("Daftar Aset");
+            }
+        } else {
+            // Jika toolbar null, set title di action bar default
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Daftar Aset");
+            } else {
+                setTitle("Daftar Aset");
+            }
+        }
+    }
+
+    private void setupRecyclerView() {
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void setupRoleBasedUI() {
         String role = SharedPrefManager.getInstance(this).getUserRole();
         if ("students".equals(role)) {
             buttonAddAsset.setVisibility(View.GONE);
-            findViewById(R.id.footerLayout).setVisibility(View.VISIBLE);
+            View footerLayout = findViewById(R.id.footerLayout);
+            if (footerLayout != null) {
+                footerLayout.setVisibility(View.VISIBLE);
+            }
         } else {
             buttonAddAsset.setVisibility(View.VISIBLE);
-            findViewById(R.id.footerLayout).setVisibility(View.GONE);
+            View footerLayout = findViewById(R.id.footerLayout);
+            if (footerLayout != null) {
+                footerLayout.setVisibility(View.GONE);
+            }
         }
+    }
 
+    private void setupListeners() {
+        // Button listeners
         buttonAddAsset.setOnClickListener(v -> {
             Intent intent = new Intent(AssetListActivity.this, AddAssetActivity.class);
             startActivity(intent);
@@ -93,21 +146,25 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
         });
 
         // Spinner listener
-        spinnerJurusan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = parent.getItemAtPosition(position).toString();
-                selectedJurusan = "Semua Program Studi".equals(selected) ? "all" : selected;
-                loadAssets();
-            }
+        if (spinnerJurusan != null) {
+            spinnerJurusan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    String selected = parent.getItemAtPosition(position).toString();
+                    selectedJurusan = "Semua Program Studi".equals(selected) ? "all" : selected;
+                    loadAssets();
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        }
+    }
 
-        assetList = new ArrayList<>();
-
-        loadAssets();
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
@@ -224,6 +281,7 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
                 if (token != null) {
                     headers.put("Authorization", "Bearer " + token);
                 }
+                headers.put("Accept", "application/json");
                 return headers;
             }
         };
@@ -243,20 +301,27 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
     }
 
     private void updateSummary() {
+        if (textViewSummary == null) return;
+
         int types = cart.size();
         int total = 0;
         for (int q : cart.values()) {
             total += q;
         }
         textViewSummary.setText(types + " Jenis Barang | Total " + total + " Unit");
-        buttonSubmitBorrowing.setEnabled(total > 0);
+
+        if (buttonSubmitBorrowing != null) {
+            buttonSubmitBorrowing.setEnabled(total > 0);
+        }
     }
 
     private void filterAssets(String query) {
+        if (adapter == null) return;
+
         List<Asset> filteredList = new ArrayList<>();
         for (Asset asset : assetList) {
             if (asset.getNamaBarang().toLowerCase().contains(query.toLowerCase()) ||
-                asset.getKodeBarang().toLowerCase().contains(query.toLowerCase())) {
+                    asset.getKodeBarang().toLowerCase().contains(query.toLowerCase())) {
                 filteredList.add(asset);
             }
         }
@@ -264,6 +329,11 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
     }
 
     private void showConfirmationDialog() {
+        if (cart.isEmpty()) {
+            Toast.makeText(this, "Tidak ada barang yang dipilih", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Konfirmasi Peminjaman");
 
@@ -296,6 +366,7 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(this, "Error preparing data", Toast.LENGTH_SHORT).show();
                 return;
             }
             Intent intent = new Intent(AssetListActivity.this, BorrowConfirmActivity.class);
@@ -306,6 +377,4 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
         builder.setNegativeButton("Tidak", null);
         builder.show();
     }
-
-
 }

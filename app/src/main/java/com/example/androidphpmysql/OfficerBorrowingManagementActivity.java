@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AdminBorrowingManagementActivity extends AppCompatActivity implements AdminBorrowingAdapter.OnBorrowingActionListener {
+public class OfficerBorrowingManagementActivity extends AppCompatActivity implements AdminBorrowingAdapter.OnBorrowingActionListener {
 
     private RecyclerView recyclerViewBorrowings;
     private EditText editTextSearch;
@@ -114,16 +114,18 @@ public class AdminBorrowingManagementActivity extends AppCompatActivity implemen
         spinnerStatus.setAdapter(statusAdapter);
         setSpinnerSelection(spinnerStatus, currentStatus);
 
-        // Setup jurusan spinner (for admin only)
+        // Setup jurusan spinner (for officer, set to their jurusan)
         SharedPrefManager sharedPrefManager = SharedPrefManager.getInstance(this);
-        if ("admin".equals(sharedPrefManager.getUser().getRole())) {
+        User user = sharedPrefManager.getUser();
+        if ("officer".equals(user.getRole())) {
+            spinnerJurusan.setVisibility(View.GONE);
+            currentJurusan = user.getJurusan(); // Set to officer's jurusan
+        } else {
             ArrayAdapter<String> jurusanAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,
                     new String[]{"", "Teknik Informatika", "Teknik Elektro", "Teknik Mesin", "Teknik Sipil"});
             jurusanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerJurusan.setAdapter(jurusanAdapter);
             setSpinnerSelection(spinnerJurusan, currentJurusan);
-        } else {
-            spinnerJurusan.setVisibility(View.GONE);
         }
 
         // Setup class spinner
@@ -135,7 +137,9 @@ public class AdminBorrowingManagementActivity extends AppCompatActivity implemen
 
         buttonReset.setOnClickListener(v -> {
             currentStatus = "";
-            currentJurusan = "";
+            if (!"officer".equals(user.getRole())) {
+                currentJurusan = "";
+            }
             currentClass = "";
             loadBorrowings();
             dialog.dismiss();
@@ -143,7 +147,7 @@ public class AdminBorrowingManagementActivity extends AppCompatActivity implemen
 
         buttonApply.setOnClickListener(v -> {
             currentStatus = spinnerStatus.getSelectedItem().toString();
-            if ("admin".equals(sharedPrefManager.getUser().getRole())) {
+            if (!"officer".equals(user.getRole())) {
                 currentJurusan = spinnerJurusan.getSelectedItem().toString();
             }
             currentClass = spinnerClass.getSelectedItem().toString();

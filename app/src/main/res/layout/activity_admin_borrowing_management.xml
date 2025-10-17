@@ -1,45 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F5F5F5">
 
-    <LinearLayout
+    <!-- Container Pencarian -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        app:cardBackgroundColor="@android:color/white"
         android:layout_marginBottom="16dp">
 
-        <EditText
-            android:id="@+id/editTextSearch"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Cari nama siswa atau barang..."
-            android:inputType="text" />
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-        <Button
-            android:id="@+id/buttonFilter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter"
-            android:layout_marginStart="8dp" />
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Cari nama siswa atau barang..."
+                android:padding="10dp"
+                android:background="@android:color/transparent"
+                android:textColor="#000000"
+                android:textColorHint="#888888"
+                android:backgroundTint="#1976D2" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/buttonFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FILTER"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#1976D2"
+                android:layout_marginStart="8dp"
+                android:elevation="3dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewBorrowings"
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- RecyclerView -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewBorrowings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- Empty State -->
     <TextView
         android:id="@+id/emptyStateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tidak ada data peminjaman"
         android:textSize="16sp"
+        android:textColor="#666666"
         android:gravity="center"
         android:visibility="gone"
         android:layout_marginTop="32dp" />
