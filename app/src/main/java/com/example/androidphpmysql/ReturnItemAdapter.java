@@ -79,7 +79,7 @@ public class ReturnItemAdapter extends RecyclerView.Adapter<ReturnItemAdapter.Vi
         }
 
         holder.buttonUploadPhoto.setOnClickListener(v -> {
-            selectedPosition = position;
+            selectedPosition = holder.getAdapterPosition();
             openImagePicker();
         });
     }

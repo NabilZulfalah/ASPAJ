@@ -1,190 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:background="#FFFFFF"
     tools:context=".ProfileActivity">
 
-    <!-- Left Panel: User Info -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="#2196F3"
-        android:orientation="vertical"
-        android:padding="24dp">
-
-        <!-- User Avatar -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="60dp"
-            app:cardElevation="0dp">
-
-            <ImageView
-                android:id="@+id/imageViewProfilePhoto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/ic_asset_placeholder"
-                android:contentDescription="User Avatar"
-                android:scaleType="centerCrop"
-                android:clickable="true"
-                android:focusable="true" />
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- User Name -->
-        <TextView
-            android:id="@+id/textViewName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:text="Johan Maharoni"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <!-- Role Badge -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/status_badge_background"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/textViewRole"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Student"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <!-- Class -->
-        <TextView
-            android:id="@+id/textViewClass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:gravity="center"
-            android:text="XI RPL 1"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
-
-        <!-- Change Password Button -->
-        <Button
-            android:id="@+id/buttonChangePassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/rounded_button_green"
-            android:text="Ubah Password"
-            android:textColor="@android:color/white" />
-
-        <!-- Logout Button -->
-        <Button
-            android:id="@+id/buttonLogout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button_red"
-            android:text="Logout"
-            android:textColor="@android:color/white" />
-
-    </LinearLayout>
-
-    <!-- Right Panel: Account Settings -->
+    <!-- MAIN CONTENT -->
     <ScrollView
-        android:layout_width="0dp"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:padding="24dp">
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Title -->
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#2196F3"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+                app:title="Profile"
+                app:titleTextColor="@android:color/white" />
+
+        <!-- ==================== HEADER ==================== -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:background="@drawable/bg_heder_blue"
+            android:gravity="center_horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardProfile"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="60dp"
+                android:layout_centerHorizontal="true"
+                app:cardCornerRadius="55dp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:id="@+id/imageViewProfilePhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/ic_asset_placeholder"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="User Avatar" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Johan Maharoni"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_below="@id/cardProfile"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp" />
+
+            <LinearLayout
+                android:id="@+id/layoutBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textViewName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/status_badge_background"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp">
+
+                <TextView
+                    android:id="@+id/textViewRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textViewClass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XI RPL 1"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:layout_below="@id/layoutBadge"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="6dp" />
+        </RelativeLayout>
+
+        <!-- ==================== INFORMASI AKUN (tanpa card/elevation) ==================== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="20dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:text="Pengaturan Akun"
-                android:textColor="@android:color/black"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textColor="#1565C0"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginBottom="16dp" />
 
-
-            <!-- Name Field -->
-            <TextView
-                android:id="@+id/textViewNameRight"
+            <!-- Info akun tersusun rapi dengan spacing halus -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Nama: "
-                android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                android:orientation="vertical"
+                android:dividerPadding="6dp">
 
-            <!-- Email Field -->
-            <TextView
-                android:id="@+id/textViewEmailRight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Email: "
-                android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nama:"
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
 
-            <!-- Role Field -->
-            <TextView
-                android:id="@+id/textViewRoleRight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Role: "
-                android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                <TextView
+                    android:id="@+id/textViewNameRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Johan Maharoni"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="8dp" />
 
-            <!-- Class Field -->
-            <TextView
-                android:id="@+id/textViewClassRight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:text="Kelas: "
-                android:textSize="16sp"
-                android:textColor="@android:color/black" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email:"
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
 
-            <!-- Buttons -->
+                <TextView
+                    android:id="@+id/textViewEmailRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="johan@example.com"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Role:"
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/textViewRoleRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Student"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kelas:"
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/textViewClassRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="XI RPL 1"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ==================== TOMBOL AKSI ==================== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:background="#FFFFFF"
+            android:gravity="center">
+
+            <!-- Dua tombol berdampingan -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="end">
+                android:gravity="center"
+                android:layout_marginBottom="12dp"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/buttonChangePassword"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ubah Password"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/rounded_button_green"
+                    android:layout_marginEnd="6dp" />
 
                 <Button
                     android:id="@+id/buttonSave"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Simpan Perubahan"
+                    android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/rounded_button_green" />
-
+                    android:background="@drawable/rounded_button_green"
+                    android:layout_marginStart="6dp" />
             </LinearLayout>
 
+            <!-- Tombol logout di bawah sendiri -->
+            <Button
+                android:id="@+id/buttonLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:background="@drawable/rounded_button_red" />
         </LinearLayout>
-
+        </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        app:menu="@menu/navigation_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

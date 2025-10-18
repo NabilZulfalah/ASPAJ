@@ -37,7 +37,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,6 +196,24 @@ public class ReturnFormActivity extends AppCompatActivity {
         if (borrowingId == -1) {
             Toast.makeText(this, "Invalid borrowing ID", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        // Validasi tanggal pengembalian
+        String borrowDateStr = getIntent().getStringExtra("borrow_date");
+        if (borrowDateStr != null) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date borrowDate = sdf.parse(borrowDateStr);
+                Date currentDate = new Date();
+
+                if (!currentDate.after(borrowDate)) {
+                    Toast.makeText(this, "Tanggal pengembalian harus lebih baru dari tanggal peminjaman", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } catch (ParseException e) {
+                Toast.makeText(this, "Format tanggal tidak valid", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
         String condition = spinnerCondition.getSelectedItem().toString();

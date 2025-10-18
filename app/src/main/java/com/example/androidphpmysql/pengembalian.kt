@@ -20,12 +20,13 @@ import com.android.volley.toolbox.Volley
 import com.example.androidphpmysql.SharedPrefManager
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class pengembalian : AppCompatActivity() {
 
     private lateinit var spinnerCondition: Spinner
-    private lateinit var imageViewPhoto: ImageView
-    private lateinit var buttonUploadPhoto: Button
     private lateinit var buttonSubmitReturn: Button
 
     private var selectedImage: Bitmap? = null
@@ -40,8 +41,6 @@ class pengembalian : AppCompatActivity() {
         setContentView(R.layout.activity_return_form)
 
         spinnerCondition = findViewById(R.id.spinnerCondition)
-        imageViewPhoto = findViewById(R.id.imageViewPhoto)
-        buttonUploadPhoto = findViewById(R.id.buttonUploadPhoto)
         buttonSubmitReturn = findViewById(R.id.buttonSubmitReturn)
 
         progressDialog = android.app.ProgressDialog(this)
@@ -63,7 +62,7 @@ class pengembalian : AppCompatActivity() {
                 val imageUri: Uri? = result.data?.data
                 try {
                     selectedImage = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-                    imageViewPhoto.setImageBitmap(selectedImage)
+                    // imageViewPhoto.setImageBitmap(selectedImage)
                 } catch (e: IOException) {
                     e.printStackTrace()
                     Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
@@ -71,7 +70,7 @@ class pengembalian : AppCompatActivity() {
             }
         }
 
-        buttonUploadPhoto.setOnClickListener { openImagePicker() }
+        // buttonUploadPhoto.setOnClickListener { openImagePicker() }
 
         buttonSubmitReturn.setOnClickListener { submitReturn() }
     }
@@ -91,6 +90,24 @@ class pengembalian : AppCompatActivity() {
         if (borrowingId == -1) {
             Toast.makeText(this, "Invalid borrowing ID", Toast.LENGTH_SHORT).show()
             return
+        }
+
+        // Validasi tanggal pengembalian
+        val borrowDateStr = intent.getStringExtra("borrow_date")
+        if (borrowDateStr != null) {
+            try {
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val borrowDate = LocalDate.parse(borrowDateStr, formatter)
+                val currentDate = LocalDate.now()
+
+                if (!currentDate.isAfter(borrowDate)) {
+                    Toast.makeText(this, "Tanggal pengembalian harus lebih baru dari tanggal peminjaman", Toast.LENGTH_SHORT).show()
+                    return
+                }
+            } catch (e: DateTimeParseException) {
+                Toast.makeText(this, "Format tanggal tidak valid", Toast.LENGTH_SHORT).show()
+                return
+            }
         }
 
         progressDialog.setMessage("Submitting return...")

@@ -44,7 +44,8 @@
             android:textColor="#1976D2"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:gravity="center" />
+            android:gravity="center"
+            />
 
         <!-- Status Filter -->
         <Spinner

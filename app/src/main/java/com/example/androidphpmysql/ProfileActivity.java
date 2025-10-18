@@ -15,11 +15,17 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -41,7 +47,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private TextView textViewName, textViewRole, textViewClass;
     private ImageView imageViewProfilePhoto;
@@ -53,6 +59,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private String avatarUrl;
     private int userId;
     private int schoolClassId;
+
+    // Drawer components
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
 
     private final ActivityResultLauncher<String> pickImageLauncher = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -88,6 +99,23 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonChangePassword = findViewById(R.id.buttonChangePassword);
         buttonLogout = findViewById(R.id.buttonLogout);
         buttonSave = findViewById(R.id.buttonSave);
+
+        // Initialize drawer components
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+
+        // Set up toolbar
+        setSupportActionBar(toolbar);
+
+        // Set up drawer toggle
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // Set navigation listener
+        navigationView.setNavigationItemSelectedListener(this);
 
         // Set listeners
         buttonChangePassword.setOnClickListener(this);
@@ -372,21 +400,40 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private File createTempFileFromUri(Uri uri) {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
         try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
+            inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream == null) {
+                Log.e("ProfileActivity", "Failed to open input stream for URI: " + uri);
+                return null;
+            }
             File tempFile = File.createTempFile("temp_image", ".jpg", getCacheDir());
-            OutputStream outputStream = new FileOutputStream(tempFile);
+            outputStream = new FileOutputStream(tempFile);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);
             }
-            outputStream.close();
-            inputStream.close();
             return tempFile;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("ProfileActivity", "Exception creating temp file from URI: " + uri, e);
             return null;
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (Exception e) {
+                    Log.e("ProfileActivity", "Failed to close output stream", e);
+                }
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception e) {
+                    Log.e("ProfileActivity", "Failed to close input stream", e);
+                }
+            }
         }
     }
 
@@ -420,6 +467,47 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             SharedPrefManager.getInstance(this).logout();
             finish();
             startActivity(new Intent(this, LoginActivity.class));
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@androidx.annotation.NonNull android.view.MenuItem item) {
+        int id = item.getItemId();
+        String role = SharedPrefManager.getInstance(this).getUserRole();
+
+        if (id == R.id.nav_dashboard) {
+            if ("student".equals(role)) {
+                startActivity(new Intent(this, StudentDashboardActivity.class));
+            } else if ("officer".equals(role)) {
+                startActivity(new Intent(this, OfficerDashboardActivity.class));
+            }
+        } else if (id == R.id.nav_borrow_assets) {
+            if ("student".equals(role)) {
+                startActivity(new Intent(this, SelectJurusanActivity.class));
+            } else if ("officer".equals(role)) {
+                // Officers might not borrow, or go to asset list
+                startActivity(new Intent(this, AssetListActivity.class));
+            }
+        } else if (id == R.id.nav_my_borrowings) {
+            startActivity(new Intent(this, BorrowingStatusActivity.class));
+        } else if (id == R.id.nav_profile) {
+            // Already on profile, do nothing
+        } else if (id == R.id.nav_logout) {
+            SharedPrefManager.getInstance(this).logout();
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 }

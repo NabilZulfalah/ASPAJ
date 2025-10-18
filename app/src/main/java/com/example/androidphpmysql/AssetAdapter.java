@@ -191,7 +191,7 @@ public class AssetAdapter extends RecyclerView.Adapter<AssetAdapter.AssetViewHol
                 new AlertDialog.Builder(context)
                         .setTitle("Hapus Aset")
                         .setMessage("Apakah Anda yakin ingin menghapus aset ini?")
-                        .setPositiveButton("Ya", (dialog, which) -> deleteAsset(asset.getId(), position))
+                        .setPositiveButton("Ya", (dialog, which) -> deleteAsset(asset.getId(), holder.getAdapterPosition()))
                         .setNegativeButton("Tidak", null)
                         .show();
             });

@@ -1,6 +1,7 @@
 package com.example.androidphpmysql;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -11,8 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -34,7 +40,7 @@ import java.util.Map;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class AddAssetActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddAssetActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "AddAssetActivity";
 
@@ -45,18 +51,17 @@ public class AddAssetActivity extends AppCompatActivity implements View.OnClickL
     private ProgressDialog progressDialog;
     private int assetId = -1; // -1 for new asset, otherwise edit mode
 
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_asset);
 
-        // Setup Toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(assetId == -1 ? "Tambah Aset" : "Edit Aset");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        // Setup Drawer & Toolbar
+        setupDrawer();
 
         // Bind views
         editTextNamaBarang = findViewById(R.id.editTextNamaBarang);
@@ -253,6 +258,57 @@ public class AddAssetActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         if (view.getId() == R.id.buttonSimpan) {
             saveAsset();
+        }
+    }
+
+    private void setupDrawer() {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(assetId == -1 ? "Tambah Aset" : "Edit Aset");
+        }
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_dashboard) {
+            startActivity(new Intent(this, OfficerDashboardActivity.class));
+        } else if (id == R.id.nav_asset_management) {
+            startActivity(new Intent(this, AssetListActivity.class));
+        } else if (id == R.id.nav_borrowing_management) {
+            startActivity(new Intent(this, OfficerBorrowingManagementActivity.class));
+        } else if (id == R.id.nav_profile) {
+            startActivity(new Intent(this, ProfileActivity.class));
+        } else if (id == R.id.nav_logout) {
+            SharedPrefManager.getInstance(this).logout();
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
