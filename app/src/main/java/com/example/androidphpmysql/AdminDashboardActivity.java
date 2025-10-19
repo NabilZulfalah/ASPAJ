@@ -73,7 +73,7 @@ public class AdminDashboardActivity extends AppCompatActivity implements Navigat
         } else if (id == R.id.nav_user_management) {
             startActivity(new Intent(this, UserListActivity.class));
         } else if (id == R.id.nav_borrowing_management) {
-            startActivity(new Intent(this, AdminBorrowingManagementActivity.class));
+            startActivity(new Intent(this, OfficerBorrowingManagementActivity.class));
         } else if (id == R.id.nav_class_management) {
             startActivity(new Intent(this, KelasListActivity.class));
         } else if (id == R.id.nav_profile) {

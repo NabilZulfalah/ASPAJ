@@ -12,14 +12,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
+import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.navigation.NavigationView;
 import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AssetListActivity extends AppCompatActivity implements AssetAdapter.QuantityChangeListener {
+public class AssetListActivity extends AppCompatActivity implements AssetAdapter.QuantityChangeListener, NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView recyclerView;
     private AssetAdapter adapter;
@@ -42,6 +46,8 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
     private Button buttonSubmitBorrowing;
     private Map<Integer, Integer> cart = new HashMap<>();
     private String selectedJurusan = "all";
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,8 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
     }
 
     private void initializeViews() {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         recyclerView = findViewById(R.id.recyclerViewAssets);
         buttonAddAsset = findViewById(R.id.buttonAddAsset);
@@ -83,9 +91,9 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle("Daftar Aset");
-                // Optional: tambahkan back button
+                // Add hamburger menu icon
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
             } else {
                 // Fallback: set title langsung di toolbar
                 toolbar.setTitle("Daftar Aset");
@@ -113,13 +121,22 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
             if (footerLayout != null) {
                 footerLayout.setVisibility(View.VISIBLE);
             }
+            // Set student navigation menu
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.navigation_menu);
         } else {
             buttonAddAsset.setVisibility(View.VISIBLE);
             View footerLayout = findViewById(R.id.footerLayout);
             if (footerLayout != null) {
                 footerLayout.setVisibility(View.GONE);
             }
+            // Set officer navigation menu
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.officer_navigation_menu);
         }
+
+        // Setup navigation view
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void setupListeners() {
@@ -163,8 +180,62 @@ public class AssetListActivity extends AppCompatActivity implements AssetAdapter
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
         return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_dashboard) {
+            String role = SharedPrefManager.getInstance(this).getUserRole();
+            Intent intent;
+            if ("students".equals(role)) {
+                intent = new Intent(this, StudentDashboardActivity.class);
+            } else {
+                intent = new Intent(this, OfficerDashboardActivity.class);
+            }
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_borrow_assets) {
+            // Already on this page, do nothing
+        } else if (id == R.id.nav_my_borrowings) {
+            Intent intent = new Intent(this, BorrowingStatusActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_asset_management) {
+            // Already on asset management page, do nothing
+        } else if (id == R.id.nav_user_management) {
+            Intent intent = new Intent(this, UserManagementActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_borrowing_management) {
+            Intent intent = new Intent(this, OfficerBorrowingManagementActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_logout) {
+            logout();
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void logout() {
+        SharedPrefManager.getInstance(this).logout();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override

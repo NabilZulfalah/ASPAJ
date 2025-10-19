@@ -10,6 +10,10 @@
             android:icon="@android:drawable/ic_menu_manage"
             android:title="Asset Management" />
         <item
+            android:id="@+id/nav_user_management"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="User Management" />
+        <item
             android:id="@+id/nav_borrowing_management"
             android:icon="@android:drawable/ic_menu_view"
             android:title="Borrowing Management" />

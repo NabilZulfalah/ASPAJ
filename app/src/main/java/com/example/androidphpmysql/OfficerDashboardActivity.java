@@ -68,6 +68,8 @@ public class OfficerDashboardActivity extends AppCompatActivity implements Navig
             // Already on dashboard
         } else if (id == R.id.nav_asset_management) {
             startActivity(new Intent(this, AssetListActivity.class));
+        } else if (id == R.id.nav_user_management) {
+            startActivity(new Intent(this, UserManagementActivity.class));
         } else if (id == R.id.nav_borrowing_management) {
             startActivity(new Intent(this, OfficerBorrowingManagementActivity.class));
         } else if (id == R.id.nav_profile) {

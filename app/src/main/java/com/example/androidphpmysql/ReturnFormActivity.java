@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
@@ -17,6 +19,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.AuthFailureError;
@@ -29,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.androidphpmysql.Constants;
 import com.example.androidphpmysql.SharedPrefManager;
 import com.example.androidphpmysql.VolleySingleton;
+import com.google.android.material.navigation.NavigationView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,25 +51,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReturnFormActivity extends AppCompatActivity {
+public class ReturnFormActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Spinner spinnerCondition;
     private RecyclerView recyclerViewReturnItems;
     private Button buttonSubmitReturn;
+    private Button buttonSelectPhoto;
+    private ImageView imageViewPhotoProof;
     private ProgressDialog progressDialog;
     private int borrowingId;
     private int itemId;
     private List<BorrowingDetailActivity.BorrowedItem> returnItems;
     private ReturnItemAdapter returnItemAdapter;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private Toolbar toolbar;
+    private Bitmap selectedPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_return_form);
 
-        spinnerCondition = findViewById(R.id.spinnerCondition);
-        recyclerViewReturnItems = findViewById(R.id.recyclerViewReturnItems);
-        buttonSubmitReturn = findViewById(R.id.buttonSubmitReturn);
+        // Initialize views
+        initializeViews();
+
+        // Setup toolbar
+        setupToolbar();
+
+        // Setup role-based UI
+        setupRoleBasedUI();
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -88,11 +105,150 @@ public class ReturnFormActivity extends AppCompatActivity {
         recyclerViewReturnItems.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewReturnItems.setAdapter(returnItemAdapter);
 
-        buttonSubmitReturn.setOnClickListener(v -> submitReturn());
+        // Setup listeners
+        setupListeners();
 
         // Fetch borrowing details to populate return items
         fetchBorrowingDetailsForReturn();
     }
+
+    private void initializeViews() {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        spinnerCondition = findViewById(R.id.spinnerCondition);
+        recyclerViewReturnItems = findViewById(R.id.recyclerViewReturnItems);
+        buttonSubmitReturn = findViewById(R.id.buttonSubmitReturn);
+        buttonSelectPhoto = findViewById(R.id.buttonSelectPhoto);
+        imageViewPhotoProof = findViewById(R.id.imageViewPhotoProof);
+    }
+
+    private void setupToolbar() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Form Pengembalian");
+                // Add hamburger menu icon
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+            } else {
+                // Fallback: set title langsung di toolbar
+                toolbar.setTitle("Form Pengembalian");
+            }
+        } else {
+            // Jika toolbar null, set title di action bar default
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle("Form Pengembalian");
+            } else {
+                setTitle("Form Pengembalian");
+            }
+        }
+    }
+
+    private void setupRoleBasedUI() {
+        String role = SharedPrefManager.getInstance(this).getUserRole();
+        if ("students".equals(role)) {
+            // Set student navigation menu
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.navigation_menu);
+        } else {
+            // Set officer navigation menu
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.officer_navigation_menu);
+        }
+
+        // Setup navigation view
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setupListeners() {
+        buttonSubmitReturn.setOnClickListener(v -> submitReturn());
+        buttonSelectPhoto.setOnClickListener(v -> selectPhoto());
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_dashboard) {
+            String role = SharedPrefManager.getInstance(this).getUserRole();
+            Intent intent;
+            if ("students".equals(role)) {
+                intent = new Intent(this, StudentDashboardActivity.class);
+            } else {
+                intent = new Intent(this, OfficerDashboardActivity.class);
+            }
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_borrow_assets) {
+            Intent intent = new Intent(this, AssetListActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_my_borrowings) {
+            Intent intent = new Intent(this, BorrowingStatusActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_asset_management) {
+            Intent intent = new Intent(this, AssetListActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_borrowing_management) {
+            Intent intent = new Intent(this, OfficerBorrowingManagementActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (id == R.id.nav_logout) {
+            logout();
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void logout() {
+        SharedPrefManager.getInstance(this).logout();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void selectPhoto() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickerLauncher.launch(intent);
+    }
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Uri selectedImageUri = result.getData().getData();
+                        try {
+                            selectedPhoto = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                            imageViewPhotoProof.setImageBitmap(selectedPhoto);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ReturnFormActivity.this, "Error loading image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+    );
 
     private void fetchBorrowingDetailsForReturn() {
         String token = SharedPrefManager.getInstance(this).getToken();
@@ -190,8 +346,6 @@ public class ReturnFormActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
 
-    private ActivityResultLauncher<Intent> imagePickerLauncher;
-
     private void submitReturn() {
         if (borrowingId == -1) {
             Toast.makeText(this, "Invalid borrowing ID", Toast.LENGTH_SHORT).show();
@@ -279,13 +433,11 @@ public class ReturnFormActivity extends AppCompatActivity {
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
-                for (BorrowingDetailActivity.BorrowedItem item : returnItems) {
-                    if (item.getReturnPhoto() != null) {
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        item.getReturnPhoto().compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] imageBytes = baos.toByteArray();
-                        params.put("return_photo_" + item.getItemId(), new DataPart("return_photo_" + item.getItemId() + ".jpg", imageBytes, "image/jpeg"));
-                    }
+                if (selectedPhoto != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    selectedPhoto.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    byte[] imageBytes = baos.toByteArray();
+                    params.put("return_photo", new DataPart("return_photo.jpg", imageBytes, "image/jpeg"));
                 }
                 return params;
             }

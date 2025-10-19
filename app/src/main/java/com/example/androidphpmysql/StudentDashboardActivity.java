@@ -25,8 +25,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -275,8 +277,38 @@ public class StudentDashboardActivity extends AppCompatActivity
     }
 
     private void handleBorrowingResponse(JSONArray response, String type) {
-        // TODO: Nanti isi adapter sesuai jenis data
-        // recyclerViewActiveBorrowings.setAdapter(...)
+        List<Borrowing> borrowings = new ArrayList<>();
+        try {
+            for (int i = 0; i < response.length(); i++) {
+                JSONObject obj = response.getJSONObject(i);
+                Borrowing borrowing = new Borrowing(
+                        obj.getInt("id"),
+                        obj.getString("borrow_date"),
+                        obj.getString("return_date"),
+                        obj.getString("tujuan"),
+                        obj.getString("status"),
+                        obj.getJSONArray("items")
+                );
+                borrowings.add(borrowing);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        switch (type) {
+            case "active":
+                BorrowingCardAdapter activeAdapter = new BorrowingCardAdapter(this, borrowings);
+                recyclerViewActiveBorrowings.setAdapter(activeAdapter);
+                break;
+            case "recent":
+                BorrowingCardAdapter recentAdapter = new BorrowingCardAdapter(this, borrowings);
+                recyclerViewRecentRequests.setAdapter(recentAdapter);
+                break;
+            case "history":
+                BorrowingCardAdapter historyAdapter = new BorrowingCardAdapter(this, borrowings);
+                recyclerViewBorrowingHistory.setAdapter(historyAdapter);
+                break;
+        }
     }
 
     @Override

@@ -117,6 +117,20 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         // Set navigation listener
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Inflate correct menu based on role
+        String role = SharedPrefManager.getInstance(this).getUserRole();
+        if ("admin".equals(role)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.admin_navigation_menu);
+        } else if ("officers".equals(role)) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.officer_navigation_menu);
+        } else {
+            // Default to student menu
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.navigation_menu);
+        }
+
         // Set listeners
         buttonChangePassword.setOnClickListener(this);
         buttonLogout.setOnClickListener(this);
@@ -476,20 +490,34 @@ public class ProfileActivity extends AppCompatActivity implements NavigationView
         String role = SharedPrefManager.getInstance(this).getUserRole();
 
         if (id == R.id.nav_dashboard) {
-            if ("student".equals(role)) {
+            if ("students".equals(role)) {
                 startActivity(new Intent(this, StudentDashboardActivity.class));
-            } else if ("officer".equals(role)) {
+            } else if ("admin".equals(role)) {
+                startActivity(new Intent(this, AdminDashboardActivity.class));
+            } else if ("officers".equals(role)) {
                 startActivity(new Intent(this, OfficerDashboardActivity.class));
             }
         } else if (id == R.id.nav_borrow_assets) {
-            if ("student".equals(role)) {
+            if ("students".equals(role)) {
                 startActivity(new Intent(this, SelectJurusanActivity.class));
-            } else if ("officer".equals(role)) {
+            } else if ("officers".equals(role)) {
                 // Officers might not borrow, or go to asset list
                 startActivity(new Intent(this, AssetListActivity.class));
             }
         } else if (id == R.id.nav_my_borrowings) {
             startActivity(new Intent(this, BorrowingStatusActivity.class));
+        } else if (id == R.id.nav_asset_management) {
+            startActivity(new Intent(this, AssetListActivity.class));
+        } else if (id == R.id.nav_user_management) {
+            startActivity(new Intent(this, UserManagementActivity.class));
+        } else if (id == R.id.nav_borrowing_management) {
+            if ("admin".equals(role)) {
+                startActivity(new Intent(this, OfficerBorrowingManagementActivity.class));
+            } else if ("officers".equals(role)) {
+                startActivity(new Intent(this, OfficerBorrowingManagementActivity.class));
+            }
+        } else if (id == R.id.nav_class_management) {
+            startActivity(new Intent(this, KelasListActivity.class));
         } else if (id == R.id.nav_profile) {
             // Already on profile, do nothing
         } else if (id == R.id.nav_logout) {

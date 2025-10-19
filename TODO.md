@@ -1,49 +1,10 @@
-# TODO: Add Navbar and Sidebar to All Activity XMLs
+# Fix Navbar and Borrowing Navigation Issues
 
-## Overview
-Add DrawerLayout with Toolbar and NavigationView to all activity XML layouts that don't have them yet, similar to `activity_officer_dashboard.xml` and `activity_student_dashboard.xml`.
-
-## Activities to Update
-- [ ] activity_add_asset.xml
-- [ ] activity_add_kelas.xml
-- [ ] activity_add_user.xml
-- [ ] activity_admin_borrowing_management.xml
-- [ ] activity_admin_dashboard.xml
-- [ ] activity_asset_borrow.xml
-- [ ] activity_asset_list.xml
-- [ ] activity_borrow_confirm.xml
-- [ ] activity_borrowing_detail.xml
-- [ ] activity_borrowing_status.xml
-- [ ] activity_change_password.xml
-- [ ] activity_forgot_password.xml
-- [ ] activity_image_viewer.xml
-- [ ] activity_kelas_list.xml
-- [ ] activity_kelas_management.xml
-- [ ] activity_login.xml (skip - login screen)
-- [ ] activity_main.xml
-- [ ] activity_peminjaman.xml
-- [ ] activity_profile.xml
-- [ ] activity_return_form.xml
-- [ ] activity_riwayat_peminjaman.xml
-- [ ] activity_select_jurusan.xml
-- [ ] activity_user_list.xml
-- [ ] activity_user_management.xml
-
-## Template Structure
-Use DrawerLayout as root with:
-- LinearLayout for main content
-- MaterialToolbar
-- ScrollView with content
-- NavigationView for sidebar
-
-## Menus to Use
-- Student activities: @menu/navigation_menu
-- Officer/Admin activities: @menu/officer_navigation_menu
-
-## Java Activities to Update
-Update corresponding Java activities to implement NavigationView.OnNavigationItemSelectedListener and add drawer setup code.
-
-## Testing
-- [ ] Test navigation in all activities
-- [ ] Check for any layout errors
-- [ ] Verify drawer opens/closes properly
+## Steps to Complete
+- [x] Fix role check in ProfileActivity onNavigationItemSelected: Change "student" to "students"
+- [x] Add dynamic menu inflation in ProfileActivity onCreate based on user role
+- [x] Add missing navigation cases in ProfileActivity for admin and officer menus (asset_management, user_management, borrowing_management, class_management)
+- [x] Fix AdminDashboardActivity borrowing management intent to use OfficerBorrowingManagementActivity
+- [x] Verify student borrowing navigation from ProfileActivity works correctly
+- [x] Test role-based menus in ProfileActivity for all roles
+- [x] Test borrowing asset navigation for students from profile

@@ -39,7 +39,7 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
     private static final int REQUEST_ADD_USER = 1;
     private static final int REQUEST_EDIT_USER = 2;
 
-    private Button buttonAddUser, buttonSearch, buttonPrevious, buttonNext;
+    private Button buttonAddUser, buttonAddClass, buttonImportUsers, buttonSearch, buttonPrevious, buttonNext;
     private EditText editTextSearch;
     private Spinner spinnerRoleFilter, spinnerJurusanFilter;
     private RecyclerView recyclerViewUsers;
@@ -62,6 +62,8 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
         setContentView(R.layout.activity_user_list);
 
         buttonAddUser = findViewById(R.id.button_add_user);
+        buttonAddClass = findViewById(R.id.button_add_class);
+        buttonImportUsers = findViewById(R.id.button_import_users);
         buttonSearch = findViewById(R.id.button_search);
         editTextSearch = findViewById(R.id.edittext_search);
         spinnerRoleFilter = findViewById(R.id.spinner_role_filter);
@@ -118,6 +120,18 @@ public class UserListActivity extends AppCompatActivity implements UserAdapter.O
             Intent intent = new Intent(UserListActivity.this, AddUserActivity.class);
             startActivityForResult(intent, REQUEST_ADD_USER);
             Toast.makeText(UserListActivity.this, "Navigating to Add User screen", Toast.LENGTH_SHORT).show();
+        });
+
+        buttonAddClass.setOnClickListener(v -> {
+            Intent intent = new Intent(UserListActivity.this, KelasListActivity.class);
+            startActivity(intent);
+            Toast.makeText(UserListActivity.this, "Navigating to Class Management", Toast.LENGTH_SHORT).show();
+        });
+
+        buttonImportUsers.setOnClickListener(v -> {
+            Intent intent = new Intent(UserListActivity.this, UserManagementActivity.class);
+            startActivity(intent);
+            Toast.makeText(UserListActivity.this, "Navigating to User Management for Import", Toast.LENGTH_SHORT).show();
         });
 
         buttonSearch.setOnClickListener(v -> filterUsers());

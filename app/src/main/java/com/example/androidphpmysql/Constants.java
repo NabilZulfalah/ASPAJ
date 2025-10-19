@@ -6,7 +6,7 @@ package com.example.androidphpmysql;
  */
 public class Constants {
     // Base URL API Laravel
-    public static final String BASE_URL = "http://192.168.1.119:8000/api/";
+    public static final String BASE_URL = "http://192.168.0.113:8000/api/";
 
     // Endpoint untuk mengambil, menambah, mengubah, dan menghapus data aset
     public static final String URL_GET_ASSETS = BASE_URL + "assets"; // GET: Mendapatkan daftar aset
@@ -51,6 +51,9 @@ public class Constants {
     public static final String STUDENT_BORROWING_HISTORY = BASE_URL + "student/borrowing-history"; // GET: Riwayat peminjaman
     public static final String STUDENT_BORROWINGS = BASE_URL + "student/borrowing-history"; // GET: Semua peminjaman student
 
+    // Import users endpoint
+    public static final String URL_IMPORT_USERS = BASE_URL + "users/import"; // POST: Import users from CSV
+
     // Admin-specific endpoints
     public static final String ADMIN_DASHBOARD_STATS = BASE_URL + "admin/dashboard-stats"; // GET: Stats untuk dashboard admin
 
@@ -60,5 +63,5 @@ public class Constants {
     public static final String URL_CHANGE_PASSWORD = BASE_URL + "change-password"; // POST: Change user password
 
     // Storage base for profile pictures
-    public static final String STORAGE_BASE = "http://192.168.1.119:8000/storage/profile_pictures/";
+    public static final String STORAGE_BASE = "http://192.168.0.113:8000/storage/profile_pictures/";
         }

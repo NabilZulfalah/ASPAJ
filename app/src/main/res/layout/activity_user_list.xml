@@ -6,17 +6,50 @@
     android:padding="16dp"
     android:background="#F9FAFB">
 
-    <!-- Tombol Tambah User -->
-    <Button
-        android:id="@+id/button_add_user"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
+    <!-- Tombol Management -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_button_green"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp"
-        android:text="+ Tambah User"
-        android:textColor="@android:color/white" />
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/button_add_user"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rounded_button_green"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="10dp"
+            android:text="+ Tambah User"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/button_add_class"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/rounded_button"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="10dp"
+            android:text="+ Tambah Kelas"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/button_import_users"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_button_green"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="10dp"
+            android:text="Import Users"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
 
     <!-- Baris pencarian dan filter -->
     <LinearLayout
